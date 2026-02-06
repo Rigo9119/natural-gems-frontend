@@ -1,0 +1,9 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "home_page": "Inicio",
+  "about_page": "Acerca de",
+  "example_message": "Bienvenido a tu aplicación i18n.",
+  "language_label": "Idioma",
+  "current_locale": "Idioma actual: {locale}",
+  "learn_router": "Aprende Paraglide JS"
+}
