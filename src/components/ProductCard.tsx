@@ -13,20 +13,23 @@ export default function ProductCard({
 }: ProductCardProps) {
   return (
     <article className="group cursor-pointer">
-      <div className="aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
+      <figure className="aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
         <img
           src={image}
           alt={name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-      </div>
-      <div className="mt-4 space-y-1">
-        <h3 className="font-heading text-xl text-brand-primary-dark">{name}</h3>
-        <p className="text-sm text-brand-primary-dark/70">{carat} quilates</p>
-        <p className="font-body font-semibold text-brand-primary-dark">
-          ${price.toLocaleString()}
-        </p>
-      </div>
+      </figure>
+      <dl className="mt-4 space-y-1">
+        <dt className="sr-only">Nombre</dt>
+        <dd className="font-heading text-xl text-brand-primary-dark">{name}</dd>
+        <dt className="sr-only">Quilates</dt>
+        <dd className="text-sm text-brand-primary-dark/70">{carat} quilates</dd>
+        <dt className="sr-only">Precio</dt>
+        <dd className="font-body font-semibold text-brand-primary-dark">
+          <data value={price}>${price.toLocaleString()}</data>
+        </dd>
+      </dl>
     </article>
   );
 }
