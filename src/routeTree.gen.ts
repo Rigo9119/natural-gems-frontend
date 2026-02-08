@@ -9,56 +9,65 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as StoreRouteImport } from './routes/_store'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as StoreJeweleryIndexRouteImport } from './routes/_store.jewelery/index'
+import { Route as StoreJewelryRouteImport } from './routes/_store.jewelry'
+import { Route as StoreEmeraldsRouteImport } from './routes/_store.emeralds'
+import { Route as StoreJewelryIndexRouteImport } from './routes/_store.jewelry/index'
 import { Route as StoreEmeraldsIndexRouteImport } from './routes/_store.emeralds/index'
 import { Route as StoreEmeraldsMayoristasRouteImport } from './routes/_store.emeralds/mayoristas'
 import { Route as StoreEmeraldsTiendaIndexRouteImport } from './routes/_store.emeralds/tienda/index'
 import { Route as StoreEmeraldsTiendaCompareRouteImport } from './routes/_store.emeralds/tienda/compare'
 
-const StoreRoute = StoreRouteImport.update({
-  id: '/_store',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StoreJeweleryIndexRoute = StoreJeweleryIndexRouteImport.update({
-  id: '/jewelery/',
-  path: '/jewelery/',
-  getParentRoute: () => StoreRoute,
+const StoreJewelryRoute = StoreJewelryRouteImport.update({
+  id: '/_store/jewelry',
+  path: '/jewelry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreEmeraldsRoute = StoreEmeraldsRouteImport.update({
+  id: '/_store/emeralds',
+  path: '/emeralds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreJewelryIndexRoute = StoreJewelryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StoreJewelryRoute,
 } as any)
 const StoreEmeraldsIndexRoute = StoreEmeraldsIndexRouteImport.update({
-  id: '/emeralds/',
-  path: '/emeralds/',
-  getParentRoute: () => StoreRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => StoreEmeraldsRoute,
 } as any)
 const StoreEmeraldsMayoristasRoute = StoreEmeraldsMayoristasRouteImport.update({
-  id: '/emeralds/mayoristas',
-  path: '/emeralds/mayoristas',
-  getParentRoute: () => StoreRoute,
+  id: '/mayoristas',
+  path: '/mayoristas',
+  getParentRoute: () => StoreEmeraldsRoute,
 } as any)
 const StoreEmeraldsTiendaIndexRoute =
   StoreEmeraldsTiendaIndexRouteImport.update({
-    id: '/emeralds/tienda/',
-    path: '/emeralds/tienda/',
-    getParentRoute: () => StoreRoute,
+    id: '/tienda/',
+    path: '/tienda/',
+    getParentRoute: () => StoreEmeraldsRoute,
   } as any)
 const StoreEmeraldsTiendaCompareRoute =
   StoreEmeraldsTiendaCompareRouteImport.update({
-    id: '/emeralds/tienda/compare',
-    path: '/emeralds/tienda/compare',
-    getParentRoute: () => StoreRoute,
+    id: '/tienda/compare',
+    path: '/tienda/compare',
+    getParentRoute: () => StoreEmeraldsRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/emeralds': typeof StoreEmeraldsRouteWithChildren
+  '/jewelry': typeof StoreJewelryRouteWithChildren
   '/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
   '/emeralds/': typeof StoreEmeraldsIndexRoute
-  '/jewelery/': typeof StoreJeweleryIndexRoute
+  '/jewelry/': typeof StoreJewelryIndexRoute
   '/emeralds/tienda/compare': typeof StoreEmeraldsTiendaCompareRoute
   '/emeralds/tienda/': typeof StoreEmeraldsTiendaIndexRoute
 }
@@ -66,17 +75,18 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
   '/emeralds': typeof StoreEmeraldsIndexRoute
-  '/jewelery': typeof StoreJeweleryIndexRoute
+  '/jewelry': typeof StoreJewelryIndexRoute
   '/emeralds/tienda/compare': typeof StoreEmeraldsTiendaCompareRoute
   '/emeralds/tienda': typeof StoreEmeraldsTiendaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_store': typeof StoreRouteWithChildren
+  '/_store/emeralds': typeof StoreEmeraldsRouteWithChildren
+  '/_store/jewelry': typeof StoreJewelryRouteWithChildren
   '/_store/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
   '/_store/emeralds/': typeof StoreEmeraldsIndexRoute
-  '/_store/jewelery/': typeof StoreJeweleryIndexRoute
+  '/_store/jewelry/': typeof StoreJewelryIndexRoute
   '/_store/emeralds/tienda/compare': typeof StoreEmeraldsTiendaCompareRoute
   '/_store/emeralds/tienda/': typeof StoreEmeraldsTiendaIndexRoute
 }
@@ -84,9 +94,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/emeralds'
+    | '/jewelry'
     | '/emeralds/mayoristas'
     | '/emeralds/'
-    | '/jewelery/'
+    | '/jewelry/'
     | '/emeralds/tienda/compare'
     | '/emeralds/tienda/'
   fileRoutesByTo: FileRoutesByTo
@@ -94,34 +106,29 @@ export interface FileRouteTypes {
     | '/'
     | '/emeralds/mayoristas'
     | '/emeralds'
-    | '/jewelery'
+    | '/jewelry'
     | '/emeralds/tienda/compare'
     | '/emeralds/tienda'
   id:
     | '__root__'
     | '/'
-    | '/_store'
+    | '/_store/emeralds'
+    | '/_store/jewelry'
     | '/_store/emeralds/mayoristas'
     | '/_store/emeralds/'
-    | '/_store/jewelery/'
+    | '/_store/jewelry/'
     | '/_store/emeralds/tienda/compare'
     | '/_store/emeralds/tienda/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  StoreRoute: typeof StoreRouteWithChildren
+  StoreEmeraldsRoute: typeof StoreEmeraldsRouteWithChildren
+  StoreJewelryRoute: typeof StoreJewelryRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_store': {
-      id: '/_store'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof StoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -129,65 +136,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_store/jewelery/': {
-      id: '/_store/jewelery/'
-      path: '/jewelery'
-      fullPath: '/jewelery/'
-      preLoaderRoute: typeof StoreJeweleryIndexRouteImport
-      parentRoute: typeof StoreRoute
+    '/_store/jewelry': {
+      id: '/_store/jewelry'
+      path: '/jewelry'
+      fullPath: '/jewelry'
+      preLoaderRoute: typeof StoreJewelryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_store/emeralds': {
+      id: '/_store/emeralds'
+      path: '/emeralds'
+      fullPath: '/emeralds'
+      preLoaderRoute: typeof StoreEmeraldsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_store/jewelry/': {
+      id: '/_store/jewelry/'
+      path: '/'
+      fullPath: '/jewelry/'
+      preLoaderRoute: typeof StoreJewelryIndexRouteImport
+      parentRoute: typeof StoreJewelryRoute
     }
     '/_store/emeralds/': {
       id: '/_store/emeralds/'
-      path: '/emeralds'
+      path: '/'
       fullPath: '/emeralds/'
       preLoaderRoute: typeof StoreEmeraldsIndexRouteImport
-      parentRoute: typeof StoreRoute
+      parentRoute: typeof StoreEmeraldsRoute
     }
     '/_store/emeralds/mayoristas': {
       id: '/_store/emeralds/mayoristas'
-      path: '/emeralds/mayoristas'
+      path: '/mayoristas'
       fullPath: '/emeralds/mayoristas'
       preLoaderRoute: typeof StoreEmeraldsMayoristasRouteImport
-      parentRoute: typeof StoreRoute
+      parentRoute: typeof StoreEmeraldsRoute
     }
     '/_store/emeralds/tienda/': {
       id: '/_store/emeralds/tienda/'
-      path: '/emeralds/tienda'
+      path: '/tienda'
       fullPath: '/emeralds/tienda/'
       preLoaderRoute: typeof StoreEmeraldsTiendaIndexRouteImport
-      parentRoute: typeof StoreRoute
+      parentRoute: typeof StoreEmeraldsRoute
     }
     '/_store/emeralds/tienda/compare': {
       id: '/_store/emeralds/tienda/compare'
-      path: '/emeralds/tienda/compare'
+      path: '/tienda/compare'
       fullPath: '/emeralds/tienda/compare'
       preLoaderRoute: typeof StoreEmeraldsTiendaCompareRouteImport
-      parentRoute: typeof StoreRoute
+      parentRoute: typeof StoreEmeraldsRoute
     }
   }
 }
 
-interface StoreRouteChildren {
+interface StoreEmeraldsRouteChildren {
   StoreEmeraldsMayoristasRoute: typeof StoreEmeraldsMayoristasRoute
   StoreEmeraldsIndexRoute: typeof StoreEmeraldsIndexRoute
-  StoreJeweleryIndexRoute: typeof StoreJeweleryIndexRoute
   StoreEmeraldsTiendaCompareRoute: typeof StoreEmeraldsTiendaCompareRoute
   StoreEmeraldsTiendaIndexRoute: typeof StoreEmeraldsTiendaIndexRoute
 }
 
-const StoreRouteChildren: StoreRouteChildren = {
+const StoreEmeraldsRouteChildren: StoreEmeraldsRouteChildren = {
   StoreEmeraldsMayoristasRoute: StoreEmeraldsMayoristasRoute,
   StoreEmeraldsIndexRoute: StoreEmeraldsIndexRoute,
-  StoreJeweleryIndexRoute: StoreJeweleryIndexRoute,
   StoreEmeraldsTiendaCompareRoute: StoreEmeraldsTiendaCompareRoute,
   StoreEmeraldsTiendaIndexRoute: StoreEmeraldsTiendaIndexRoute,
 }
 
-const StoreRouteWithChildren = StoreRoute._addFileChildren(StoreRouteChildren)
+const StoreEmeraldsRouteWithChildren = StoreEmeraldsRoute._addFileChildren(
+  StoreEmeraldsRouteChildren,
+)
+
+interface StoreJewelryRouteChildren {
+  StoreJewelryIndexRoute: typeof StoreJewelryIndexRoute
+}
+
+const StoreJewelryRouteChildren: StoreJewelryRouteChildren = {
+  StoreJewelryIndexRoute: StoreJewelryIndexRoute,
+}
+
+const StoreJewelryRouteWithChildren = StoreJewelryRoute._addFileChildren(
+  StoreJewelryRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  StoreRoute: StoreRouteWithChildren,
+  StoreEmeraldsRoute: StoreEmeraldsRouteWithChildren,
+  StoreJewelryRoute: StoreJewelryRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

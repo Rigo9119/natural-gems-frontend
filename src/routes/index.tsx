@@ -14,7 +14,7 @@ function App() {
         </h2>
       </Link>
       <Link
-        to={"/jewelery"}
+        to={"/jewelry"}
         className="flex flex-1 items-center justify-center w-full md:w-1/2 md:h-screen bg-brand-secondary-terra transition-all duration-500 ease-in-out hover:flex-3"
       >
         <h2 className="text-brand-primary-lighter font-heading text-6xl md:text-8xl">
