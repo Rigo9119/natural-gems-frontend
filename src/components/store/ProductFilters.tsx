@@ -88,7 +88,8 @@ export function ProductFilters({
 			: 0;
 
 	return (
-		<div className="flex flex-wrap items-center gap-2 border-b border-brand-primary-dark/10 bg-white px-4 py-4 md:px-6 lg:px-8">
+		<div className="border-b border-brand-primary-dark/10 bg-white">
+			<div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 py-4 md:px-6 lg:px-8">
 			<FilterDropdown label="Precio" activeCount={priceActive}>
 				<RangeFilter
 					label="Rango de precio"
@@ -197,6 +198,7 @@ export function ProductFilters({
 					Limpiar
 				</Button>
 			)}
+			</div>
 		</div>
 	);
 }
