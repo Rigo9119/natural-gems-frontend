@@ -4,9 +4,10 @@ import type { Product } from "@/data/demo-products";
 
 interface ProductCardProps {
 	product: Product;
+	showCompare?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, showCompare = false }: ProductCardProps) {
 	const { isInCompare, addToCompare, removeFromCompare, canAddMore } =
 		useCompare();
 	const isSelected = isInCompare(product.id);
@@ -27,27 +28,25 @@ export default function ProductCard({ product }: ProductCardProps) {
 					alt={product.name}
 					className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 				/>
-				<div className="absolute right-2 top-2 z-10">
-					<label
-						className={`flex h-8 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${
-							isSelected
-								? "bg-brand-primary text-white"
-								: "bg-white/90 text-brand-primary-dark hover:bg-white"
-						}`}
-					>
-						<Checkbox
-							checked={isSelected}
-							onCheckedChange={handleCompareToggle}
-							disabled={!isSelected && !canAddMore}
-							className={
+				{showCompare && (
+					<div className="absolute right-2 top-2 z-10">
+						<label
+							className={`flex h-8 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${
 								isSelected
-									? "border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary"
-									: ""
-							}
-						/>
-						<span className="text-xs font-medium">Comparar</span>
-					</label>
-				</div>
+									? "bg-brand-primary text-white"
+									: "bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90"
+							}`}
+						>
+							<Checkbox
+								checked={isSelected}
+								onCheckedChange={handleCompareToggle}
+								disabled={!isSelected && !canAddMore}
+								className="border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary"
+							/>
+							<span className="text-xs font-medium">Comparar</span>
+						</label>
+					</div>
+				)}
 			</figure>
 			<dl className="mt-4 space-y-1">
 				<dt className="sr-only">Nombre</dt>

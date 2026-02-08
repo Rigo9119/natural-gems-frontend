@@ -118,7 +118,7 @@ function RouteComponent() {
           Nuestra Colección
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {demoProducts.map((product: Product) => (
+          {demoProducts.slice(0, 4).map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

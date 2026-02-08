@@ -12,25 +12,32 @@ export interface NavItem {
 
 export interface HeaderProps {
   navItems: NavItem[];
+  variant?: "transparent" | "solid";
 }
 
-export default function Header({ navItems }: HeaderProps) {
+export default function Header({ navItems, variant = "transparent" }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const isSolid = variant === "solid";
+
   useEffect(() => {
+    if (isSolid) return;
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isSolid]);
+
+  const showSolidBg = isSolid || isScrolled || isMobileMenuOpen;
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled || isMobileMenuOpen
+        showSolidBg
           ? "bg-brand-primary-dark/95 backdrop-blur-md shadow-lg"
           : "bg-transparent"
       }`}

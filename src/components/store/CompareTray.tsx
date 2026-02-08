@@ -50,7 +50,7 @@ export function CompareTray() {
 					>
 						Limpiar
 					</Button>
-					<Button asChild className="gap-2 bg-brand-primary hover:bg-brand-primary/90">
+					<Button asChild className="gap-2 bg-brand-primary-dark hover:bg-brand-primary-dark/90">
 						<Link to="/emeralds/tienda/compare">
 							<GitCompare className="h-4 w-4" />
 							Comparar ({compareItems.length})
