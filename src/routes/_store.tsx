@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { CompareProvider } from "@/context/CompareContext";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_store")({
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/_store")({
 
 function RouteComponent() {
   return (
-    <>
+    <CompareProvider>
       <Header
         navItems={[
           { label: "Tienda", href: "/emeralds/tienda" },
@@ -22,6 +23,6 @@ function RouteComponent() {
         <Outlet />
       </main>
       <Footer />
-    </>
+    </CompareProvider>
   );
 }

@@ -1,5 +1,5 @@
 import ProductCard from "@/components/ProductCard";
-import { demoProducts } from "@/data/demo-products";
+import { demoProducts, Product } from "@/data/demo-products";
 import { WHATSAPP_URL } from "@/lib/constants";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChevronDown } from "lucide-react";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_store/emeralds/")({
 
 function RouteComponent() {
   return (
-    <>
+    <div>
       <section
         id="hero"
         aria-label="Presentación"
@@ -73,16 +73,28 @@ function RouteComponent() {
           </p>
           <dl className="flex flex-wrap gap-6 sm:gap-8">
             <div>
-              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">3</dd>
-              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">Generaciones</dt>
+              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">
+                3
+              </dd>
+              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">
+                Generaciones
+              </dt>
             </div>
             <div>
-              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">100%</dd>
-              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">Colombianas</dt>
+              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">
+                100%
+              </dd>
+              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">
+                Colombianas
+              </dt>
             </div>
             <div>
-              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">Muzo</dd>
-              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">Origen</dt>
+              <dd className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">
+                Muzo
+              </dd>
+              <dt className="text-xs sm:text-sm text-brand-primary-dark/60">
+                Origen
+              </dt>
             </div>
           </dl>
         </div>
@@ -92,22 +104,22 @@ function RouteComponent() {
             src="https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&h=1000&fit=crop"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-brand-primary-dark/10" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-brand-primary-dark/10"
+            aria-hidden="true"
+          />
         </figure>
       </section>
-      <section id="collections" className="py-12 sm:py-16 px-6 sm:px-8 bg-white">
+      <section
+        id="collections"
+        className="py-12 sm:py-16 px-6 sm:px-8 bg-white"
+      >
         <h2 className="font-heading text-3xl sm:text-4xl text-brand-primary-dark text-center mb-8 sm:mb-12">
           Nuestra Colección
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {demoProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              image={product.image}
-              name={product.name}
-              price={product.price}
-              carat={product.carat}
-            />
+          {demoProducts.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
@@ -140,19 +152,31 @@ function RouteComponent() {
         </a>
         <dl className="mt-12 sm:mt-16 flex flex-col sm:flex-row gap-6 sm:gap-8 md:gap-16 text-brand-primary-lighter/70">
           <div className="flex flex-col items-center">
-            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">15+</dd>
-            <dt className="text-xs sm:text-sm tracking-wide">Años de experiencia</dt>
+            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">
+              15+
+            </dd>
+            <dt className="text-xs sm:text-sm tracking-wide">
+              Años de experiencia
+            </dt>
           </div>
           <div className="flex flex-col items-center">
-            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">500+</dd>
-            <dt className="text-xs sm:text-sm tracking-wide">Clientes satisfechos</dt>
+            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">
+              500+
+            </dd>
+            <dt className="text-xs sm:text-sm tracking-wide">
+              Clientes satisfechos
+            </dt>
           </div>
           <div className="flex flex-col items-center">
-            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">100+</dd>
-            <dt className="text-xs sm:text-sm tracking-wide">Gemas certificadas</dt>
+            <dd className="font-heading text-2xl sm:text-3xl text-brand-primary-dark">
+              100+
+            </dd>
+            <dt className="text-xs sm:text-sm tracking-wide">
+              Gemas certificadas
+            </dt>
           </div>
         </dl>
       </section>
-    </>
+    </div>
   );
 }
