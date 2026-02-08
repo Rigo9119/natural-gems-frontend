@@ -1,4 +1,4 @@
-import ProductCard from "@/components/product-card";
+import ProductCard from "@/components/ProductCard";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_store/emeralds/")({
