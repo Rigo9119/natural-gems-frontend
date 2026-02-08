@@ -12,6 +12,7 @@
     "check": "biome check"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.8.0",
     "@supabase/supabase-js": "^2.95.2",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
