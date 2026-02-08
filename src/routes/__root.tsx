@@ -2,12 +2,9 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-  redirect,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-
-import Header from "../components/header";
 
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 

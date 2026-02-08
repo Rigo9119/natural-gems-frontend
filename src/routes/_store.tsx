@@ -9,7 +9,15 @@ export const Route = createFileRoute("/_store")({
 function RouteComponent() {
   return (
     <>
-      <Header navItems={["index-1", "index-2", "index-3", "index-4"]} />
+      <Header
+        navItems={[
+          { label: "Tienda", href: "/emeralds/tienda" },
+          { label: "Mayoristas", href: "/emeralds/mayoristas" },
+          { label: "Colección", href: "#collections" },
+          { label: "Nosotros", href: "#who-we-are" },
+          { label: "Contacto", href: "#contact" },
+        ]}
+      />
       <main className="flex-1">
         <Outlet />
       </main>

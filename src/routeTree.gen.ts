@@ -13,6 +13,8 @@ import { Route as StoreRouteImport } from './routes/_store'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StoreJeweleryIndexRouteImport } from './routes/_store.jewelery/index'
 import { Route as StoreEmeraldsIndexRouteImport } from './routes/_store.emeralds/index'
+import { Route as StoreEmeraldsTiendaRouteImport } from './routes/_store.emeralds/tienda'
+import { Route as StoreEmeraldsMayoristasRouteImport } from './routes/_store.emeralds/mayoristas'
 
 const StoreRoute = StoreRouteImport.update({
   id: '/_store',
@@ -33,14 +35,28 @@ const StoreEmeraldsIndexRoute = StoreEmeraldsIndexRouteImport.update({
   path: '/emeralds/',
   getParentRoute: () => StoreRoute,
 } as any)
+const StoreEmeraldsTiendaRoute = StoreEmeraldsTiendaRouteImport.update({
+  id: '/emeralds/tienda',
+  path: '/emeralds/tienda',
+  getParentRoute: () => StoreRoute,
+} as any)
+const StoreEmeraldsMayoristasRoute = StoreEmeraldsMayoristasRouteImport.update({
+  id: '/emeralds/mayoristas',
+  path: '/emeralds/mayoristas',
+  getParentRoute: () => StoreRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
+  '/emeralds/tienda': typeof StoreEmeraldsTiendaRoute
   '/emeralds/': typeof StoreEmeraldsIndexRoute
   '/jewelery/': typeof StoreJeweleryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
+  '/emeralds/tienda': typeof StoreEmeraldsTiendaRoute
   '/emeralds': typeof StoreEmeraldsIndexRoute
   '/jewelery': typeof StoreJeweleryIndexRoute
 }
@@ -48,15 +64,34 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_store': typeof StoreRouteWithChildren
+  '/_store/emeralds/mayoristas': typeof StoreEmeraldsMayoristasRoute
+  '/_store/emeralds/tienda': typeof StoreEmeraldsTiendaRoute
   '/_store/emeralds/': typeof StoreEmeraldsIndexRoute
   '/_store/jewelery/': typeof StoreJeweleryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/emeralds/' | '/jewelery/'
+  fullPaths:
+    | '/'
+    | '/emeralds/mayoristas'
+    | '/emeralds/tienda'
+    | '/emeralds/'
+    | '/jewelery/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/emeralds' | '/jewelery'
-  id: '__root__' | '/' | '/_store' | '/_store/emeralds/' | '/_store/jewelery/'
+  to:
+    | '/'
+    | '/emeralds/mayoristas'
+    | '/emeralds/tienda'
+    | '/emeralds'
+    | '/jewelery'
+  id:
+    | '__root__'
+    | '/'
+    | '/_store'
+    | '/_store/emeralds/mayoristas'
+    | '/_store/emeralds/tienda'
+    | '/_store/emeralds/'
+    | '/_store/jewelery/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,15 +129,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StoreEmeraldsIndexRouteImport
       parentRoute: typeof StoreRoute
     }
+    '/_store/emeralds/tienda': {
+      id: '/_store/emeralds/tienda'
+      path: '/emeralds/tienda'
+      fullPath: '/emeralds/tienda'
+      preLoaderRoute: typeof StoreEmeraldsTiendaRouteImport
+      parentRoute: typeof StoreRoute
+    }
+    '/_store/emeralds/mayoristas': {
+      id: '/_store/emeralds/mayoristas'
+      path: '/emeralds/mayoristas'
+      fullPath: '/emeralds/mayoristas'
+      preLoaderRoute: typeof StoreEmeraldsMayoristasRouteImport
+      parentRoute: typeof StoreRoute
+    }
   }
 }
 
 interface StoreRouteChildren {
+  StoreEmeraldsMayoristasRoute: typeof StoreEmeraldsMayoristasRoute
+  StoreEmeraldsTiendaRoute: typeof StoreEmeraldsTiendaRoute
   StoreEmeraldsIndexRoute: typeof StoreEmeraldsIndexRoute
   StoreJeweleryIndexRoute: typeof StoreJeweleryIndexRoute
 }
 
 const StoreRouteChildren: StoreRouteChildren = {
+  StoreEmeraldsMayoristasRoute: StoreEmeraldsMayoristasRoute,
+  StoreEmeraldsTiendaRoute: StoreEmeraldsTiendaRoute,
   StoreEmeraldsIndexRoute: StoreEmeraldsIndexRoute,
   StoreJeweleryIndexRoute: StoreJeweleryIndexRoute,
 }
