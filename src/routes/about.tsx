@@ -9,7 +9,7 @@ import {
 	Truck,
 } from "lucide-react";
 
-export const Route = createFileRoute("/_store/emeralds/about")({
+export const Route = createFileRoute("/about")({
 	component: AboutPage,
 });
 
@@ -318,5 +318,5 @@ function AboutPage() {
 				</div>
 			</section>
 		</div>
-	);
+	)
 }

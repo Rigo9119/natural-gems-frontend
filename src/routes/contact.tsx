@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { COMPANY_LOCATION, INSTAGRAM_URL, WHATSAPP_URL } from "@/lib/constants";
 
-export const Route = createFileRoute("/_store/emeralds/contact")({
+export const Route = createFileRoute("/contact")({
 	component: ContactPage,
 });
 
@@ -315,7 +315,7 @@ function ContactPage() {
 						{faqs.map((faq, index) => (
 							<AccordionItem
 								key={faq.question}
-								value={`faq-${index}`}
+								value={"faq-${index}"}
 								className="border-brand-primary-dark/10"
 							>
 								<AccordionTrigger className="text-left font-heading text-brand-primary-dark hover:no-underline">
@@ -330,5 +330,5 @@ function ContactPage() {
 				</div>
 			</section>
 		</div>
-	);
+	)
 }

@@ -25,7 +25,7 @@ const searchSchema = z.object({
 	cut: z.string().optional(),
 });
 
-export const Route = createFileRoute("/_store/emeralds/mayoristas")({
+export const Route = createFileRoute("/emeralds/mayoristas")({
 	validateSearch: searchSchema,
 	component: MayoristasPage,
 });
@@ -44,7 +44,7 @@ function MayoristasPage() {
 		return {
 			min: Math.floor(Math.min(...carats) * 10) / 10,
 			max: Math.ceil(Math.max(...carats) * 10) / 10,
-		};
+		}
 	}, []);
 
 	const stoneCountRange = useMemo(() => {
@@ -65,7 +65,7 @@ function MayoristasPage() {
 			cuts: search.cut ? (search.cut.split(",") as Cut[]) : [],
 		}),
 		[search, priceRange, caratRange, stoneCountRange],
-	);
+	)
 
 	const handleFiltersChange = (newFilters: WholesaleFilterState) => {
 		navigate({
@@ -105,8 +105,8 @@ function MayoristasPage() {
 				cut: newFilters.cuts.length > 0 ? newFilters.cuts.join(",") : undefined,
 			},
 			replace: true,
-		});
-	};
+		})
+	}
 
 	const filteredLots = useMemo(() => {
 		return demoWholesaleLots.filter((lot) => {
@@ -135,7 +135,7 @@ function MayoristasPage() {
 			if (filters.cuts.length > 0 && !filters.cuts.includes(lot.cut))
 				return false;
 			return true;
-		});
+		})
 	}, [filters]);
 
 	return (
@@ -168,5 +168,5 @@ function MayoristasPage() {
 				<WholesaleLotGrid lots={filteredLots} />
 			</div>
 		</div>
-	);
+	)
 }

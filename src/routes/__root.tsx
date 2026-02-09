@@ -1,18 +1,19 @@
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { CompareProvider } from "@/context/CompareContext";
+import { getLocale } from "@/paraglide/runtime";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import type { QueryClient } from "@tanstack/react-query";
 import {
-  HeadContent,
-  Scripts,
   createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
-
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-
-import { getLocale } from "@/paraglide/runtime";
-
 import appCss from "../styles.css?url";
-
-import type { QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -29,16 +30,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   head: () => ({
     meta: [
-      {
-        charSet: "utf-8",
-      },
+      { charSet: "utf-8" },
       {
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
-      {
-        title: "TanStack Start Starter",
-      },
+      { title: "TanStack Start Starter" },
     ],
     links: [
       {
@@ -48,8 +45,35 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
+  component: RootComponent,
   shellComponent: RootDocument,
 });
+
+const appNavItems = [
+  { label: "Inicio", href: "/" },
+  { label: "Esmeraldas", href: "/emeralds" },
+  { label: "Joyería", href: "/jewelry" },
+  { label: "Nosotros", href: "/about" },
+  { label: "Contacto", href: "/contact" },
+];
+
+function RootComponent() {
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
+
+  const isHomePage = pathname === "/" || pathname === "";
+  const headerVariant = isHomePage ? "transparent" : "solid";
+
+  return (
+    <CompareProvider>
+      <Header variant={headerVariant} navItems={appNavItems} />
+      <main id="main-content" className={isHomePage ? "" : "pt-20"}>
+        <Outlet />
+      </main>
+      <Footer />
+    </CompareProvider>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

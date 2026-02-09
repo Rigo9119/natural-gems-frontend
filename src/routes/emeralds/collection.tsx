@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { type Clarity, demoProducts } from "@/data/demo-products";
 
-export const Route = createFileRoute("/_store/emeralds/collection")({
+export const Route = createFileRoute("/emeralds/collection")({
 	component: CollectionPage,
 });
 
@@ -51,7 +51,7 @@ function CollectionPage() {
 		const map = new Map<
 			Clarity,
 			{ count: number; minPrice: number; maxPrice: number }
-		>();
+		>()
 		for (const product of demoProducts) {
 			const entry = map.get(product.clarity);
 			if (entry) {
@@ -63,7 +63,7 @@ function CollectionPage() {
 					count: 1,
 					minPrice: product.price,
 					maxPrice: product.price,
-				});
+				})
 			}
 		}
 		return map;
@@ -118,10 +118,10 @@ function CollectionPage() {
 									)}
 								</div>
 							</Link>
-						);
+						)
 					})}
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

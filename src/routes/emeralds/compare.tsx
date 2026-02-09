@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CompareTable } from "@/components/store/CompareTable";
 import { useCompare } from "@/context/CompareContext";
 
-export const Route = createFileRoute("/_store/emeralds/tienda/compare")({
+export const Route = createFileRoute("/emeralds/compare")({
 	component: ComparePage,
 });
 
@@ -53,5 +53,5 @@ function ComparePage() {
 				)}
 			</div>
 		</div>
-	);
+	)
 }
