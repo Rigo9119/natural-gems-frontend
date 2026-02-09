@@ -315,7 +315,7 @@ function ContactPage() {
 						{faqs.map((faq, index) => (
 							<AccordionItem
 								key={faq.question}
-								value={"faq-${index}"}
+								value={`faq-${index}`}
 								className="border-brand-primary-dark/10"
 							>
 								<AccordionTrigger className="text-left font-heading text-brand-primary-dark hover:no-underline">
