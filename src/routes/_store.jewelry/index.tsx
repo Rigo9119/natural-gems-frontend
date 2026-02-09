@@ -61,7 +61,7 @@ function JewelryIndexPage() {
               size="lg"
               className="bg-brand-secondary-golden text-brand-secondary-terra hover:bg-brand-secondary-golden/90 rounded-full px-8"
             >
-              <Link to="/jewelry/tienda">
+              <Link to="/jewelry">
                 Explorar Colección
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -96,7 +96,7 @@ function JewelryIndexPage() {
             {jewelryCategories.map((category) => (
               <Link
                 key={category}
-                to="/jewelry/tienda"
+                to="/jewelry"
                 search={{ category }}
                 className="group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-shadow"
               >
@@ -134,7 +134,7 @@ function JewelryIndexPage() {
               variant="outline"
               className="hidden sm:flex border-brand-secondary-terra text-brand-secondary-terra hover:bg-brand-secondary-terra hover:text-white rounded-full"
             >
-              <Link to="/jewelry/tienda">
+              <Link to="/jewelry">
                 Ver Todos
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -175,7 +175,7 @@ function JewelryIndexPage() {
               variant="outline"
               className="border-brand-secondary-terra text-brand-secondary-terra hover:bg-brand-secondary-terra hover:text-white rounded-full"
             >
-              <Link to="/jewelry/tienda">
+              <Link to="/jewelry">
                 Ver Todos
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -203,7 +203,7 @@ function JewelryIndexPage() {
                 size="lg"
                 className="bg-brand-secondary-golden text-brand-secondary-terra hover:bg-brand-secondary-golden/90 rounded-full px-8"
               >
-                <Link to="/jewelry/tienda">
+                <Link to="/jewelry">
                   Descubrir Ahora
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -242,7 +242,7 @@ function JewelryIndexPage() {
               variant="outline"
               className="hidden sm:flex border-brand-secondary-terra text-brand-secondary-terra hover:bg-brand-secondary-terra hover:text-white rounded-full"
             >
-              <Link to="/jewelry/tienda">
+              <Link to="/jewelry">
                 Ver Todos
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -283,7 +283,7 @@ function JewelryIndexPage() {
               variant="outline"
               className="border-brand-secondary-terra text-brand-secondary-terra hover:bg-brand-secondary-terra hover:text-white rounded-full"
             >
-              <Link to="/jewelry/tienda">
+              <Link to="/jewelry">
                 Ver Todos
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -333,7 +333,7 @@ function JewelryIndexPage() {
             ].map((collection) => (
               <Link
                 key={collection.name}
-                to="/jewelry/tienda"
+                to="/jewelry"
                 search={{ collection: collection.name }}
                 className="group relative aspect-[3/4] overflow-hidden rounded-2xl"
               >
