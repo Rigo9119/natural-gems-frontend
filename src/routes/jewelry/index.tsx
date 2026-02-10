@@ -165,7 +165,7 @@ function JewelryIndexPage() {
 						</p>
 					</div>
 
-					<div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-3 sm:gap-4 h-[500px] sm:h-[600px] lg:h-[520px]">
+					<div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-3 sm:gap-4 h-[380px] sm:h-[600px] lg:h-[520px]">
 						{/* Clásica — tall left */}
 						<Link
 							to="/jewelry"
@@ -295,12 +295,12 @@ function JewelryIndexPage() {
 					</div>
 
 					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-						{jewelryCategories.map((category) => (
+						{jewelryCategories.map((category, index) => (
 							<Link
 								key={category}
 								to="/jewelry"
 								search={{ category }}
-								className="group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-shadow"
+								className={`group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-shadow ${index === jewelryCategories.length - 1 && jewelryCategories.length % 2 !== 0 ? "col-span-2 md:col-span-1" : ""}`}
 							>
 								<img
 									src={categoryImages[category]}

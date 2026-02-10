@@ -287,7 +287,7 @@ function ContactPage() {
 								</div>
 							</div>
 
-							<div className="rounded-xl overflow-hidden bg-brand-primary-dark/5 aspect-[4/3] flex items-center justify-center">
+							<div className="rounded-xl overflow-hidden bg-brand-primary-dark/5 aspect-video lg:aspect-[4/3] flex items-center justify-center">
 								<div className="text-center px-6">
 									<MapPin className="w-10 h-10 text-brand-primary-dark/30 mx-auto mb-3" />
 									<p className="text-sm text-brand-primary-dark/50">
@@ -330,5 +330,5 @@ function ContactPage() {
 				</div>
 			</section>
 		</div>
-	)
+	);
 }

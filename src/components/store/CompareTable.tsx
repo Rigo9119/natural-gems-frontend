@@ -1,14 +1,13 @@
-import { useMemo } from "react";
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	getSortedRowModel,
-	useReactTable,
 	type SortingState,
+	useReactTable,
 } from "@tanstack/react-table";
-import { useState } from "react";
 import { ArrowUpDown, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { useCompare } from "@/context/CompareContext";
 import type { Product } from "@/data/demo-products";
@@ -91,7 +90,7 @@ export function CompareTable() {
 							{info.getValue() as string}
 						</span>
 					),
-				})
+				}),
 			);
 		});
 
@@ -111,7 +110,7 @@ export function CompareTable() {
 							—
 						</span>
 					),
-				})
+				}),
 			);
 		}
 
@@ -151,50 +150,107 @@ export function CompareTable() {
 	});
 
 	return (
-		<div className="overflow-x-auto">
-			<table className="w-full min-w-[600px]">
-				<thead>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<tr key={headerGroup.id}>
-							{headerGroup.headers.map((header) => (
-								<th
-									key={header.id}
-									className="pb-4 text-left first:w-28 first:text-left"
+		<>
+			{/* Mobile: card-based layout */}
+			<div className="md:hidden space-y-6">
+				{compareItems.map((product) => (
+					<div
+						key={product.id}
+						className="rounded-lg border border-brand-primary-dark/10 p-4"
+					>
+						<div className="flex items-center gap-3 mb-4">
+							<img
+								src={product.image}
+								alt={product.name}
+								className="h-16 w-16 rounded-lg object-cover"
+							/>
+							<div className="flex-1 min-w-0">
+								<h3 className="font-heading text-sm font-medium text-brand-primary-dark truncate">
+									{product.name}
+								</h3>
+								<button
+									type="button"
+									onClick={() => removeFromCompare(product.id)}
+									className="mt-1 flex items-center gap-1 text-xs text-brand-primary-dark/50 hover:text-brand-primary-dark"
 								>
-									{header.isPlaceholder
-										? null
-										: flexRender(
-												header.column.columnDef.header,
-												header.getContext()
-											)}
-								</th>
-							))}
-						</tr>
-					))}
-				</thead>
-				<tbody>
-					<tr>
-						<td colSpan={columns.length} className="py-2">
-							<Separator />
-						</td>
-					</tr>
-					{table.getRowModel().rows.map((row) => (
-						<tr
-							key={row.id}
-							className="border-b border-brand-primary-dark/10 last:border-0"
-						>
-							{row.getVisibleCells().map((cell) => (
-								<td
-									key={cell.id}
-									className="py-3 text-center first:text-left"
+									<X className="h-3 w-3" />
+									Eliminar
+								</button>
+							</div>
+						</div>
+						<dl className="space-y-2">
+							{(
+								[
+									"price",
+									"carat",
+									"origin",
+									"clarity",
+									"cut",
+								] as (keyof Product)[]
+							).map((attr) => (
+								<div
+									key={attr}
+									className="flex justify-between items-center py-1.5 border-b border-brand-primary-dark/5 last:border-0"
 								>
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</td>
+									<dt className="text-xs text-brand-primary-dark/50">
+										{attributeLabels[attr]}
+									</dt>
+									<dd className="text-sm font-medium text-brand-primary-dark">
+										{formatValue(attr, product[attr])}
+									</dd>
+								</div>
 							))}
+						</dl>
+					</div>
+				))}
+			</div>
+
+			{/* Desktop: table layout */}
+			<div className="hidden md:block overflow-x-auto">
+				<table className="w-full">
+					<thead>
+						{table.getHeaderGroups().map((headerGroup) => (
+							<tr key={headerGroup.id}>
+								{headerGroup.headers.map((header) => (
+									<th
+										key={header.id}
+										className="pb-4 text-left first:w-28 first:text-left"
+									>
+										{header.isPlaceholder
+											? null
+											: flexRender(
+													header.column.columnDef.header,
+													header.getContext(),
+												)}
+									</th>
+								))}
+							</tr>
+						))}
+					</thead>
+					<tbody>
+						<tr>
+							<td colSpan={columns.length} className="py-2">
+								<Separator />
+							</td>
 						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+						{table.getRowModel().rows.map((row) => (
+							<tr
+								key={row.id}
+								className="border-b border-brand-primary-dark/10 last:border-0"
+							>
+								{row.getVisibleCells().map((cell) => (
+									<td
+										key={cell.id}
+										className="py-3 text-center first:text-left"
+									>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</>
 	);
 }

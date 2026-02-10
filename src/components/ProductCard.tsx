@@ -7,7 +7,10 @@ interface ProductCardProps {
 	showCompare?: boolean;
 }
 
-export default function ProductCard({ product, showCompare = false }: ProductCardProps) {
+export default function ProductCard({
+	product,
+	showCompare = false,
+}: ProductCardProps) {
 	const { isInCompare, addToCompare, removeFromCompare, canAddMore } =
 		useCompare();
 	const isSelected = isInCompare(product.id);
@@ -31,7 +34,7 @@ export default function ProductCard({ product, showCompare = false }: ProductCar
 				{showCompare && (
 					<div className="absolute right-2 top-2 z-10">
 						<label
-							className={`flex h-8 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${
+							className={`flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${
 								isSelected
 									? "bg-brand-primary text-white"
 									: "bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90"

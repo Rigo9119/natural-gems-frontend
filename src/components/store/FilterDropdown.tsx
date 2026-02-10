@@ -1,12 +1,12 @@
 import { ChevronDown } from "lucide-react";
+import type { ReactNode } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
-import type { ReactNode } from "react";
 
 interface FilterDropdownProps {
 	label: string;
@@ -24,7 +24,7 @@ export function FilterDropdown({
 			<PopoverTrigger asChild>
 				<Button
 					variant="outline"
-					className="h-9 gap-1.5 rounded-full border-brand-primary-dark/20 bg-white px-4 hover:bg-brand-primary-lighter"
+					className="h-10 gap-1.5 rounded-full border-brand-primary-dark/20 bg-white px-4 hover:bg-brand-primary-lighter"
 				>
 					<span className="text-sm font-medium text-brand-primary-dark">
 						{label}

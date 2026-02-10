@@ -141,7 +141,7 @@ export default function Header({
 			{subNavItems && subNavItems.length > 0 && (
 				<div className="border-t border-brand-primary-lighter/10">
 					<div className="max-w-7xl mx-auto px-6 md:px-8">
-						<ul className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-2">
+						<ul className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
 							{subNavItems.map((item) => {
 								const isActive =
 									currentPath === item.href ||
@@ -152,10 +152,10 @@ export default function Header({
 									<li key={item.href}>
 										<Link
 											to={item.href}
-											className={`inline-block px-4 py-1.5 rounded-full text-sm font-body whitespace-nowrap transition-colors ${
+											className={`inline-flex items-center min-h-[44px] px-4 rounded-full text-sm font-body whitespace-nowrap transition-colors ${
 												isActive
-													? "bg-brand-secondary-golden text-brand-primary-dark font-medium"
-													: "text-brand-primary-lighter/70 hover:text-brand-primary-lighter hover:bg-brand-primary-lighter/10"
+													? "text-brand-secondary-golden font-medium"
+													: "text-brand-secondary-golden/50 hover:text-brand-secondary-golden hover:bg-brand-secondary-golden/10"
 											}`}
 										>
 											{item.label}

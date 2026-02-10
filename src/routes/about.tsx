@@ -202,7 +202,7 @@ function AboutPage() {
 					</div>
 					<div className="relative">
 						<div
-							className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-px bg-brand-secondary-terra/30 sm:-translate-x-px"
+							className="absolute left-6 sm:left-1/2 top-0 bottom-0 w-px bg-brand-secondary-terra/30 sm:-translate-x-px"
 							aria-hidden="true"
 						/>
 						<div className="space-y-12">
@@ -214,7 +214,7 @@ function AboutPage() {
 									}`}
 								>
 									<div
-										className={`w-full sm:w-1/2 pl-12 sm:pl-0 ${index % 2 === 0 ? "sm:text-right sm:pr-8" : "sm:text-left sm:pl-8"}`}
+										className={`w-full sm:w-1/2 pl-14 sm:pl-0 ${index % 2 === 0 ? "sm:text-right sm:pr-8" : "sm:text-left sm:pl-8"}`}
 									>
 										<span className="font-heading text-2xl sm:text-3xl text-brand-secondary-terra">
 											{milestone.year}
@@ -227,7 +227,7 @@ function AboutPage() {
 										</p>
 									</div>
 									<div
-										className="absolute left-2 sm:relative sm:left-auto flex-shrink-0 w-5 h-5 rounded-full bg-brand-secondary-terra border-4 border-brand-surface"
+										className="absolute left-4 sm:relative sm:left-auto flex-shrink-0 w-5 h-5 rounded-full bg-brand-secondary-terra border-4 border-brand-surface"
 										aria-hidden="true"
 									/>
 									<div className="hidden sm:block w-1/2" />
@@ -318,5 +318,5 @@ function AboutPage() {
 				</div>
 			</section>
 		</div>
-	)
+	);
 }
