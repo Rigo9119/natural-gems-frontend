@@ -15,9 +15,9 @@ export default function SubNav({ items }: SubNavProps) {
 		routerState.location.pathname + routerState.location.searchStr;
 
 	return (
-		<nav className="bg-brand-primary-dark/80 backdrop-blur-sm border-t border-brand-primary-lighter/10">
+		<nav className="relative bg-brand-primary-light border-b border-brand-primary-dark/5">
 			<div className="max-w-7xl mx-auto px-6 md:px-8">
-				<ul className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-2">
+				<ul className="flex items-center gap-0.5 overflow-x-auto scrollbar-hide -mb-px">
 					{items.map((item) => {
 						const isActive =
 							currentPath === item.href ||
@@ -28,13 +28,16 @@ export default function SubNav({ items }: SubNavProps) {
 							<li key={item.href}>
 								<Link
 									to={item.href}
-									className={`inline-block px-4 py-1.5 rounded-full text-sm font-body whitespace-nowrap transition-colors ${
+									className={`relative inline-flex items-center px-5 py-3 text-sm tracking-wide whitespace-nowrap transition-all duration-200 ${
 										isActive
-											? "bg-brand-secondary-golden text-brand-primary-dark font-medium"
-											: "text-brand-primary-lighter/70 hover:text-brand-primary-lighter hover:bg-brand-primary-lighter/10"
+											? "text-brand-primary-lighter font-medium"
+											: "text-brand-primary-lighter/50 hover:text-brand-primary-lighter/80"
 									}`}
 								>
 									{item.label}
+									{isActive && (
+										<span className="absolute bottom-0 left-2 right-2 h-0.5 bg-brand-secondary-terra rounded-full" />
+									)}
 								</Link>
 							</li>
 						);

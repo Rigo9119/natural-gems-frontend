@@ -89,7 +89,7 @@ function CollectionPage() {
 						return (
 							<Link
 								key={collection.grade}
-								to="/emeralds/tienda"
+								to="/emeralds"
 								search={{ clarity: collection.grade }}
 								className="group relative aspect-[3/4] overflow-hidden rounded-2xl"
 							>

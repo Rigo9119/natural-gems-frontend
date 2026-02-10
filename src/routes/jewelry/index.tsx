@@ -1,14 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, X } from "lucide-react";
+import { useMemo } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
+	demoJewelryProducts,
 	getBestSellers,
 	getNewArrivals,
 	type JewelryCategory,
 	jewelryCategories,
 } from "@/data/demo-jewelry-products";
 
+const searchSchema = z.object({
+	category: z.string().optional(),
+	collection: z.string().optional(),
+});
+
 export const Route = createFileRoute("/jewelry/")({
+	validateSearch: searchSchema,
 	component: JewelryIndexPage,
 });
 
@@ -54,8 +63,90 @@ const collectionsMosaic = [
 ];
 
 function JewelryIndexPage() {
+	const { category, collection } = Route.useSearch();
 	const newArrivals = getNewArrivals().slice(0, 4);
 	const bestSellers = getBestSellers().slice(0, 4);
+
+	const isFiltered = !!category || !!collection;
+
+	const filteredProducts = useMemo(() => {
+		return demoJewelryProducts.filter((product) => {
+			if (category && product.category !== category) return false;
+			if (collection && product.collection !== collection) return false;
+			return true;
+		});
+	}, [category, collection]);
+
+	if (isFiltered) {
+		const title = category || collection;
+		return (
+			<div className="min-h-screen bg-brand-surface">
+				<div className="border-b border-brand-primary-dark/10 bg-white py-8">
+					<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
+						<div className="flex items-center gap-3">
+							<h1 className="font-heading text-3xl text-brand-secondary-terra md:text-4xl">
+								{title}
+							</h1>
+							<Link
+								to="/jewelry"
+								className="inline-flex items-center gap-1 rounded-full border border-brand-secondary-terra/20 px-3 py-1 text-xs text-brand-secondary-terra/70 hover:bg-brand-secondary-terra/5 transition-colors"
+							>
+								<X className="h-3 w-3" />
+								Limpiar filtro
+							</Link>
+						</div>
+						<p className="mt-2 text-brand-secondary-terra/70">
+							{filteredProducts.length} producto
+							{filteredProducts.length !== 1 ? "s" : ""} encontrado
+							{filteredProducts.length !== 1 ? "s" : ""}
+						</p>
+					</div>
+				</div>
+				<div className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+					{filteredProducts.length === 0 ? (
+						<div className="text-center py-16">
+							<p className="text-brand-secondary-terra/50 text-lg">
+								No se encontraron productos
+							</p>
+						</div>
+					) : (
+						<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+							{filteredProducts.map((product) => (
+								<article key={product.id} className="group cursor-pointer">
+									<div className="relative aspect-square overflow-hidden rounded-xl bg-white mb-4">
+										<img
+											src={product.image}
+											alt={product.name}
+											className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+										/>
+										{product.isNew && (
+											<span className="absolute top-3 left-3 bg-brand-secondary-golden text-brand-secondary-terra text-xs font-medium px-3 py-1 rounded-full">
+												Nuevo
+											</span>
+										)}
+										{product.isBestSeller && (
+											<span className="absolute top-3 left-3 bg-brand-secondary-terra text-white text-xs font-medium px-3 py-1 rounded-full">
+												Más Vendido
+											</span>
+										)}
+									</div>
+									<h3 className="font-heading text-lg text-brand-secondary-terra group-hover:text-brand-secondary-golden transition-colors">
+										{product.name}
+									</h3>
+									<p className="text-sm text-brand-secondary-terra/60 mb-1">
+										{product.material}
+									</p>
+									<p className="font-body font-semibold text-brand-secondary-terra">
+										${product.price.toLocaleString()}
+									</p>
+								</article>
+							))}
+						</div>
+					)}
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen">
@@ -494,5 +585,5 @@ function JewelryIndexPage() {
 				</div>
 			</section>
 		</div>
-	)
+	);
 }

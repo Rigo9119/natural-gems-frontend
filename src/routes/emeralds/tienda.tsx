@@ -21,7 +21,7 @@ const searchSchema = z.object({
   cut: z.string().optional(),
 });
 
-export const Route = createFileRoute("/emeralds/")({
+export const Route = createFileRoute("/emeralds/tienda")({
   validateSearch: searchSchema,
   component: TiendaPage,
 });

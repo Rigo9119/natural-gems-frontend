@@ -17,7 +17,7 @@ function ComparePage() {
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<Link
-						to="/emeralds/tienda"
+						to="/emeralds"
 						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark"
 					>
 						<ArrowLeft className="h-4 w-4" />
@@ -43,7 +43,7 @@ function ComparePage() {
 							Selecciona productos desde la tienda para compararlos
 						</p>
 						<Button asChild className="mt-6 bg-brand-primary hover:bg-brand-primary/90">
-							<Link to="/emeralds/tienda">Ir a la tienda</Link>
+							<Link to="/emeralds">Ir a la tienda</Link>
 						</Button>
 					</div>
 				) : (
