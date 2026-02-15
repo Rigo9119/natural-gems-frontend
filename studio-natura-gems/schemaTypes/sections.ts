@@ -7,18 +7,30 @@ export const heroSection = defineType({
   fields: [
     defineField({
       name: 'subTitle',
-      title: 'Subtitle',
-      type: 'string',
+      title: 'Hero Subtitle',
+      type: 'localizedString',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'title',
-      title: 'Title',
-      type: 'string',
+      title: 'Hero Title',
+      type: 'localizedString',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
-      title: 'Description',
-      type: 'string',
+      title: 'Hero description',
+      type: 'localizedBlock',
+    }),
+    defineField({
+      name: 'ctaTextLeft',
+      title: 'CTA text left',
+      type: 'localizedString',
+    }),
+    defineField({
+      name: 'ctaTextRight',
+      title: 'CTA text right',
+      type: 'localizedString',
     }),
   ],
 })

@@ -1,11 +1,18 @@
 import { queryOptions } from "@tanstack/react-query";
 import { sanityClient } from "./sanity";
 
+interface LocalizedString {
+	es?: string;
+	en?: string;
+}
+
 export interface HeroSection {
 	_id: string;
-	subTitle?: string;
-	title?: string;
-	description?: string;
+	subTitle?: LocalizedString;
+	title?: LocalizedString;
+	description?: LocalizedString;
+	ctaTextLeft?: LocalizedString;
+	ctaTextRight?: LocalizedString;
 }
 
 const heroSectionQuery = `*[_type == "heroSection"][0]`;

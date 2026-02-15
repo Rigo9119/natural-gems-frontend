@@ -14,6 +14,7 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
+import { useLocalizedContent } from "@/hooks/sanity-helper";
 import { COMPANY_LOCATION, COMPANY_NAME, WHATSAPP_URL } from "@/lib/constants";
 import { heroSectionQueryOptions } from "@/lib/sanity-queries";
 
@@ -53,6 +54,11 @@ const guarantees = [
 
 function HomePage() {
 	const { data: hero } = useSuspenseQuery(heroSectionQueryOptions);
+	const heroSubTitle = useLocalizedContent(hero?.subTitle ?? {});
+	const heroTitle = useLocalizedContent(hero?.title ?? {});
+	const heroDescription = useLocalizedContent(hero?.description ?? {});
+	const heroCtaLeft = useLocalizedContent(hero?.ctaTextLeft ?? {});
+	const heroCtaRight = useLocalizedContent(hero?.ctaTextRight ?? {});
 	const bestSellers = getBestSellers().slice(0, 4);
 	const featuredEmeralds = demoProducts.slice(0, 4);
 
@@ -64,13 +70,13 @@ function HomePage() {
 				className="relative flex min-h-screen flex-col items-center justify-center bg-brand-primary-dark px-6 text-center sm:px-8"
 			>
 				<p className="mb-4 font-body text-xs tracking-[0.3em] uppercase text-brand-secondary-golden sm:mb-6 sm:text-sm">
-					{hero?.subTitle ?? "Esmeraldas Colombianas \u00B7 Joyería Artesanal"}
+					{heroSubTitle || "Esmeraldas Colombianas \u00B7 Joyería Artesanal"}
 				</p>
 				<h1 className="mb-4 font-heading text-5xl text-brand-primary-lighter sm:mb-6 sm:text-6xl md:text-8xl">
-					{hero?.title ?? COMPANY_NAME}
+					{heroTitle || COMPANY_NAME}
 				</h1>
 				<p className="mb-8 max-w-xl font-body text-base leading-relaxed text-brand-primary-lighter/80 sm:mb-12 sm:text-lg">
-					{hero?.description ??
+					{heroDescription ||
 						"Desde las minas de Muzo hasta las creaciones más exquisitas. Descubre la belleza única de las esmeraldas colombianas."}
 				</p>
 				<div className="flex flex-col items-center gap-4 sm:flex-row">
@@ -78,13 +84,13 @@ function HomePage() {
 						to="/emeralds"
 						className="inline-flex items-center gap-2 rounded-full border border-brand-primary-lighter px-6 py-3 font-body font-medium text-brand-primary-lighter transition-all duration-300 hover:bg-brand-primary-lighter hover:text-brand-primary-dark sm:px-8 sm:py-4 sm:text-lg"
 					>
-						Explorar Esmeraldas
+						{heroCtaLeft || "Explorar Esmeraldas"}
 					</Link>
 					<Link
 						to="/jewelry"
 						className="inline-flex items-center gap-2 rounded-full bg-brand-secondary-golden px-6 py-3 font-body font-medium text-brand-primary-dark transition-all duration-300 hover:bg-brand-secondary-golden/90 hover:scale-105 sm:px-8 sm:py-4 sm:text-lg"
 					>
-						Ver Joyería
+						{heroCtaRight || "Ver Joyería"}
 					</Link>
 				</div>
 				<a
