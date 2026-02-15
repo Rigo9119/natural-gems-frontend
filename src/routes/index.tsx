@@ -12,13 +12,19 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
 import { useLocalizedContent } from "@/hooks/sanity-helper";
 import { COMPANY_LOCATION, COMPANY_NAME, WHATSAPP_URL } from "@/lib/constants";
 import { heroSectionQueryOptions } from "@/lib/sanity-queries";
+import { buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
+	head: () => buildMeta({
+		path: "/",
+		description: "Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
+	}),
 	loader: ({ context }) => {
 		context.queryClient.ensureQueryData(heroSectionQueryOptions("home"));
 	},
@@ -124,9 +130,11 @@ function HomePage() {
 							to="/emeralds"
 							className="group relative aspect-[3/4] overflow-hidden rounded-2xl md:aspect-[4/3]"
 						>
-							<img
+							<OptimizedImage
 								src="https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&h=1000&fit=crop"
 								alt="Esmeraldas colombianas"
+								width={800}
+								height={1000}
 								className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -150,9 +158,11 @@ function HomePage() {
 							to="/jewelry"
 							className="group relative aspect-[3/4] overflow-hidden rounded-2xl md:aspect-[4/3]"
 						>
-							<img
+							<OptimizedImage
 								src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=1000&fit=crop"
 								alt="Joyería artesanal"
+								width={800}
+								height={1000}
 								className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -271,9 +281,11 @@ function HomePage() {
 							</Button>
 						</div>
 						<div className="hidden flex-1 md:block">
-							<img
+							<OptimizedImage
 								src="https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=600&h=800&fit=crop"
 								alt="Esmeraldas colombianas de Muzo"
+								width={600}
+								height={800}
 								className="h-[500px] w-full rounded-2xl object-cover"
 							/>
 						</div>
@@ -308,9 +320,11 @@ function HomePage() {
 						{bestSellers.map((product) => (
 							<article key={product.id} className="group cursor-pointer">
 								<div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-white">
-									<img
+									<OptimizedImage
 										src={product.image}
 										alt={product.name}
+										width={400}
+										height={400}
 										className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 									/>
 									{product.isBestSeller && (

@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles, X } from "lucide-react";
 import { useMemo } from "react";
 import { z } from "zod";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
 	demoJewelryProducts,
 	getBestSellers,
@@ -17,6 +19,15 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/jewelry/")({
+	head: () => buildMeta({
+		title: "Joyería con Esmeraldas",
+		description: "Piezas únicas de joyería artesanal con esmeraldas colombianas. Anillos, collares, aretes y pulseras elaborados a mano. Envío asegurado a todo el mundo.",
+		path: "/jewelry",
+		jsonLd: [breadcrumbJsonLd([
+			{ name: "Inicio", path: "/" },
+			{ name: "Joyería", path: "/jewelry" },
+		])],
+	}),
 	validateSearch: searchSchema,
 	component: JewelryIndexPage,
 });
@@ -114,9 +125,11 @@ function JewelryIndexPage() {
 							{filteredProducts.map((product) => (
 								<article key={product.id} className="group cursor-pointer">
 									<div className="relative aspect-square overflow-hidden rounded-xl bg-white mb-4">
-										<img
+										<OptimizedImage
 											src={product.image}
 											alt={product.name}
+											width={400}
+											height={400}
 											className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 										/>
 										{product.isNew && (
@@ -172,9 +185,12 @@ function JewelryIndexPage() {
 							search={{ collection: collectionsMosaic[0].name }}
 							className="group relative overflow-hidden rounded-2xl col-span-1 row-span-2"
 						>
-							<img
+							<OptimizedImage
 								src={collectionsMosaic[0].image}
 								alt={collectionsMosaic[0].name}
+								width={800}
+								height={1000}
+								priority
 								className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -194,9 +210,11 @@ function JewelryIndexPage() {
 							search={{ collection: collectionsMosaic[1].name }}
 							className="group relative overflow-hidden rounded-2xl col-span-1 lg:col-span-2 row-span-1"
 						>
-							<img
+							<OptimizedImage
 								src={collectionsMosaic[1].image}
 								alt={collectionsMosaic[1].name}
+								width={800}
+								height={600}
 								className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -216,9 +234,11 @@ function JewelryIndexPage() {
 							search={{ collection: collectionsMosaic[3].name }}
 							className="group relative overflow-hidden rounded-2xl col-span-1 row-span-2 hidden lg:block"
 						>
-							<img
+							<OptimizedImage
 								src={collectionsMosaic[3].image}
 								alt={collectionsMosaic[3].name}
+								width={800}
+								height={1000}
 								className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -238,9 +258,11 @@ function JewelryIndexPage() {
 							search={{ collection: collectionsMosaic[2].name }}
 							className="group relative overflow-hidden rounded-2xl col-span-1 lg:col-span-2 row-span-1"
 						>
-							<img
+							<OptimizedImage
 								src={collectionsMosaic[2].image}
 								alt={collectionsMosaic[2].name}
+								width={800}
+								height={600}
 								className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -260,9 +282,11 @@ function JewelryIndexPage() {
 							search={{ collection: collectionsMosaic[3].name }}
 							className="group relative overflow-hidden rounded-2xl col-span-2 row-span-1 lg:hidden"
 						>
-							<img
+							<OptimizedImage
 								src={collectionsMosaic[3].image}
 								alt={collectionsMosaic[3].name}
+								width={800}
+								height={1000}
 								className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 							/>
 							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -302,9 +326,11 @@ function JewelryIndexPage() {
 								search={{ category }}
 								className={`group relative aspect-square overflow-hidden rounded-2xl bg-white shadow-md hover:shadow-xl transition-shadow ${index === jewelryCategories.length - 1 && jewelryCategories.length % 2 !== 0 ? "col-span-2 md:col-span-1" : ""}`}
 							>
-								<img
+								<OptimizedImage
 									src={categoryImages[category]}
 									alt={category}
+									width={600}
+									height={600}
 									className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -347,9 +373,11 @@ function JewelryIndexPage() {
 						{bestSellers.map((product) => (
 							<article key={product.id} className="group cursor-pointer">
 								<div className="relative aspect-square overflow-hidden rounded-xl bg-brand-primary-lighter mb-4">
-									<img
+									<OptimizedImage
 										src={product.image}
 										alt={product.name}
+										width={400}
+										height={400}
 										className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 									/>
 									{product.isBestSeller && (
@@ -412,14 +440,18 @@ function JewelryIndexPage() {
 							</Button>
 						</div>
 						<div className="flex-1 grid grid-cols-2 gap-4">
-							<img
+							<OptimizedImage
 								src="https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&h=500&fit=crop"
 								alt="Anillo de esmeralda"
+								width={400}
+								height={500}
 								className="rounded-2xl w-full h-48 sm:h-64 object-cover"
 							/>
-							<img
+							<OptimizedImage
 								src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=500&fit=crop"
 								alt="Collar de esmeralda"
+								width={400}
+								height={500}
 								className="rounded-2xl w-full h-48 sm:h-64 object-cover mt-8"
 							/>
 						</div>
@@ -455,9 +487,11 @@ function JewelryIndexPage() {
 						{newArrivals.map((product) => (
 							<article key={product.id} className="group cursor-pointer">
 								<div className="relative aspect-square overflow-hidden rounded-xl bg-white mb-4">
-									<img
+									<OptimizedImage
 										src={product.image}
 										alt={product.name}
+										width={400}
+										height={400}
 										className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
 									/>
 									{product.isNew && (
@@ -539,9 +573,11 @@ function JewelryIndexPage() {
 								search={{ collection: collection.name }}
 								className="group relative aspect-[3/4] overflow-hidden rounded-2xl"
 							>
-								<img
+								<OptimizedImage
 									src={collection.image}
 									alt={collection.name}
+									width={800}
+									height={1000}
 									className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

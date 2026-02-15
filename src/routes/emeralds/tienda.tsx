@@ -10,6 +10,7 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { z } from "zod";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 const searchSchema = z.object({
   priceMin: z.number().optional(),
@@ -22,6 +23,16 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/emeralds/tienda")({
+  head: () => buildMeta({
+    title: "Tienda de Esmeraldas",
+    description: "Explora nuestra colección de esmeraldas sueltas colombianas. Filtra por claridad, quilates, origen y precio. Todas las piedras con certificado de autenticidad.",
+    path: "/emeralds/tienda",
+    jsonLd: [breadcrumbJsonLd([
+      { name: "Inicio", path: "/" },
+      { name: "Esmeraldas", path: "/emeralds" },
+      { name: "Tienda", path: "/emeralds/tienda" },
+    ])],
+  }),
   validateSearch: searchSchema,
   component: TiendaPage,
 });

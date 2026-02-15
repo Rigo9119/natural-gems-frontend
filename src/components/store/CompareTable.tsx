@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown, X } from "lucide-react";
 import { useMemo, useState } from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { Separator } from "@/components/ui/separator";
 import { useCompare } from "@/context/CompareContext";
 import type { Product } from "@/data/demo-products";
@@ -66,9 +67,11 @@ export function CompareTable() {
 					header: () => (
 						<div className="flex flex-col items-center gap-2">
 							<div className="relative">
-								<img
+								<OptimizedImage
 									src={product.image}
 									alt={product.name}
+									width={80}
+									height={80}
 									className="h-20 w-20 rounded-lg object-cover"
 								/>
 								<button
@@ -159,9 +162,11 @@ export function CompareTable() {
 						className="rounded-lg border border-brand-primary-dark/10 p-4"
 					>
 						<div className="flex items-center gap-3 mb-4">
-							<img
+							<OptimizedImage
 								src={product.image}
 								alt={product.name}
+								width={64}
+								height={64}
 								className="h-16 w-16 rounded-lg object-cover"
 							/>
 							<div className="flex-1 min-w-0">

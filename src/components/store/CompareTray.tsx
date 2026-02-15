@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { GitCompare, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { useCompare } from "@/context/CompareContext";
 
 export function CompareTray() {
@@ -19,9 +20,11 @@ export function CompareTray() {
 							key={product.id}
 							className="relative flex-shrink-0 rounded-lg border border-brand-primary-dark/10 bg-brand-primary-lighter p-1"
 						>
-							<img
+							<OptimizedImage
 								src={product.image}
 								alt={product.name}
+								width={48}
+								height={48}
 								className="h-12 w-12 rounded object-cover"
 							/>
 							<button

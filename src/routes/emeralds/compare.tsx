@@ -4,8 +4,19 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CompareTable } from "@/components/store/CompareTable";
 import { useCompare } from "@/context/CompareContext";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/emeralds/compare")({
+	head: () => buildMeta({
+		title: "Comparar Esmeraldas",
+		description: "Compara esmeraldas colombianas lado a lado por claridad, peso en quilates, origen, corte y precio. Encuentra la piedra perfecta para ti.",
+		path: "/emeralds/compare",
+		jsonLd: [breadcrumbJsonLd([
+			{ name: "Inicio", path: "/" },
+			{ name: "Esmeraldas", path: "/emeralds" },
+			{ name: "Comparar", path: "/emeralds/compare" },
+		])],
+	}),
 	component: ComparePage,
 });
 

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
 	Award,
 	Gem,
@@ -8,8 +9,18 @@ import {
 	Shield,
 	Truck,
 } from "lucide-react";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
+	head: () => buildMeta({
+		title: "Quiénes Somos",
+		description: "Tres generaciones dedicadas al arte de las esmeraldas colombianas. Desde las minas de Muzo al mundo, con certificación GIA y trazabilidad completa.",
+		path: "/about",
+		jsonLd: [breadcrumbJsonLd([
+			{ name: "Inicio", path: "/" },
+			{ name: "Quiénes Somos", path: "/about" },
+		])],
+	}),
 	component: AboutPage,
 });
 
@@ -147,9 +158,12 @@ function AboutPage() {
 						</dl>
 					</div>
 					<figure className="hidden md:flex md:w-1/2 items-center justify-center bg-brand-primary-light/30 relative overflow-hidden min-h-[600px]">
-						<img
+						<OptimizedImage
 							alt="Esmeraldas colombianas"
 							src="https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800&h=1000&fit=crop"
+							width={800}
+							height={1000}
+							priority
 							className="w-full h-full object-cover"
 						/>
 						<div

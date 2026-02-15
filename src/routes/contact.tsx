@@ -12,8 +12,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { COMPANY_LOCATION, INSTAGRAM_URL, WHATSAPP_URL } from "@/lib/constants";
+import {
+	breadcrumbJsonLd,
+	buildMeta,
+	faqJsonLd,
+	localBusinessJsonLd,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
+	head: () => buildMeta({
+		title: "Contacto",
+		description: "Contáctanos para una atención personalizada en esmeraldas colombianas. WhatsApp, email, teléfono. Bogotá, Colombia. Respuesta inmediata.",
+		path: "/contact",
+		jsonLd: [
+			localBusinessJsonLd(),
+			faqJsonLd(faqs),
+			breadcrumbJsonLd([
+				{ name: "Inicio", path: "/" },
+				{ name: "Contacto", path: "/contact" },
+			]),
+		],
+	}),
 	component: ContactPage,
 });
 

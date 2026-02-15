@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { CompareProvider } from "@/context/CompareContext";
+import { buildMeta, organizationJsonLd } from "@/lib/seo";
 import { getLocale } from "@/paraglide/runtime";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
@@ -28,22 +29,28 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     }
   },
 
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      { title: "TanStack Start Starter" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
+  head: () => {
+    const seo = buildMeta({ jsonLd: [organizationJsonLd()] });
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        { name: "theme-color", content: "#3B5B46" },
+        ...seo.meta,
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico" },
+        { rel: "apple-touch-icon", href: "/logo192.png" },
+        { rel: "manifest", href: "/manifest.json" },
+        ...seo.links,
+      ],
+      scripts: seo.scripts,
+    };
+  },
 
   component: RootComponent,
   shellComponent: RootDocument,

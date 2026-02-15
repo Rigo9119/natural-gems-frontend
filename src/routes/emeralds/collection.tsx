@@ -1,8 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { type Clarity, demoProducts } from "@/data/demo-products";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/emeralds/collection")({
+	head: () => buildMeta({
+		title: "Colección por Claridad",
+		description: "Esmeraldas colombianas clasificadas por grado de claridad: AAA Premium, AA Selecta, A Clásica y B Natural. Cada piedra con certificado de autenticidad.",
+		path: "/emeralds/collection",
+		jsonLd: [breadcrumbJsonLd([
+			{ name: "Inicio", path: "/" },
+			{ name: "Esmeraldas", path: "/emeralds" },
+			{ name: "Colección", path: "/emeralds/collection" },
+		])],
+	}),
 	component: CollectionPage,
 });
 
@@ -93,9 +105,11 @@ function CollectionPage() {
 								search={{ clarity: collection.grade }}
 								className="group relative aspect-[3/4] overflow-hidden rounded-2xl"
 							>
-								<img
+								<OptimizedImage
 									src={collection.image}
 									alt={`Colección ${collection.title}`}
+									width={600}
+									height={800}
 									className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />

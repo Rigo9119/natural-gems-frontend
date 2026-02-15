@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { z } from "zod";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 import {
 	type WholesaleFilterState,
 	WholesaleLotFilters,
@@ -26,6 +27,16 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/emeralds/mayoristas")({
+	head: () => buildMeta({
+		title: "Mayoristas",
+		description: "Precios especiales en esmeraldas colombianas para joyeros y mayoristas. Lotes certificados con trazabilidad completa desde las minas de Colombia.",
+		path: "/emeralds/mayoristas",
+		jsonLd: [breadcrumbJsonLd([
+			{ name: "Inicio", path: "/" },
+			{ name: "Esmeraldas", path: "/emeralds" },
+			{ name: "Mayoristas", path: "/emeralds/mayoristas" },
+		])],
+	}),
 	validateSearch: searchSchema,
 	component: MayoristasPage,
 });

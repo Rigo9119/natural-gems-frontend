@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { useCompare } from "@/context/CompareContext";
 import type { Product } from "@/data/demo-products";
 
@@ -26,9 +27,11 @@ export default function ProductCard({
 	return (
 		<article className="group cursor-pointer">
 			<figure className="relative aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
-				<img
+				<OptimizedImage
 					src={product.image}
 					alt={product.name}
+					width={400}
+					height={400}
 					className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 				/>
 				{showCompare && (
