@@ -1,4 +1,5 @@
 import { SiWhatsapp } from "@icons-pack/react-simple-icons";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowRight,
@@ -14,8 +15,12 @@ import { Button } from "@/components/ui/button";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
 import { COMPANY_LOCATION, COMPANY_NAME, WHATSAPP_URL } from "@/lib/constants";
+import { heroSectionQueryOptions } from "@/lib/sanity-queries";
 
 export const Route = createFileRoute("/")({
+	loader: ({ context }) => {
+		context.queryClient.ensureQueryData(heroSectionQueryOptions);
+	},
 	component: HomePage,
 });
 
@@ -47,6 +52,7 @@ const guarantees = [
 ];
 
 function HomePage() {
+	const { data: hero } = useSuspenseQuery(heroSectionQueryOptions);
 	const bestSellers = getBestSellers().slice(0, 4);
 	const featuredEmeralds = demoProducts.slice(0, 4);
 
@@ -58,14 +64,14 @@ function HomePage() {
 				className="relative flex min-h-screen flex-col items-center justify-center bg-brand-primary-dark px-6 text-center sm:px-8"
 			>
 				<p className="mb-4 font-body text-xs tracking-[0.3em] uppercase text-brand-secondary-golden sm:mb-6 sm:text-sm">
-					Esmeraldas Colombianas &middot; Joyería Artesanal
+					{hero?.subTitle ?? "Esmeraldas Colombianas \u00B7 Joyería Artesanal"}
 				</p>
 				<h1 className="mb-4 font-heading text-5xl text-brand-primary-lighter sm:mb-6 sm:text-6xl md:text-8xl">
-					{COMPANY_NAME}
+					{hero?.title ?? COMPANY_NAME}
 				</h1>
 				<p className="mb-8 max-w-xl font-body text-base leading-relaxed text-brand-primary-lighter/80 sm:mb-12 sm:text-lg">
-					Desde las minas de Muzo hasta las creaciones más exquisitas. Descubre
-					la belleza única de las esmeraldas colombianas.
+					{hero?.description ??
+						"Desde las minas de Muzo hasta las creaciones más exquisitas. Descubre la belleza única de las esmeraldas colombianas."}
 				</p>
 				<div className="flex flex-col items-center gap-4 sm:flex-row">
 					<Link
