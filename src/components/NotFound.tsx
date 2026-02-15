@@ -6,7 +6,7 @@ export function NotFound() {
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
       <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-brand-primary-lighter">
-        <Search className="h-12 w-12 text-brand-primary" />
+        <Search className="h-12 w-12 text-brand-primary-dark" />
       </div>
 
       <h1 className="font-heading text-4xl text-brand-primary-dark md:text-5xl">
@@ -24,7 +24,7 @@ export function NotFound() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button
           asChild
-          className="gap-2 bg-brand-primary hover:bg-brand-primary/90"
+          className="gap-2 bg-brand-primary-dark hover:bg-brand-primary-dark/90"
         >
           <Link to="/">
             <Home className="h-4 w-4" />
@@ -36,7 +36,7 @@ export function NotFound() {
           variant="outline"
           className="gap-2 border-brand-primary-dark/20 text-brand-primary-dark hover:bg-brand-primary-lighter"
         >
-          <Link to="/">
+          <Link to="/emeralds">
             <Search className="h-4 w-4" />
             Ver tienda
           </Link>

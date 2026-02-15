@@ -25,8 +25,8 @@ export const Route = createFileRoute("/")({
 		path: "/",
 		description: "Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
 	}),
-	loader: ({ context }) => {
-		context.queryClient.ensureQueryData(heroSectionQueryOptions("home"));
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(heroSectionQueryOptions("home"));
 	},
 	component: HomePage,
 });
