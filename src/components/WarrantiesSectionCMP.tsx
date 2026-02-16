@@ -1,4 +1,4 @@
-import type { WarrantySection } from "@/lib/sanity-queries";
+import type { WarrantySection } from "@/lib/sanity/sanity-types";
 import { localizeContent } from "@/hooks/sanity-helper";
 import { iconMap } from "@/lib/icon-map";
 

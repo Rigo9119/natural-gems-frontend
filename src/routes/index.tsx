@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
@@ -9,14 +8,11 @@ import {
   type NewsletterSection,
   type BrandStorySection,
   type WhatsAppSection,
-  dualCategorySectionQueryOptions,
-  heroSectionQueryOptions,
-  featuredProductSectionQueryOptions,
-  warrantySectionQueryOptions,
-  newsletterSectionQueryOptions,
-  whatsAppSectionQueryOptions,
-  brandStorySectionQueryOptions,
-} from "@/lib/sanity-queries";
+} from "@/lib/sanity/sanity-types";
+import {
+  prefetchHomePageContentData,
+  useHomePageData,
+} from "@/data/home-page-data";
 import { buildMeta } from "@/lib/seo";
 import ProductCard from "@/components/ProductCard";
 import Hero from "@/components/Hero";
@@ -35,57 +31,23 @@ export const Route = createFileRoute("/")({
         "Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
     }),
   loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(heroSectionQueryOptions("home")),
-      context.queryClient.ensureQueryData(
-        dualCategorySectionQueryOptions("home"),
-      ),
-      context.queryClient.ensureQueryData(
-        featuredProductSectionQueryOptions("featured-emeralds"),
-      ),
-      context.queryClient.ensureQueryData(
-        featuredProductSectionQueryOptions("best-sellers-jewelry"),
-      ),
-      context.queryClient.ensureQueryData(
-        warrantySectionQueryOptions("warranties"),
-      ),
-      context.queryClient.ensureQueryData(
-        newsletterSectionQueryOptions("newsletter"),
-      ),
-      context.queryClient.ensureQueryData(
-        whatsAppSectionQueryOptions("whatsapp"),
-      ),
-      context.queryClient.ensureQueryData(
-        brandStorySectionQueryOptions("brand-story"),
-      ),
-    ]);
+    await prefetchHomePageContentData(context.queryClient);
   },
   component: HomePage,
 });
 
 function HomePage() {
-  const { data: hero } = useSuspenseQuery(heroSectionQueryOptions("home"));
-  const { data: dualCategory } = useSuspenseQuery(
-    dualCategorySectionQueryOptions("home"),
-  );
-  const { data: featuredEmeraldsContent } = useSuspenseQuery(
-    featuredProductSectionQueryOptions("featured-emeralds"),
-  );
-  const { data: brandStoryContent } = useSuspenseQuery(
-    brandStorySectionQueryOptions("brand-story"),
-  );
-  const { data: bestSellersContent } = useSuspenseQuery(
-    featuredProductSectionQueryOptions("best-sellers-jewelry"),
-  );
-  const { data: warrantiesContent } = useSuspenseQuery(
-    warrantySectionQueryOptions("warranties"),
-  );
-  const { data: whatsAppSectionContent } = useSuspenseQuery(
-    whatsAppSectionQueryOptions("whatsapp"),
-  );
-  const { data: newsletterContent } = useSuspenseQuery(
-    newsletterSectionQueryOptions("newsletter"),
-  );
+  const {
+    hero,
+    dualCategory,
+    featuredEmeraldsContent,
+    brandStoryContent,
+    bestSellersContent,
+    warrantiesContent,
+    whatsAppSectionContent,
+    newsletterContent,
+  } = useHomePageData();
+  //TODO -> estos datos llegan desde supabase y el ecommerce que se elija
   const bestSellers = getBestSellers().slice(0, 4);
   const featuredEmeralds = demoProducts.slice(0, 4);
 

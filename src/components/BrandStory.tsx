@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { localizeContent } from "@/hooks/sanity-helper";
-import { type BrandStorySection } from "@/lib/sanity-queries";
+import { type BrandStorySection } from "@/lib/sanity/sanity-types";
 import { Button } from "./ui/button";
 import { OptimizedImage } from "./ui/optimized-image";
 

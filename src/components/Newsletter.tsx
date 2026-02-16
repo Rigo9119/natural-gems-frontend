@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { localizeContent } from "@/hooks/sanity-helper";
-import { type NewsletterSection } from "@/lib/sanity-queries";
+import { type NewsletterSection } from "@/lib/sanity/sanity-types";
 
 export interface NewsletterProps {
   sectionContent: NewsletterSection;

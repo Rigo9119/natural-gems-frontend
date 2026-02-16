@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronDown } from "lucide-react";
 import { useLocalizedContent } from "@/hooks/sanity-helper";
-import type { HeroSection } from "@/lib/sanity-queries";
+import type { HeroSection } from "@/lib/sanity/sanity-types";
 import { OptimizedImage } from "./ui/optimized-image";
 
 export interface HeroProps {

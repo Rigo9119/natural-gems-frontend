@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
-import type { FeaturedProductsSection } from "@/lib/sanity-queries";
+import type { FeaturedProductsSection } from "@/lib/sanity/sanity-types";
 import { localizeContent } from "@/hooks/sanity-helper";
 
 const variants = {

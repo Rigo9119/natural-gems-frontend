@@ -2,7 +2,7 @@ import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { Button } from "./ui/button";
 import { localizeContent } from "@/hooks/sanity-helper";
 import { WHATSAPP_URL } from "@/lib/constants";
-import { WhatsAppSection } from "@/lib/sanity-queries";
+import { WhatsAppSection } from "@/lib/sanity/sanity-types";
 
 export interface WhatsAppSectionProps {
   sectionContent: WhatsAppSection;

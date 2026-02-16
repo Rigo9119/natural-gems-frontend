@@ -1,6 +1,6 @@
 import { localizeContent } from "@/hooks/sanity-helper";
 import DualCategoryCard from "./DualCategoryCard";
-import { DualCategorySection } from "@/lib/sanity-queries";
+import { DualCategorySection } from "@/lib/sanity/sanity-queries";
 
 export interface DualCategorySectionProps {
   dualCategory: DualCategorySection;
