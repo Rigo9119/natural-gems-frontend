@@ -1,4 +1,5 @@
 import {localizedBlock, localizedString} from './locale'
-import {heroSection} from './sections'
+import {cta, dualCategoryCard} from './objects'
+import {dualCategorySection, heroSection} from './sections'
 
-export const schemaTypes = [localizedString, localizedBlock, heroSection]
+export const schemaTypes = [localizedString, localizedBlock, cta, dualCategoryCard, dualCategorySection, heroSection]

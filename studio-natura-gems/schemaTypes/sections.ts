@@ -1,4 +1,54 @@
 import {defineField, defineType} from 'sanity'
+import {InlineIcon} from '@sanity/icons'
+
+export const dualCategorySection = defineType({
+  name: 'dualCategorySection',
+  title: 'Sección Doble Categoría',
+  type: 'document',
+  icon: InlineIcon,
+  fields: [
+    defineField({
+      name: 'slug',
+      title: 'Identificador de página',
+      type: 'slug',
+      description: 'Identifica a qué página pertenece esta sección (ej. "home")',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'subtitle',
+      title: 'Subtítulo',
+      type: 'localizedString',
+      description: 'Texto pequeño sobre el título (ej. "Dos mundos, una pasión")',
+    }),
+    defineField({
+      name: 'title',
+      title: 'Título',
+      type: 'localizedString',
+      description: 'Título principal de la sección (ej. "Descubre Nuestra Esencia")',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'cards',
+      title: 'Tarjetas',
+      type: 'array',
+      of: [{type: 'dualCategoryCard'}],
+      description: 'Las tarjetas de categoría que se muestran en la sección',
+      validation: (rule) => rule.required().min(1).max(4),
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'title.es',
+      subtitle: 'slug.current',
+    },
+    prepare({title, subtitle}) {
+      return {
+        title: title || 'Sección Doble Categoría',
+        subtitle: `Página: ${subtitle || '—'}`,
+      }
+    },
+  },
+})
 
 export const heroSection = defineType({
   name: 'heroSection',

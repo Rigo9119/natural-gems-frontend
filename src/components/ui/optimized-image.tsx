@@ -27,6 +27,7 @@ function resolveUrl(
 		return src;
 	}
 
+	// biome-ignore lint/suspicious/noFocusedTests: .fit() is a Sanity image URL builder method, not a test
 	let builder = urlFor(src).auto("format").quality(quality).fit("crop");
 
 	if (width) {
