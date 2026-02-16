@@ -1,20 +1,19 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { createFileRoute } from "@tanstack/react-router";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
 import {
   type HeroSection,
   type DualCategorySection,
+  type WarrantySection,
+  type NewsletterSection,
+  type BrandStorySection,
+  type WhatsAppSection,
   dualCategorySectionQueryOptions,
   heroSectionQueryOptions,
   featuredProductSectionQueryOptions,
   warrantySectionQueryOptions,
-  WarrantySection,
   newsletterSectionQueryOptions,
-  NewsletterSection,
   whatsAppSectionQueryOptions,
   brandStorySectionQueryOptions,
 } from "@/lib/sanity-queries";
@@ -25,7 +24,7 @@ import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySectio
 import FeaturedProductsCMP from "@/components/FeaturedProductsCMP";
 import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP";
 import Newsletter from "@/components/Newsletter";
-import WhatsAppSection from "@/components/WhatsAppSection";
+import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP";
 import BrandStory from "@/components/BrandStory";
 
 export const Route = createFileRoute("/")({
@@ -72,11 +71,17 @@ function HomePage() {
   const { data: featuredEmeraldsContent } = useSuspenseQuery(
     featuredProductSectionQueryOptions("featured-emeralds"),
   );
+  const { data: brandStoryContent } = useSuspenseQuery(
+    brandStorySectionQueryOptions("brand-story"),
+  );
   const { data: bestSellersContent } = useSuspenseQuery(
     featuredProductSectionQueryOptions("best-sellers-jewelry"),
   );
   const { data: warrantiesContent } = useSuspenseQuery(
     warrantySectionQueryOptions("warranties"),
+  );
+  const { data: whatsAppSectionContent } = useSuspenseQuery(
+    whatsAppSectionQueryOptions("whatsapp"),
   );
   const { data: newsletterContent } = useSuspenseQuery(
     newsletterSectionQueryOptions("newsletter"),
@@ -106,7 +111,7 @@ function HomePage() {
       </FeaturedProductsCMP>
 
       {/* ── Section 4: Heritage / Brand Story ── */}
-      <BrandStory />
+      <BrandStory sectionContent={brandStoryContent as BrandStorySection} />
 
       {/* ── Section 5: Jewelry Best Sellers ── */}
       <FeaturedProductsCMP
@@ -126,7 +131,9 @@ function HomePage() {
       />
 
       {/* ── Section 7: WhatsApp CTA ── */}
-      <WhatsAppSection />
+      <WhatsAppSectionCMP
+        sectionContent={whatsAppSectionContent as WhatsAppSection}
+      />
 
       {/* ── Section 8: Newsletter ── */}
       <Newsletter sectionContent={newsletterContent as NewsletterSection} />
