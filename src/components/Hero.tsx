@@ -12,8 +12,8 @@ export default function Hero({ hero }: HeroProps) {
   const heroSubTitle = useLocalizedContent(hero?.subTitle ?? {});
   const heroTitle = useLocalizedContent(hero?.title ?? {});
   const heroDescription = useLocalizedContent(hero?.description ?? {});
-  const heroCtaLeft = useLocalizedContent(hero?.ctaTextLeft ?? {});
-  const heroCtaRight = useLocalizedContent(hero?.ctaTextRight ?? {});
+  const heroCtaLeft = useLocalizedContent(hero?.ctaLeft?.text ?? {});
+  const heroCtaRight = useLocalizedContent(hero?.ctaRight?.text ?? {});
 
   return (
     <section
@@ -41,13 +41,13 @@ export default function Hero({ hero }: HeroProps) {
         </p>
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
-            to={hero?.ctaLinkLeft || "/emeralds"}
+            to={hero?.ctaLeft?.link || "/emeralds"}
             className="inline-flex items-center gap-2 rounded-full border border-brand-primary-lighter px-6 py-3 font-body font-medium text-brand-primary-lighter transition-all duration-300 hover:bg-brand-primary-lighter hover:text-brand-primary-dark sm:px-8 sm:py-4 sm:text-lg"
           >
             {heroCtaLeft}
           </Link>
           <Link
-            to={hero?.ctaLinkRight || "/jewelry"}
+            to={hero?.ctaRight?.link || "/jewelry"}
             className="inline-flex items-center gap-2 rounded-full bg-brand-secondary-golden px-6 py-3 font-body font-medium text-brand-primary-dark transition-all duration-300 hover:scale-105 hover:bg-brand-secondary-golden/90 sm:px-8 sm:py-4 sm:text-lg"
           >
             {heroCtaRight}
