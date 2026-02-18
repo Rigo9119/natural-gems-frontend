@@ -9,8 +9,8 @@ export interface WarrantiesSectionProps {
 export default function WarrantiesSectionCMP({
   sectionContent,
 }: WarrantiesSectionProps) {
-  const subtitle = localizeContent(sectionContent?.subtitle ?? {});
-  const title = localizeContent(sectionContent?.title ?? {});
+  const subtitle = localizeContent(sectionContent?.header?.subtitle ?? {});
+  const title = localizeContent(sectionContent?.header?.title ?? {});
 
   return (
     <section className="bg-brand-secondary-terra py-16 sm:py-24">

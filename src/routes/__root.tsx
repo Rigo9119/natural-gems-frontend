@@ -61,6 +61,7 @@ const appNavItems = [
   { label: "Esmeraldas", href: "/emeralds" },
   { label: "Joyería", href: "/jewelry" },
   { label: "Nosotros", href: "/about" },
+  { label: "FAQ", href: "/faq" },
   { label: "Contacto", href: "/contact" },
 ];
 

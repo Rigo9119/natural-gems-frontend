@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as JewelryRouteImport } from './routes/jewelry'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
@@ -24,6 +25,11 @@ import { Route as EmeraldsCollectionRouteImport } from './routes/emeralds/collec
 const JewelryRoute = JewelryRouteImport.update({
   id: '/jewelry',
   path: '/jewelry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmeraldsRoute = EmeraldsRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
+  '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/faq': typeof FaqRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
+  '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/emeralds'
+    | '/faq'
     | '/jewelry'
     | '/emeralds/collection'
     | '/emeralds/compare'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/faq'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/emeralds'
+    | '/faq'
     | '/jewelry'
     | '/emeralds/collection'
     | '/emeralds/compare'
@@ -160,6 +172,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
+  FaqRoute: typeof FaqRoute
   JewelryRoute: typeof JewelryRouteWithChildren
 }
 
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       path: '/jewelry'
       fullPath: '/jewelry'
       preLoaderRoute: typeof JewelryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/emeralds': {
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   EmeraldsRoute: EmeraldsRouteWithChildren,
+  FaqRoute: FaqRoute,
   JewelryRoute: JewelryRouteWithChildren,
 }
 export const routeTree = rootRouteImport

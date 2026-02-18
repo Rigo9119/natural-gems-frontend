@@ -1,6 +1,6 @@
 import { localizeContent } from "@/hooks/sanity-helper";
 import DualCategoryCard from "./DualCategoryCard";
-import { DualCategorySection } from "@/lib/sanity/sanity-queries";
+import type { DualCategorySection } from "@/lib/sanity/sanity-types";
 
 export interface DualCategorySectionProps {
   dualCategory: DualCategorySection;
@@ -14,10 +14,10 @@ export default function DualCategorySectionCMP({
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="mb-10 text-center sm:mb-14">
           <p className="mb-3 font-body text-xs tracking-[0.2em] uppercase text-brand-primary-dark/60 sm:text-sm">
-            {localizeContent(dualCategory.subtitle ?? {})}
+            {localizeContent(dualCategory.header?.subtitle ?? {})}
           </p>
           <h2 className="font-heading text-3xl text-brand-primary-dark sm:text-4xl md:text-5xl">
-            {localizeContent(dualCategory.title ?? {})}
+            {localizeContent(dualCategory.header?.title ?? {})}
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6">

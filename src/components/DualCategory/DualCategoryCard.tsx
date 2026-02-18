@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { OptimizedImage } from "../ui/optimized-image";
 import { ArrowRight } from "lucide-react";
-import type { SanityImage } from "@/lib/sanity/sanity-queries";
+import type { SanityImage } from "@/lib/sanity/sanity-types";
 
 export interface DualCategoryCardProps {
   title: string;

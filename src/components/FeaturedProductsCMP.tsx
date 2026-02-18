@@ -37,10 +37,10 @@ export default function FeaturedProductsCMP({
   children,
 }: FeaturedProductsProps) {
   const v = variants[variant];
-  const subtitle = localizeContent(sectionContent?.subtitle ?? {});
-  const title = localizeContent(sectionContent?.title ?? {});
-  const ctaText = localizeContent(sectionContent?.cta?.text ?? {});
-  const ctaLink = sectionContent?.cta?.link ?? "/";
+  const subtitle = localizeContent(sectionContent?.header?.subtitle ?? {});
+  const title = localizeContent(sectionContent?.header?.title ?? {});
+  const ctaText = localizeContent(sectionContent?.header?.cta?.text ?? {});
+  const ctaLink = sectionContent?.header?.cta?.link ?? "/";
 
   const btnClasses = `rounded-full ${v.btnBorder} ${v.btnText} ${v.btnHoverBg} ${v.btnHoverText}`;
 

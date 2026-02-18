@@ -12,14 +12,14 @@ export default function WhatsAppSectionCMP({
   sectionContent,
 }: WhatsAppSectionProps) {
   const title =
-    localizeContent(sectionContent?.title ?? {}) ?? "Atención Personalizada";
+    localizeContent(sectionContent?.header?.title ?? {}) ?? "Atención Personalizada";
   const description =
-    localizeContent(sectionContent?.description ?? {}) ??
+    localizeContent(sectionContent?.header?.description ?? {}) ??
     "Cada esmeralda es única, como tú. Nuestros expertos gemólogos están listos para ayudarte a encontrar la piedra perfecta con una atención exclusiva y personalizada.";
   const ctaText =
-    localizeContent(sectionContent?.cta?.text ?? {}) ??
+    localizeContent(sectionContent?.header?.cta?.text ?? {}) ??
     "Escríbenos por WhatsApp";
-  const ctaLink = sectionContent?.cta?.link ?? WHATSAPP_URL;
+  const ctaLink = sectionContent?.header?.cta?.link ?? WHATSAPP_URL;
   const location =
     localizeContent(sectionContent?.location ?? {}) ??
     "Bogotá, Colombia · Envíos a todo el mundo";

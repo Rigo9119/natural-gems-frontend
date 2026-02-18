@@ -11,15 +11,15 @@ export interface BrandStoryProps {
 
 export default function BrandStory({ sectionContent }: BrandStoryProps) {
   const title =
-    localizeContent(sectionContent?.title ?? {}) ??
+    localizeContent(sectionContent?.header?.title ?? {}) ??
     "Desde las Minas de Muzo al Mundo";
   const description =
-    localizeContent(sectionContent?.description ?? {}) ??
+    localizeContent(sectionContent?.header?.description ?? {}) ??
     "Tres generaciones dedicadas al arte de las esmeraldas colombianas. Nuestra pasión nació en las minas de Muzo, donde aprendimos a reconocer la verdadera belleza de cada piedra. Hoy, llevamos esa tradición al mundo.";
   const ctaText =
-    localizeContent(sectionContent?.cta?.text ?? {}) ??
+    localizeContent(sectionContent?.header?.cta?.text ?? {}) ??
     "Conoce Nuestra Historia";
-  const ctaLink = sectionContent?.cta?.link ?? "/about";
+  const ctaLink = sectionContent?.header?.cta?.link ?? "/about";
 
   return (
     <section className="bg-brand-primary-dark py-16 sm:py-24">

@@ -1,23 +1,12 @@
 import { SiInstagram, SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { createFileRoute } from "@tanstack/react-router";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { COMPANY_LOCATION, INSTAGRAM_URL, WHATSAPP_URL } from "@/lib/constants";
-import {
-  breadcrumbJsonLd,
-  buildMeta,
-  faqJsonLd,
-  localBusinessJsonLd,
-} from "@/lib/seo";
+import { breadcrumbJsonLd, buildMeta, localBusinessJsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
   head: () =>
@@ -28,7 +17,6 @@ export const Route = createFileRoute("/contact")({
       path: "/contact",
       jsonLd: [
         localBusinessJsonLd(),
-        faqJsonLd(faqs),
         breadcrumbJsonLd([
           { name: "Inicio", path: "/" },
           { name: "Contacto", path: "/contact" },
@@ -70,39 +58,6 @@ const contactMethods = [
     detail: "@naturagems",
     href: INSTAGRAM_URL,
     color: "bg-pink-600 hover:bg-pink-700",
-  },
-];
-
-const faqs = [
-  {
-    question: "¿Las esmeraldas vienen con certificado de autenticidad?",
-    answer:
-      "Sí, todas nuestras esmeraldas incluyen un certificado de autenticidad que detalla el origen, claridad, peso en quilates y corte de la piedra. También ofrecemos certificación GIA bajo solicitud.",
-  },
-  {
-    question: "¿Realizan envíos internacionales?",
-    answer:
-      "Sí, enviamos a todo el mundo. Todos los envíos incluyen seguro completo contra pérdida o daño. Los tiempos de entrega varían según el destino: 3-5 días para Colombia, 7-14 días para el resto del mundo.",
-  },
-  {
-    question: "¿Cuál es la política de devoluciones?",
-    answer:
-      "Ofrecemos una garantía de satisfacción de 30 días. Si la esmeralda no cumple con tus expectativas, puedes devolverla sin costo y te reembolsamos el 100% del valor.",
-  },
-  {
-    question: "¿Ofrecen descuentos para compras al por mayor?",
-    answer:
-      "Sí, tenemos precios especiales para mayoristas y joyeros. Visita nuestra sección de Mayoristas o contáctanos directamente para recibir una cotización personalizada.",
-  },
-  {
-    question: "¿Cómo puedo verificar la calidad de una esmeralda?",
-    answer:
-      "Cada esmeralda viene clasificada por claridad (AAA, AA, A, B), origen y corte. Además, puedes solicitar una evaluación independiente por un gemólogo certificado. Nuestro equipo está disponible para resolver cualquier duda sobre la calidad de las piedras.",
-  },
-  {
-    question: "¿Trabajan con piedras montadas o solo sueltas?",
-    answer:
-      "Principalmente trabajamos con esmeraldas sueltas, pero también ofrecemos servicios de montaje personalizado en colaboración con joyeros expertos. Contáctanos para más detalles.",
   },
 ];
 
@@ -321,35 +276,6 @@ function ContactPage() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="max-w-3xl mx-auto px-6 sm:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-brand-secondary-terra font-body text-xs sm:text-sm tracking-[0.2em] uppercase mb-3">
-              Resolvemos tus dudas
-            </p>
-            <h2 className="font-heading text-3xl sm:text-4xl text-brand-primary-dark">
-              Preguntas Frecuentes
-            </h2>
-          </div>
-          <Accordion type="single" collapsible className="w-full">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={faq.question}
-                value={`faq-${index}`}
-                className="border-brand-primary-dark/10"
-              >
-                <AccordionTrigger className="text-left font-heading text-brand-primary-dark hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-brand-primary-dark/70 leading-relaxed">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
     </div>
   );
 }
