@@ -1,8 +1,8 @@
 import {defineType, defineField} from 'sanity'
 
 export const sectionWithIconCard = defineType({
-  name: 'ourValues',
-  title: 'Nuestros valores',
+  name: 'sectionWithIconCard',
+  title: 'Sección con iconos y textos',
   type: 'object',
   fields: [
     defineField({
@@ -13,7 +13,8 @@ export const sectionWithIconCard = defineType({
     defineField({
       name: 'iconCards',
       title: 'Cards con iconos',
-      type: 'iconCards',
+      type: 'array',
+      of: [{type: 'iconCard'}],
     }),
   ],
 })

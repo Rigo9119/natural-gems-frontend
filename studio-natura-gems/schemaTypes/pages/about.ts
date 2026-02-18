@@ -40,14 +40,12 @@ export const aboutPage = defineType({
     defineField({
       name: 'ourValues',
       title: 'Nuestros valores',
-      type: 'array',
-      of: [{type: 'sectionWithIconCards'}],
+      type: 'sectionWithIconCard',
     }),
     defineField({
       name: 'ourProces',
       title: 'Nuestro proceso',
-      type: 'array',
-      of: [{type: 'sectionWithIconCards'}],
+      type: 'sectionWithIconCard',
     }),
     defineField({
       name: 'certificationsAndWarranties',

@@ -6,6 +6,7 @@ const MANAGED_TYPES = [
   'homePage',
   'emeraldPage',
   'aboutPage',
+  'faqPage',
   'newsletterSection',
   'whatsAppSection',
 ]
@@ -26,7 +27,11 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title('Pagina principal sobre nosotros')
         .icon(DiamondIcon)
-        .child(S.document().schemaType('aboutPage').documentId('emeraldPage')),
+        .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+      S.listItem()
+        .title('Pagina de FAQ')
+        .icon(DiamondIcon)
+        .child(S.document().schemaType('faqPage').documentId('faqPage')),
 
       // ── Shared Sections ──
       S.listItem()

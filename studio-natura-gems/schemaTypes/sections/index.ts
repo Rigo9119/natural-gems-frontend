@@ -8,4 +8,8 @@ export {
 
 export {qualitySection, emeraldPage} from '../pages/emeraldPage'
 
+export {carousel, aboutPage} from '../pages/about'
+
+export {faqPage, emeraldGuideSection, faqType} from '../pages/faqPage'
+
 export {newsletterSection, whatsAppSection} from './shared'

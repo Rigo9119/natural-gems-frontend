@@ -34,6 +34,12 @@ export const iconCard = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'subTitle',
+      title: 'Sub Título',
+      type: 'localizedString',
+      description: 'Sub Título de la tarjeta (ej. "Certificado GIA")',
+    }),
+    defineField({
       name: 'description',
       title: 'Descripción',
       type: 'localizedString',

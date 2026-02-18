@@ -7,7 +7,7 @@ import {
   statCard,
   sectionWithIconCard,
 } from './objects'
-import {carousel, aboutPage} from './pages/about'
+
 import {
   brandStorySection,
   dualCategorySection,
@@ -18,6 +18,11 @@ import {
   qualitySection,
   warrantySection,
   whatsAppSection,
+  carousel,
+  aboutPage,
+  faqPage,
+  emeraldGuideSection,
+  faqType,
 } from './sections'
 
 export const schemaTypes = [
@@ -45,10 +50,15 @@ export const schemaTypes = [
   // Objects — About page sections (inline)
   carousel,
 
+  // Objects — FAQ page sections (inline)
+  emeraldGuideSection,
+  faqType,
+
   // Documents — Pages
   homePage,
   emeraldPage,
   aboutPage,
+  faqPage,
 
   // Documents — Shared sections
   newsletterSection,
