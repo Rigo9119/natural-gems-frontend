@@ -66,5 +66,11 @@ export const emeraldPage = defineType({
       type: 'heroSection',
       description: 'Sección de compra al por mayor',
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO / Metadatos',
+      type: 'seoMetadata',
+      description: 'Configuracion de SEO para esta pagina.',
+    }),
   ],
 })

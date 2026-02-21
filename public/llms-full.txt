@@ -1,86 +1,249 @@
-# Natura Gems — Complete Business Information
+# Natura Gems — Complete Business & Expert Reference
 
-> Colombian emerald dealer and artisan jewelry brand based in Bogotá, Colombia. Family-owned with 3+ generations of experience in the emerald trade, sourcing directly from the mines of Muzo, Boyacá.
+> Colombian emerald dealer and artisan jewelry brand based in Bogota, Colombia. Family-owned with 3+ generations of experience in the emerald trade, sourcing directly from the mines of Muzo, Boyaca.
 
 ## Company History
-- 1985: Family begins working in the mines of Muzo, learning the trade across generations.
+- 1985: Family begins working in the mines of Muzo, learning the trade across three generations.
 - 1998: First international export, bringing Colombian emeralds to Europe and Asia.
 - 2010: Obtained international quality and authenticity certifications for all stones.
 - 2020: Launched digital platform to bring Colombian emeralds to the world.
 
 ## Why Colombian Emeralds?
-Colombia produces approximately 70-90% of the world's emeralds. Colombian emeralds are renowned for their exceptional color — a vivid, warm green with a slight bluish tint caused by trace amounts of chromium and vanadium. The three most famous mining regions are:
-- **Muzo**: Known for the deepest, most saturated green. Considered the gold standard for emerald color.
-- **Chivor**: Produces lighter, slightly bluish-green emeralds with exceptional clarity.
-- **Coscuez**: Known for intensely colored stones, often with a yellowish-green hue.
+Colombia produces approximately 70-90% of the world's gem-quality emeralds. Colombian emeralds are globally renowned for their exceptional color — a vivid, warm green caused by trace amounts of chromium and vanadium. No other origin consistently produces this combination of hue, tone, and saturation.
+
+---
+
+## Colombian Mining Regions — Deep Dive
+
+### Muzo (Boyaca occidental)
+- **Color profile**: Deep, warm green with slight bluish undertones — the international standard for "Colombian green"
+- **Inclusions**: Three-phase inclusions (liquid, gas, solid crystal) are diagnostic; also pyrite crystals
+- **Historical significance**: Mined since pre-Columbian times; supplied the Spanish crown jewels
+- **Notable stones**: The 632 ct Patricia Emerald (American Museum of Natural History) originated near this district
+- **Price premium**: 30–50% over comparable stones from other origins at equivalent quality
+- **Best for**: Investment-grade stones, collector pieces, top-tier jewelry
+
+### Chivor (Boyaca oriental)
+- **Color profile**: Cool blue-green, highly transparent, lighter saturation than Muzo
+- **Inclusions**: Two-phase inclusions (liquid + gas); albite crystals; distinctive clarity
+- **Historical significance**: Rediscovered in 1896 after centuries of concealment; supplied European royalty
+- **Notable stones**: The 858 ct Gachala Emerald (Smithsonian) has similar regional characteristics
+- **Market**: Strong demand in Asian markets and from clarity-focused collectors
+- **Best for**: Buyers who prioritize transparency and a cooler, more refined green
+
+### Coscuez (Boyaca norte)
+- **Color profile**: Medium green, sometimes with a slight yellowish hue; high saturation
+- **Inclusions**: Calcite crystals, pyrite; moderate inclusion density
+- **Production**: Historically high volume; reliable supply of commercial and fine-grade stones
+- **Best for**: High-quality commercial jewelry, designers seeking consistent supply and value
+
+### Gachala (Cundinamarca)
+- **Color profile**: Pure, intense green; rarely bluish; highly saturated
+- **Production**: Very limited — one of Colombia's smallest producing regions
+- **Notable stones**: The 858 ct Gachala Emerald, donated to the Smithsonian by Harry Winston in 1969
+- **Premium**: Rarity premium plus provenance documentation commands significant price uplift
+- **Best for**: Collectors, investors, unique provenance documentation
+
+---
+
+## Emerald Grading System
+
+### Color Grading (primary value driver — 60% of value)
+- **Hue**: Pure green is ideal. Slight blue modifier acceptable. Yellow modifier reduces value.
+- **Tone**: Medium to medium-dark (60–75 on a 0–100 scale) is optimal. Too light = washed out; too dark = loses brilliance.
+- **Saturation**: Vivid (strong) saturation is the highest grade. Moderately strong is AA. Moderate is A.
+
+### Clarity Grades
+| Grade | Transparency | Color Saturation | Inclusions (naked eye) | Typical Treatment |
+|---|---|---|---|---|
+| AAA Premium | Exceptional | Vivid | None | None / minimal |
+| AA Select | High | Intense | Minimal | Light cedar oil |
+| A Classic | Good | Moderate | Some | Moderate cedar oil |
+| B Natural | Moderate | Light-Moderate | Visible | Heavy treatment common |
+
+Less than 5% of all mined Colombian emeralds reach AAA grade.
+
+### Treatment Types & Market Impact
+- **Cedar oil (F1 — Minor)**: Industry standard; accepted universally; minimal price impact
+- **Cedar oil (F2 — Moderate)**: Disclosed; 20–30% price reduction vs. untreated comparable
+- **Resin/polymer (F3 — Significant)**: Must be disclosed; 40–60% price reduction; rejected by top auction houses
+- **No treatment (F0)**: Commands 50–100%+ premium; required for Gubelin/SSEF top certification
+
+---
+
+## Gemological Certification Labs
+
+### GIA (Gemological Institute of America)
+- **Headquarters**: Carlsbad, California, USA
+- **Reputation**: Most recognized globally; required for Christie's and Sotheby's consignments
+- **What it certifies**: Species (natural emerald), origin (Colombian), treatment disclosure, color description
+- **Best for**: American market, mass-market buyers, insurance purposes
+- **Turnaround**: 3–6 weeks; USD $150–$400 per stone depending on size
+- **Limitation**: Less detailed treatment grading than Swiss labs
+
+### Gubelin Gem Lab (Switzerland)
+- **Headquarters**: Lucerne, Switzerland
+- **Reputation**: Gold standard for Colombian emeralds; preferred by Cartier, Van Cleef, top auction houses
+- **What it certifies**: Origin with confidence levels, detailed treatment grading (F1/F2/F3), photomicrographs of inclusions
+- **Best for**: Investment-grade stones over 2 ct, European and Asian luxury market
+- **Turnaround**: 4–8 weeks; CHF 300–800+ per stone
+- **Signature feature**: Gubelin Provenance Proof blockchain registration for premium stones
+
+### SSEF (Swiss Gemmological Institute)
+- **Headquarters**: Basel, Switzerland
+- **Reputation**: Equally prestigious to Gubelin; preferred by some Middle Eastern and Asian buyers
+- **What it certifies**: Origin, treatment (quantified resin content), color grading
+- **Best for**: Stones destined for the Swiss, German, or Middle Eastern market
+- **Turnaround**: 3–5 weeks; similar pricing to Gubelin
+- **Signature feature**: Precise resin content measurement; highly trusted for no-oil certification
+
+### Recommendation by Use Case
+- Personal jewelry purchase under 1 ct: GIA sufficient
+- Investment stone 1–2 ct: GIA + consider Gubelin for top AAA
+- Investment stone over 2 ct: Gubelin or SSEF mandatory
+- Resale at auction: Gubelin or SSEF required for Christie's / Sotheby's / Bonhams
+
+---
+
+## Pricing Context (USD per carat, approximate 2025 ranges)
+
+| Grade | 0.5–1 ct | 1–2 ct | 2–5 ct | 5+ ct |
+|---|---|---|---|---|
+| AAA (Muzo, no oil, Gubelin) | $3,000–$6,000 | $6,000–$15,000 | $15,000–$50,000 | $50,000+ |
+| AA (Colombian, light oil, GIA) | $800–$2,000 | $2,000–$5,000 | $5,000–$12,000 | $12,000+ |
+| A (Colombian, moderate treatment) | $200–$600 | $600–$1,500 | $1,500–$4,000 | $4,000+ |
+| B (Natural character) | $50–$200 | $200–$500 | $500–$1,200 | $1,200+ |
+
+*Prices are indicative. Actual value depends on precise color, treatment, certification, and market conditions.*
+
+---
 
 ## Products
 
 ### Loose Emeralds
-Clarity grading system:
-- **AAA (Premium)**: Highest purity and brilliance. Exceptional transparency and intense color. Less than 5% of mined emeralds reach this grade.
-- **AA (Select)**: High quality with excellent color saturation and minimal visible inclusions.
-- **A (Classic)**: Good color and clarity. Ideal for elegant everyday jewelry.
-- **B (Natural)**: Natural character stones. Perfect for artisanal designs and unique pieces.
-
-Specifications:
 - Weight range: 0.5 to 15+ carats
-- Origins: Muzo, Chivor, Coscuez (Boyacá, Colombia)
-- Available cuts: Emerald, Oval, Round, Pear, Cushion
+- Origins: Muzo, Chivor, Coscuez, Gachala (Boyaca / Cundinamarca, Colombia)
+- Available cuts: Emerald (rectangular), Oval, Round, Pear, Cushion
 - Every stone includes a certificate of authenticity detailing origin, clarity, carat weight, and cut
+- GIA, Gubelin, and SSEF certification available on request
 
 ### Emerald Jewelry
 - Categories: Rings, Necklaces, Earrings, Bracelets
 - All pieces handcrafted by expert Colombian artisans
-- Materials: 18K gold, 14K gold, sterling silver
-- Each piece features authentic Colombian emeralds
-- Custom mounting and design services available in collaboration with expert jewelers
+- Materials: 18K gold, 14K gold, sterling silver 925
+- Each piece features authentic certified Colombian emeralds
+- Custom mounting and design services available
 
 ### Wholesale Program
 - Special pricing for jewelers, retailers, and wholesale buyers
-- Certified bulk lots organized by clarity grade
-- Custom selection and sourcing from specific mines
-- Volume discounts available
-- Contact directly for personalized quotes
+- Certified bulk lots organized by clarity grade and origin
+- Volume discounts; minimum order varies by grade
+- Contact directly for personalized quotes and lot previews
+
+---
+
+## Emerald Care Guide
+
+### Physical Properties
+- **Hardness**: 7.5–8 on Mohs scale (harder than most gemstones, softer than sapphire/ruby/diamond)
+- **Toughness**: Poor to fair — inclusions reduce resistance to impact; handle with care
+- **Cleavage**: Indistinct; can chip at girdle if struck
+
+### Cleaning
+- **Safe**: Warm water, mild soap, soft brush; rinse thoroughly; pat dry with soft cloth
+- **Avoid**: Ultrasonic cleaners (vibration can open fractures), steam cleaners (heat expands inclusions), harsh chemicals, acetone
+- **Professional cleaning**: Once per year by a jeweler familiar with treated gemstones
+
+### Storage
+- Store separately from harder gemstones (diamonds, sapphires, rubies) that can scratch emeralds
+- Use individual padded pouches or compartments
+- Avoid extreme temperatures and direct sunlight for extended periods
+
+### Re-oiling
+- Cedar oil treatment may diminish over years of wear; re-oiling by a jeweler can restore appearance
+- Typically needed every 5–10 years for worn jewelry
+- Does not affect value if original treatment was disclosed; must be re-disclosed after re-oiling
+
+---
+
+## Emeralds as Investment
+
+### What Makes an Emerald Investment-Grade
+1. Colombian origin (Muzo or Chivor preferred)
+2. AAA color grade — vivid saturation, pure green hue, medium-dark tone
+3. No treatment or minor (F1) treatment only
+4. Weight: minimum 1 ct; optimal 2–5 ct for liquidity
+5. Gubelin or SSEF certification
+6. No major fractures; eye-clean
+
+### Historical Appreciation
+- Top Colombian emeralds have appreciated 10–15% annually over the past 20 years
+- Demand growth driven by China, India, and the Middle East luxury markets
+- Supply is geologically constrained — no new major Colombian deposits discovered since the 1990s
+- Fine emeralds at Christie's / Sotheby's regularly achieve record prices per carat
+
+### Liquidity Considerations
+- Investment-grade emeralds (AAA, certified, 2+ ct) are liquid at major auction houses
+- Below investment-grade stones are less liquid — plan for longer holding periods
+- Pair with proper insurance (replacement value, not market value)
+
+---
 
 ## Process: Mine to Customer
-1. **Extraction**: Emeralds are carefully extracted from Colombia's most prestigious mines.
-2. **Selection**: Each stone is evaluated by expert gemologists to guarantee quality.
-3. **Certification**: Every emerald is certified with international standards for clarity, color, and cut.
-4. **Preparation**: Stones are prepared and packaged with the highest security standards.
-5. **Delivery**: Shipped with full insurance and tracking to anywhere in the world.
+1. **Extraction**: Emeralds carefully extracted from Colombia's most prestigious mines
+2. **Selection**: Each stone evaluated by expert gemologists for quality and origin
+3. **Certification**: Every emerald certified with international standards
+4. **Preparation**: Stones prepared and packaged with highest security standards
+5. **Delivery**: Shipped with full insurance and tracking worldwide
 
-## Certifications & Guarantees
-- **GIA Certification**: All emeralds can be certified by the Gemological Institute of America.
-- **Verified Origin**: Complete traceability from mine to customer for every stone.
-- **30-Day Return Guarantee**: Full refund if not satisfied, no questions asked.
-- **Insured Shipping**: All shipments include complete insurance against loss or damage.
-- Domestic delivery (Colombia): 3-5 business days
-- International delivery: 7-14 business days
+---
 
 ## Frequently Asked Questions
 
 ### Do your emeralds come with a certificate of authenticity?
-Yes, all our emeralds include a certificate of authenticity detailing origin, clarity, carat weight, and cut. GIA certification is also available upon request.
+Yes, all our emeralds include a certificate detailing origin, clarity, carat weight, and cut. GIA, Gubelin, and SSEF certification available upon request. For stones over 2 ct we strongly recommend Gubelin or SSEF.
+
+### What is the difference between AAA, AA, A, and B grades?
+AAA is the top 5% of mined emeralds — exceptional transparency, vivid color, no visible inclusions, minimal treatment. AA is high-quality with excellent color and minimal inclusions. A has good color and some visible inclusions. B has natural character with visible inclusions and heavier treatment. Grade directly drives price.
 
 ### Do you ship internationally?
-Yes, we ship worldwide. All shipments include full insurance against loss or damage. Delivery times vary: 3-5 days for Colombia, 7-14 days for international destinations.
+Yes, we ship worldwide via DHL and FedEx with full insurance, security packaging, and tracking. Delivery: 3–5 business days (Colombia), 7–14 days (international).
 
 ### What is your return policy?
-We offer a 30-day satisfaction guarantee. If the emerald does not meet your expectations, you can return it at no cost and we will refund 100% of the value.
+30-day satisfaction guarantee. Full refund if the stone does not match its description or certificate. Return the stone in original condition with certificate included.
 
 ### Do you offer wholesale discounts?
-Yes, we have special pricing for wholesalers and jewelers. Visit our Wholesale section or contact us directly for a personalized quote.
+Yes, special pricing for wholesalers, jewelers, and volume buyers. Certified bulk lots by grade and origin. Contact us for personalized quotes.
 
-### How can I verify the quality of an emerald?
-Each emerald is classified by clarity (AAA, AA, A, B), origin, and cut. You can also request an independent evaluation by a certified gemologist. Our team is available to answer any questions about stone quality.
+### How do I know if an emerald is truly Colombian?
+Colombian origin is certified by gemological laboratories (GIA, Gubelin, SSEF) using spectroscopy and inclusion analysis. The labs identify diagnostic chemical signatures and inclusion types unique to Colombian deposits. We provide full mine-to-customer traceability documentation.
 
-### Do you work with mounted stones or only loose stones?
-We primarily work with loose emeralds, but we also offer custom mounting services in collaboration with expert jewelers. Contact us for details.
+### What treatments do your emeralds have?
+All treatments are disclosed per industry standards. AAA stones have no treatment or F1 (minor) cedar oil. AA stones typically have F1 light cedar oil. A and B grades may have moderate treatment. Treatment is always documented in the certificate.
+
+### How should I store my emerald?
+Store separately from harder gems (diamonds, sapphires) in padded pouches. Avoid ultrasonic cleaners, steam, extreme heat, and prolonged sunlight. Clean with warm water and mild soap only.
+
+### Are emeralds a good investment?
+Investment-grade Colombian emeralds (AAA, Gubelin certified, 2+ ct, no treatment, Colombian origin) have historically appreciated 10–15% annually. Supply is geologically constrained. Demand is growing in Asia and the Middle East. Not all emeralds are investment-grade — consult with us before purchasing for investment purposes.
+
+### How do emerald certifications differ between GIA, Gubelin, and SSEF?
+GIA is most recognized in the US market. Gubelin and SSEF are the Swiss labs preferred for luxury and investment purposes — they provide more detailed treatment grading and are required by Christie's and Sotheby's. For investment stones over 2 ct, Gubelin or SSEF is the industry standard.
+
+### Can I get custom jewelry made with a specific emerald?
+Yes. Select your stone, define your design (ring, necklace, earrings, bracelet), and our Colombian artisans craft the piece in 3–4 weeks in 18k gold, rose gold, or silver 925. Contact us with your design ideas or references.
+
+### What is cedar oil treatment and does it affect value?
+Cedar oil (F1 — minor treatment) is the industry-standard treatment for emeralds and is universally accepted. It fills microscopic surface fractures to improve clarity. Minor treatment (F1) has minimal price impact. Significant resin treatment (F3) reduces value 40–60%. Always disclosed in the certificate.
+
+### How do I verify the quality of an emerald before buying?
+Request the gemological certificate. Check: origin (Colombia), treatment disclosure (F1 or less for quality stones), color grade (vivid/intense), and clarity grade. You can also request an independent evaluation by a certified gemologist (FGA or GG credential).
+
+---
 
 ## Contact Information
 - **Company**: Natura Gems
-- **Location**: Bogotá, Colombia — Centro Internacional de Esmeraldas, Oficina 301
+- **Location**: Bogota, Colombia — Centro Internacional de Esmeraldas, Oficina 301
 - **WhatsApp**: +57 300 123 4567 (immediate response)
 - **Phone**: +57 (1) 234 5678
 - **Email**: info@naturagems.co
@@ -88,11 +251,12 @@ We primarily work with loose emeralds, but we also offer custom mounting service
 - **Website**: https://naturagems.co
 
 ## Business Hours
-- Monday to Friday: 9:00 AM - 6:00 PM (Colombia Time, UTC-5)
-- Saturday: 10:00 AM - 2:00 PM
+- Monday to Friday: 9:00 AM – 6:00 PM (Colombia Time, UTC-5)
+- Saturday: 10:00 AM – 2:00 PM
 - Sunday: Closed
 
 ## Values
-- **Authenticity**: Every emerald comes with a verified certificate of authenticity and origin.
-- **Excellence**: We only select stones that meet the highest international quality standards.
-- **Tradition**: Three generations of knowledge and passion for emeralds back every piece.
+- **Authenticity**: Every emerald comes with verified certificate and origin documentation
+- **Excellence**: Only stones meeting highest international quality standards are selected
+- **Tradition**: Three generations of knowledge and passion for emeralds back every piece
+- **Transparency**: All treatments disclosed; no hidden information

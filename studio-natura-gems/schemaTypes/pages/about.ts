@@ -48,6 +48,12 @@ export const aboutPage = defineType({
       type: 'sectionWithIconCard',
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO / Metadatos',
+      type: 'seoMetadata',
+      description: 'Configuracion de SEO para esta pagina.',
+    }),
+    defineField({
       name: 'certificationsAndWarranties',
       title: 'Certificados y Garantías',
       type: 'object',

@@ -72,6 +72,12 @@ export const faqPage = defineType({
       title: 'Sección de FAQ',
       type: 'faqType',
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO / Metadatos',
+      type: 'seoMetadata',
+      description: 'Configuracion de SEO para esta pagina.',
+    }),
   ],
   preview: {
     select: {

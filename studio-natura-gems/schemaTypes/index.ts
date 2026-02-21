@@ -6,6 +6,7 @@ import {
   sectionHeader,
   statCard,
   sectionWithIconCard,
+  seoMetadata,
 } from './objects'
 
 import {
@@ -23,6 +24,7 @@ import {
   faqPage,
   emeraldGuideSection,
   faqType,
+  guide,
 } from './sections'
 
 export const schemaTypes = [
@@ -37,6 +39,7 @@ export const schemaTypes = [
   iconCard,
   statCard,
   sectionWithIconCard,
+  seoMetadata,
 
   // Objects — Home page sections (inline)
   heroSection,
@@ -59,6 +62,7 @@ export const schemaTypes = [
   emeraldPage,
   aboutPage,
   faqPage,
+  guide,
 
   // Documents — Shared sections
   newsletterSection,

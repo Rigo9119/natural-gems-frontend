@@ -12,4 +12,6 @@ export {carousel, aboutPage} from '../pages/about'
 
 export {faqPage, emeraldGuideSection, faqType} from '../pages/faqPage'
 
+export {guide} from '../pages/guide'
+
 export {newsletterSection, whatsAppSection} from './shared'

@@ -62,6 +62,7 @@ const appNavItems = [
   { label: "Joyería", href: "/jewelry" },
   { label: "Nosotros", href: "/about" },
   { label: "FAQ", href: "/faq" },
+  { label: "Blog", href: "/guides" },
   { label: "Contacto", href: "/contact" },
 ];
 

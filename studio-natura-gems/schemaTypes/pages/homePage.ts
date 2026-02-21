@@ -191,6 +191,12 @@ export const homePage = defineType({
       to: [{type: 'whatsAppSection'}],
       description: 'Referencia a la sección compartida de WhatsApp',
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO / Metadatos',
+      type: 'seoMetadata',
+      description: 'Configuracion de SEO para esta pagina. Si se deja vacio se usan los valores por defecto.',
+    }),
   ],
   preview: {
     prepare() {
