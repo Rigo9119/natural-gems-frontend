@@ -22,7 +22,7 @@ const searchSchema = z.object({
 	cut: z.string().optional(),
 });
 
-export const Route = createFileRoute("/emeralds/tienda")({
+export const Route = createFileRoute("/emeralds/tienda/")({
 	head: () =>
 		buildMeta({
 			title: "Tienda de Esmeraldas",
@@ -56,7 +56,7 @@ function TiendaPage() {
 		return {
 			min: Math.floor(Math.min(...carats) * 10) / 10,
 			max: Math.ceil(Math.max(...carats) * 10) / 10,
-		};
+		}
 	}, []);
 
 	const filters: ProductFilters.FilterState = useMemo(
@@ -70,7 +70,7 @@ function TiendaPage() {
 			cuts: search.cut ? (search.cut.split(",") as Cut[]) : [],
 		}),
 		[search, priceRange, caratRange],
-	);
+	)
 
 	const handleFiltersChange = (newFilters: ProductFilters.FilterState) => {
 		navigate({
@@ -102,8 +102,8 @@ function TiendaPage() {
 				cut: newFilters.cuts.length > 0 ? newFilters.cuts.join(",") : undefined,
 			},
 			replace: true,
-		});
-	};
+		})
+	}
 
 	const filteredProducts = useMemo(() => {
 		return demoProducts.filter((product) => {
@@ -124,7 +124,7 @@ function TiendaPage() {
 			if (filters.cuts.length > 0 && !filters.cuts.includes(product.cut))
 				return false;
 			return true;
-		});
+		})
 	}, [filters]);
 
 	return (
@@ -158,5 +158,5 @@ function TiendaPage() {
 
 			<CompareTray />
 		</div>
-	);
+	)
 }

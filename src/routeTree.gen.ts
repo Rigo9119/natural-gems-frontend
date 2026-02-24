@@ -19,10 +19,11 @@ import { Route as JewelryIndexRouteImport } from './routes/jewelry/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as EmeraldsIndexRouteImport } from './routes/emeralds/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
-import { Route as EmeraldsTiendaRouteImport } from './routes/emeralds/tienda'
 import { Route as EmeraldsMayoristasRouteImport } from './routes/emeralds/mayoristas'
 import { Route as EmeraldsCompareRouteImport } from './routes/emeralds/compare'
 import { Route as EmeraldsCollectionRouteImport } from './routes/emeralds/collection'
+import { Route as EmeraldsTiendaIndexRouteImport } from './routes/emeralds/tienda/index'
+import { Route as EmeraldsTiendaSlugRouteImport } from './routes/emeralds/tienda/$slug'
 
 const JewelryRoute = JewelryRouteImport.update({
   id: '/jewelry',
@@ -74,11 +75,6 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   path: '/guides/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmeraldsTiendaRoute = EmeraldsTiendaRouteImport.update({
-  id: '/tienda',
-  path: '/tienda',
-  getParentRoute: () => EmeraldsRoute,
-} as any)
 const EmeraldsMayoristasRoute = EmeraldsMayoristasRouteImport.update({
   id: '/mayoristas',
   path: '/mayoristas',
@@ -94,6 +90,16 @@ const EmeraldsCollectionRoute = EmeraldsCollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => EmeraldsRoute,
 } as any)
+const EmeraldsTiendaIndexRoute = EmeraldsTiendaIndexRouteImport.update({
+  id: '/tienda/',
+  path: '/tienda/',
+  getParentRoute: () => EmeraldsRoute,
+} as any)
+const EmeraldsTiendaSlugRoute = EmeraldsTiendaSlugRouteImport.update({
+  id: '/tienda/$slug',
+  path: '/tienda/$slug',
+  getParentRoute: () => EmeraldsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -105,11 +111,12 @@ export interface FileRoutesByFullPath {
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
-  '/emeralds/tienda': typeof EmeraldsTiendaRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/jewelry/': typeof JewelryIndexRoute
+  '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
+  '/emeralds/tienda/': typeof EmeraldsTiendaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -119,11 +126,12 @@ export interface FileRoutesByTo {
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
-  '/emeralds/tienda': typeof EmeraldsTiendaRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/emeralds': typeof EmeraldsIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/jewelry': typeof JewelryIndexRoute
+  '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
+  '/emeralds/tienda': typeof EmeraldsTiendaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -136,11 +144,12 @@ export interface FileRoutesById {
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
-  '/emeralds/tienda': typeof EmeraldsTiendaRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/jewelry/': typeof JewelryIndexRoute
+  '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
+  '/emeralds/tienda/': typeof EmeraldsTiendaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -154,11 +163,12 @@ export interface FileRouteTypes {
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
-    | '/emeralds/tienda'
     | '/guides/$slug'
     | '/emeralds/'
     | '/guides/'
     | '/jewelry/'
+    | '/emeralds/tienda/$slug'
+    | '/emeralds/tienda/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -168,11 +178,12 @@ export interface FileRouteTypes {
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
-    | '/emeralds/tienda'
     | '/guides/$slug'
     | '/emeralds'
     | '/guides'
     | '/jewelry'
+    | '/emeralds/tienda/$slug'
+    | '/emeralds/tienda'
   id:
     | '__root__'
     | '/'
@@ -184,11 +195,12 @@ export interface FileRouteTypes {
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
-    | '/emeralds/tienda'
     | '/guides/$slug'
     | '/emeralds/'
     | '/guides/'
     | '/jewelry/'
+    | '/emeralds/tienda/$slug'
+    | '/emeralds/tienda/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -274,13 +286,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/emeralds/tienda': {
-      id: '/emeralds/tienda'
-      path: '/tienda'
-      fullPath: '/emeralds/tienda'
-      preLoaderRoute: typeof EmeraldsTiendaRouteImport
-      parentRoute: typeof EmeraldsRoute
-    }
     '/emeralds/mayoristas': {
       id: '/emeralds/mayoristas'
       path: '/mayoristas'
@@ -302,6 +307,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmeraldsCollectionRouteImport
       parentRoute: typeof EmeraldsRoute
     }
+    '/emeralds/tienda/': {
+      id: '/emeralds/tienda/'
+      path: '/tienda'
+      fullPath: '/emeralds/tienda/'
+      preLoaderRoute: typeof EmeraldsTiendaIndexRouteImport
+      parentRoute: typeof EmeraldsRoute
+    }
+    '/emeralds/tienda/$slug': {
+      id: '/emeralds/tienda/$slug'
+      path: '/tienda/$slug'
+      fullPath: '/emeralds/tienda/$slug'
+      preLoaderRoute: typeof EmeraldsTiendaSlugRouteImport
+      parentRoute: typeof EmeraldsRoute
+    }
   }
 }
 
@@ -309,16 +328,18 @@ interface EmeraldsRouteChildren {
   EmeraldsCollectionRoute: typeof EmeraldsCollectionRoute
   EmeraldsCompareRoute: typeof EmeraldsCompareRoute
   EmeraldsMayoristasRoute: typeof EmeraldsMayoristasRoute
-  EmeraldsTiendaRoute: typeof EmeraldsTiendaRoute
   EmeraldsIndexRoute: typeof EmeraldsIndexRoute
+  EmeraldsTiendaSlugRoute: typeof EmeraldsTiendaSlugRoute
+  EmeraldsTiendaIndexRoute: typeof EmeraldsTiendaIndexRoute
 }
 
 const EmeraldsRouteChildren: EmeraldsRouteChildren = {
   EmeraldsCollectionRoute: EmeraldsCollectionRoute,
   EmeraldsCompareRoute: EmeraldsCompareRoute,
   EmeraldsMayoristasRoute: EmeraldsMayoristasRoute,
-  EmeraldsTiendaRoute: EmeraldsTiendaRoute,
   EmeraldsIndexRoute: EmeraldsIndexRoute,
+  EmeraldsTiendaSlugRoute: EmeraldsTiendaSlugRoute,
+  EmeraldsTiendaIndexRoute: EmeraldsTiendaIndexRoute,
 }
 
 const EmeraldsRouteWithChildren = EmeraldsRoute._addFileChildren(

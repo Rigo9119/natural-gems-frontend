@@ -75,9 +75,12 @@ docs/
 1. **Never edit config files**: `vite.config.ts`, `app.config.ts`, `tsconfig.json`,
    `netlify.toml` build/dev/redirect sections, `project.inlang/`, `src/paraglide/`.
 2. **Never manually edit `src/routeTree.gen.ts`** — it regenerates on `bun run dev` / `bun run build`.
-3. **`src/server.ts` Paraglide fix**: The handler must receive the delocalized request:
-   `({ request }) => handler.fetch(request)` — not `() => handler.fetch(req)`.
-   Breaking this causes an infinite redirect loop.
+3. **`src/server.ts` Paraglide + TanStack Router integration**: The handler must pass
+   the **original** request, NOT the middleware-delocalized one:
+   `() => handler.fetch(req)` — not `({ request }) => handler.fetch(request)`.
+   TanStack Router deLocalizes URLs itself via `rewrite.input`. Passing the
+   already-delocalized `request` causes TanStack Router to issue self-referential
+   307 redirects on all `/en/*` routes (infinite loop in the browser).
 4. **`netlify.toml`**: Only `[[headers]]` blocks may be appended. Never touch `[build]`, `[dev]`,
    or `[[redirects]]` sections.
 5. **Never auto-accept changes** — show the user a diff/summary and wait for confirmation.
