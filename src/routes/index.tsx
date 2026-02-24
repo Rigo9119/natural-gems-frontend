@@ -1,42 +1,53 @@
 import { createFileRoute } from "@tanstack/react-router";
+import BrandStory from "@/components/BrandStory";
+import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySection";
+import FeaturedProductsCMP from "@/components/FeaturedProductsCMP";
+import Hero from "@/components/Hero";
+import Newsletter from "@/components/Newsletter";
+import ProductCard from "@/components/ProductCard";
+import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP";
+import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP";
 import { getBestSellers } from "@/data/demo-jewelry-products";
 import { demoProducts } from "@/data/demo-products";
-import type {
-	HeroSection,
-	DualCategorySection,
-	WarrantySection,
-	NewsletterSection,
-	BrandStorySection,
-	WhatsAppSection,
-} from "@/lib/sanity/sanity-types";
 import {
 	prefetchHomePageContentData,
 	useHomePageData,
 } from "@/data/home-page-data";
-import { buildMeta } from "@/lib/seo";
-import ProductCard from "@/components/ProductCard";
-import Hero from "@/components/Hero";
-import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySection";
-import FeaturedProductsCMP from "@/components/FeaturedProductsCMP";
-import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP";
-import Newsletter from "@/components/Newsletter";
-import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP";
-import BrandStory from "@/components/BrandStory";
+import type {
+	BrandStorySection,
+	DualCategorySection,
+	HeroSection,
+	HomePage,
+	NewsletterSection,
+	SeoMetadata,
+	WarrantySection,
+	WhatsAppSection,
+} from "@/lib/sanity/sanity-types";
+import { buildMeta, resolveSanityMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-	head: () =>
-		buildMeta({
-			path: "/",
-			description:
-				"Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
-		}),
+	head: ({ loaderData }) => {
+		const seo = (loaderData as { seo?: SeoMetadata } | undefined)?.seo;
+		return buildMeta(
+			resolveSanityMeta(seo, {
+				path: "/",
+				description:
+					"Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
+			}),
+		);
+	},
 	loader: async ({ context }) => {
 		await prefetchHomePageContentData(context.queryClient);
+		const page = context.queryClient.getQueryData<HomePage | null>([
+			"sanity",
+			"homePage",
+		]);
+		return { seo: page?.seo ?? null };
 	},
-	component: HomePage,
+	component: HomePageComponent,
 });
 
-function HomePage() {
+function HomePageComponent() {
 	const homePage = useHomePageData();
 	//TODO -> estos datos llegan desde supabase y el ecommerce que se elija
 	const bestSellers = getBestSellers().slice(0, 4);
@@ -64,9 +75,7 @@ function HomePage() {
 			</FeaturedProductsCMP>
 
 			{/* ── Section 4: Heritage / Brand Story ── */}
-			<BrandStory
-				sectionContent={homePage?.brandStory as BrandStorySection}
-			/>
+			<BrandStory sectionContent={homePage?.brandStory as BrandStorySection} />
 
 			{/* ── Section 5: Jewelry Best Sellers ── */}
 			<FeaturedProductsCMP
@@ -91,9 +100,7 @@ function HomePage() {
 			/>
 
 			{/* ── Section 8: Newsletter ── */}
-			<Newsletter
-				sectionContent={homePage?.newsletter as NewsletterSection}
-			/>
+			<Newsletter sectionContent={homePage?.newsletter as NewsletterSection} />
 		</div>
 	);
 }
