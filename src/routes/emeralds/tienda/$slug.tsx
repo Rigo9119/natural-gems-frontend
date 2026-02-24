@@ -1,11 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
 	Award,
+	Check,
 	ChevronRight,
 	Gem,
 	MapPin,
 	MessageCircle,
 	ShieldCheck,
+	ShoppingCart,
 	Sparkles,
 	Truck,
 } from "lucide-react";
@@ -14,6 +16,7 @@ import { OptimizedImage } from "@/components/ui/optimized-image";
 import { demoProducts, getProductBySlug } from "@/data/demo-products";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
+import { useCartStore } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/tienda/$slug")({
 	head: ({ loaderData }) => {
@@ -90,9 +93,12 @@ const originDetail: Record<string, { region: string; characteristic: string }> =
 function EmeraldDetailPage() {
 	const { slug } = Route.useParams();
 	const product = getProductBySlug(slug);
+	const { addToCart, removeFromCart, isInCart } = useCartStore();
 
 	// notFound() in loader already handles missing slugs, but TS needs the guard
 	if (!product) return null;
+
+	const inCart = isInCart(product.id);
 
 	const origin = originDetail[product.origin];
 	const related = demoProducts
@@ -280,6 +286,32 @@ function EmeraldDetailPage() {
 
 						{/* CTA buttons */}
 						<div className="flex flex-col gap-3 sm:flex-row">
+							{/* Add to cart */}
+							<button
+								type="button"
+								onClick={() =>
+									inCart ? removeFromCart(product.id) : addToCart(product)
+								}
+								className={`flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3.5 font-medium transition-colors ${
+									inCart
+										? "bg-emerald-700 text-white hover:bg-emerald-800"
+										: "bg-brand-secondary-terra text-white hover:bg-brand-secondary-terra/85"
+								}`}
+							>
+								{inCart ? (
+									<>
+										<Check className="h-5 w-5" />
+										En el carrito
+									</>
+								) : (
+									<>
+										<ShoppingCart className="h-5 w-5" />
+										Añadir al carrito
+									</>
+								)}
+							</button>
+
+							{/* WhatsApp */}
 							<a
 								href={waUrl}
 								target="_blank"
@@ -289,12 +321,6 @@ function EmeraldDetailPage() {
 								<MessageCircle className="h-5 w-5" />
 								Consultar por WhatsApp
 							</a>
-							<Link
-								to="/emeralds/tienda"
-								className="flex items-center justify-center gap-2 rounded-full border border-brand-primary-dark px-6 py-3.5 text-sm font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
-							>
-								Ver más esmeraldas
-							</Link>
 						</div>
 
 						{/* Clarity & cut explainer */}

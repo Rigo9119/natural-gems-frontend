@@ -2,8 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
 import { CompareTable } from "@/components/store/CompareTable";
 import { Button } from "@/components/ui/button";
-import { useCompare } from "@/context/CompareContext";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
+import { useCompareStore } from "@/store/compareStore";
 
 export const Route = createFileRoute("/emeralds/compare")({
 	head: () =>
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/emeralds/compare")({
 });
 
 function ComparePage() {
-	const { compareItems } = useCompare();
+	const { compareItems } = useCompareStore();
 
 	return (
 		<div className="min-h-screen bg-brand-surface">

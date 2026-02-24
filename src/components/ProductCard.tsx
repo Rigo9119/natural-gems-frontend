@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Checkbox } from "@/components/ui/checkbox";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { useCompare } from "@/context/CompareContext";
 import type { JewelryProduct } from "@/data/demo-jewelry-products";
 import type { Product } from "@/data/demo-products";
+import { useCompareStore } from "@/store/compareStore";
 
 type AnyProduct = Product | JewelryProduct;
 
@@ -21,7 +21,7 @@ export default function ProductCard({
 	showCompare = false,
 }: ProductCardProps) {
 	const { isInCompare, addToCompare, removeFromCompare, canAddMore } =
-		useCompare();
+		useCompareStore();
 	const isSelected = isInCompare(product.id);
 
 	const handleCompareToggle = () => {

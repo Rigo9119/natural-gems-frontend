@@ -13,6 +13,7 @@ import { Route as JewelryRouteImport } from './routes/jewelry'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JewelryIndexRouteImport } from './routes/jewelry/index'
@@ -43,6 +44,11 @@ const EmeraldsRoute = EmeraldsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -104,6 +110,7 @@ const EmeraldsTiendaSlugRoute = EmeraldsTiendaSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/cart'
     | '/contact'
     | '/emeralds'
     | '/faq'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/cart'
     | '/contact'
     | '/faq'
     | '/emeralds/collection'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/cart'
     | '/contact'
     | '/emeralds'
     | '/faq'
@@ -206,6 +218,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
   FaqRoute: typeof FaqRoute
@@ -242,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -360,6 +380,7 @@ const JewelryRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   EmeraldsRoute: EmeraldsRouteWithChildren,
   FaqRoute: FaqRoute,
