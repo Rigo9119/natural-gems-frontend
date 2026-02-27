@@ -7,16 +7,12 @@ export interface NewsletterProps {
 }
 
 export default function Newsletter({ sectionContent }: NewsletterProps) {
-  const title =
-    localizeContent(sectionContent?.header?.title ?? {}) ?? "Únete a Nuestra Comunidad";
-  const description =
-    localizeContent(sectionContent?.header?.description ?? {}) ??
-    "Suscríbete para recibir novedades, ofertas exclusivas y ser la primera en conocer nuestras nuevas colecciones.";
-  const placeholder =
-    localizeContent(sectionContent?.placeholder ?? {}) ??
-    "Tu correo electrónico";
-  const ctaText =
-    localizeContent(sectionContent?.header?.cta?.text ?? {}) ?? "Suscribirse";
+  const title = localizeContent(sectionContent?.header?.title ?? {});
+  const description = localizeContent(
+    sectionContent?.header?.description ?? {},
+  );
+  const placeholder = localizeContent(sectionContent?.placeholder ?? {});
+  const ctaText = localizeContent(sectionContent?.header?.cta?.text ?? {});
 
   return (
     <section className="bg-brand-secondary-terra py-16 sm:py-24">

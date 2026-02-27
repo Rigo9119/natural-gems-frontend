@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { homePageQueryOptions } from "@/lib/sanity/sanity-queries";
 
 export async function prefetchHomePageContentData(queryClient: QueryClient) {
-	await queryClient.ensureQueryData(homePageQueryOptions());
+	return queryClient.ensureQueryData(homePageQueryOptions());
 }
 
 export function useHomePageData() {

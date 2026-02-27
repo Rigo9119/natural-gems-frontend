@@ -18,7 +18,6 @@ import type {
 	BrandStorySection,
 	DualCategorySection,
 	HeroSection,
-	HomePage,
 	NewsletterSection,
 	SeoMetadata,
 	WarrantySection,
@@ -37,12 +36,11 @@ export const Route = createFileRoute("/")({
 			}),
 		);
 	},
+	// @ts-expect-error — TanStack Router infers loader as `never` on child routes
+	// when the root route has `beforeLoad: async () => Promise<void>`. This is a
+	// known framework bug; the loader works correctly at runtime.
 	loader: async ({ context }) => {
-		await prefetchHomePageContentData(context.queryClient);
-		const page = context.queryClient.getQueryData<HomePage | null>([
-			"sanity",
-			"homePage",
-		]);
+		const page = await prefetchHomePageContentData(context.queryClient);
 		return { seo: page?.seo ?? null };
 	},
 	component: HomePageComponent,

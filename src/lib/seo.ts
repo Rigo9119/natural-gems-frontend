@@ -76,9 +76,9 @@ export function buildMeta({
 		],
 		links: [
 			{ rel: "canonical", href: canonicalUrl },
-			{ rel: "alternate", hreflang: "es", href: canonicalUrl },
-			{ rel: "alternate", hreflang: "en", href: enUrl },
-			{ rel: "alternate", hreflang: "x-default", href: canonicalUrl },
+			{ rel: "alternate", hrefLang: "es", href: canonicalUrl },
+			{ rel: "alternate", hrefLang: "en", href: enUrl },
+			{ rel: "alternate", hrefLang: "x-default", href: canonicalUrl },
 		],
 		scripts: jsonLd.map((data) => ({
 			type: "application/ld+json",

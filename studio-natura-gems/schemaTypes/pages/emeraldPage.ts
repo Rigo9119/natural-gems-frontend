@@ -73,4 +73,11 @@ export const emeraldPage = defineType({
       description: 'Configuracion de SEO para esta pagina.',
     }),
   ],
+  preview: {
+    prepare() {
+      return {
+        title: 'Página Principal de esmeraldas',
+      }
+    },
+  },
 })

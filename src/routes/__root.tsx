@@ -11,6 +11,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 import { buildMeta, organizationJsonLd } from "@/lib/seo";
 import { getLocale } from "@/paraglide/runtime";
 import { useCartStore } from "@/store/cartStore";
@@ -88,6 +89,7 @@ function RootComponent() {
 				<Outlet />
 			</main>
 			<Footer />
+			<WhatsAppFloatingButton />
 		</>
 	);
 }
