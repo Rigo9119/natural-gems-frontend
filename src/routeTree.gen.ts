@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as JewelryRouteImport } from './routes/jewelry'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
@@ -25,12 +26,18 @@ import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
 import { Route as EmeraldsMayoristasRouteImport } from './routes/emeralds/mayoristas'
 import { Route as EmeraldsCompareRouteImport } from './routes/emeralds/compare'
 import { Route as EmeraldsCollectionRouteImport } from './routes/emeralds/collection'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminWholesaleRouteImport } from './routes/admin/wholesale'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminEmeraldsRouteImport } from './routes/admin/emeralds'
 import { Route as EmeraldsTiendaIndexRouteImport } from './routes/emeralds/tienda/index'
 import { Route as EmeraldsTiendaSlugRouteImport } from './routes/emeralds/tienda/$slug'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JewelryRoute = JewelryRouteImport.update({
   id: '/jewelry',
   path: '/jewelry',
@@ -111,6 +118,11 @@ const EmeraldsCollectionRoute = EmeraldsCollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => EmeraldsRoute,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminWholesaleRoute = AdminWholesaleRouteImport.update({
   id: '/wholesale',
   path: '/wholesale',
@@ -146,9 +158,11 @@ export interface FileRoutesByFullPath {
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
+  '/login': typeof LoginRoute
   '/admin/emeralds': typeof AdminEmeraldsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -166,9 +180,11 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/login': typeof LoginRoute
   '/admin/emeralds': typeof AdminEmeraldsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -190,9 +206,11 @@ export interface FileRoutesById {
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
+  '/login': typeof LoginRoute
   '/admin/emeralds': typeof AdminEmeraldsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -215,9 +233,11 @@ export interface FileRouteTypes {
     | '/emeralds'
     | '/faq'
     | '/jewelry'
+    | '/login'
     | '/admin/emeralds'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/auth/callback'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -235,9 +255,11 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/faq'
+    | '/login'
     | '/admin/emeralds'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/auth/callback'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -258,9 +280,11 @@ export interface FileRouteTypes {
     | '/emeralds'
     | '/faq'
     | '/jewelry'
+    | '/login'
     | '/admin/emeralds'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/auth/callback'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -282,12 +306,21 @@ export interface RootRouteChildren {
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
   FaqRoute: typeof FaqRoute
   JewelryRoute: typeof JewelryRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/jewelry': {
       id: '/jewelry'
       path: '/jewelry'
@@ -400,6 +433,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmeraldsCollectionRouteImport
       parentRoute: typeof EmeraldsRoute
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/wholesale': {
       id: '/admin/wholesale'
       path: '/wholesale'
@@ -496,6 +536,8 @@ const rootRouteChildren: RootRouteChildren = {
   EmeraldsRoute: EmeraldsRouteWithChildren,
   FaqRoute: FaqRoute,
   JewelryRoute: JewelryRouteWithChildren,
+  LoginRoute: LoginRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
 }

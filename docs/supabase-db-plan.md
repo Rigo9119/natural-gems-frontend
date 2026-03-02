@@ -132,9 +132,9 @@ so historical records are accurate even if product prices change later.
 
 ## RLS Policies
 
-All tables are **public read-only**. The anon key can `SELECT` but cannot
-`INSERT`, `UPDATE`, or `DELETE`. Data is managed from the Supabase dashboard
-or a future admin panel.
+**Product tables** are public read-only — the anon key can `SELECT` but not mutate.
+**Orders tables** allow anon `INSERT` only (auto-capture on WhatsApp CTA click) — no read or update from the client.
+All management is done from the Supabase dashboard or a future admin panel.
 
 ```sql
 -- Product tables — public read-only
@@ -161,6 +161,31 @@ CREATE POLICY "anon insert" ON order_items FOR INSERT WITH CHECK (true);
 > Orders and order items are **write-only from the client**. Reading and updating
 > them is done exclusively from the Supabase dashboard (or a future internal
 > admin panel using the service role key).
+
+---
+
+## Execution Order
+
+**Phase 1 — Database (do this first, in Supabase dashboard)**
+1. Run the SQL for all 5 tables + 2 image sub-tables
+2. Apply all RLS policies
+3. Seed initial product data (emeralds + wholesale lots)
+
+**Phase 2 — TypeScript wiring**
+4. Generate types → `src/lib/database.types.ts`
+5. Create `src/lib/supabase-queries.ts`
+6. Update `src/data/page-data.ts` hooks
+
+**Phase 3 — Store updates**
+7. Update `cartStore.ts` rehydration (uuid-based)
+8. Update `compareStore.ts` rehydration (uuid-based)
+
+**Phase 4 — Route swap**
+9. Swap demo data in routes
+10. Wire order auto-capture in cart WhatsApp CTA
+
+**Phase 5 — Cleanup**
+11. Delete `src/data/demo-products.ts` and `src/data/demo-wholesale-lots.ts`
 
 ---
 

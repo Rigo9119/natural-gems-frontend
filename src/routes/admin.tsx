@@ -2,9 +2,12 @@ import {
 	createFileRoute,
 	Link,
 	Outlet,
+	redirect,
+	useRouter,
 	useRouterState,
 } from "@tanstack/react-router";
 import {
+	ArrowLeft,
 	Gem,
 	LayoutDashboard,
 	LogOut,
@@ -12,8 +15,21 @@ import {
 	ShoppingBag,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin")({
+	beforeLoad: async ({ location }) => {
+		if (typeof window === "undefined") return;
+		const {
+			data: { session },
+		} = await supabase.auth.getSession();
+		if (!session) {
+			throw redirect({
+				to: "/login",
+				search: { redirect: location.href },
+			});
+		}
+	},
 	component: AdminLayout,
 });
 
@@ -42,7 +58,13 @@ const navItems = [
 
 function AdminLayout() {
 	const routerState = useRouterState();
+	const router = useRouter();
 	const pathname = routerState.location.pathname;
+
+	const handleSignOut = async () => {
+		await supabase.auth.signOut();
+		router.navigate({ to: "/login" });
+	};
 
 	return (
 		<div className="flex min-h-screen bg-[#F4F6F8]">
@@ -102,15 +124,23 @@ function AdminLayout() {
 				<Separator className="bg-brand-primary-lighter/10" />
 
 				{/* Footer */}
-				<div className="p-3">
+				<div className="space-y-1 p-3">
 					<Link
 						to="/"
 						reloadDocument
 						className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-brand-primary-lighter/40 transition-all hover:bg-brand-primary-lighter/5 hover:text-brand-primary-lighter/70"
 					>
-						<LogOut className="h-4 w-4" />
+						<ArrowLeft className="h-4 w-4" />
 						Volver al sitio
 					</Link>
+					<button
+						type="button"
+						onClick={handleSignOut}
+						className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-brand-primary-lighter/40 transition-all hover:bg-brand-primary-lighter/5 hover:text-red-400"
+					>
+						<LogOut className="h-4 w-4" />
+						Cerrar sesión
+					</button>
 				</div>
 			</aside>
 

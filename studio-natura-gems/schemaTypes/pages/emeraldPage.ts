@@ -38,7 +38,7 @@ export const emeraldPage = defineType({
     }),
     defineField({
       name: 'exclusive',
-      title: 'Sección exclusiva',
+      title: 'Selección Premium',
       type: 'sectionHeader',
       description: 'Sección exclusiva de la página de inicio',
     }),
