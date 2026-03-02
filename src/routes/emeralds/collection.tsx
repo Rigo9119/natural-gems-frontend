@@ -1,4 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+	createColumnHelper,
+	flexRender,
+	getCoreRowModel,
+	useReactTable,
+} from "@tanstack/react-table";
 import { Check, Minus } from "lucide-react";
 import { useMemo } from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -121,6 +127,32 @@ const clarityComparison: {
 	},
 ];
 
+type ClarityRow = (typeof clarityComparison)[0];
+
+const clarityColumnHelper = createColumnHelper<ClarityRow>();
+
+const clarityColumns = [
+	clarityColumnHelper.accessor("attribute", {
+		header: () => "Caracteristica",
+		cell: (info) => info.getValue(),
+	}),
+	...(["AAA", "AA", "A", "B"] as Clarity[]).map((grade) =>
+		clarityColumnHelper.accessor(grade, {
+			id: grade,
+			header: () => grade,
+			cell: (info) => {
+				const val = info.getValue();
+				if (typeof val !== "boolean") return val;
+				return val ? (
+					<Check className="mx-auto h-4 w-4 text-emerald-600" />
+				) : (
+					<Minus className="mx-auto h-4 w-4 text-brand-primary-dark/30" />
+				);
+			},
+		}),
+	),
+];
+
 function CollectionPage() {
 	const statsByGrade = useMemo(() => {
 		const map = new Map<
@@ -143,6 +175,12 @@ function CollectionPage() {
 		}
 		return map;
 	}, []);
+
+	const clarityTable = useReactTable({
+		data: clarityComparison,
+		columns: clarityColumns,
+		getCoreRowModel: getCoreRowModel(),
+	});
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">
@@ -213,50 +251,56 @@ function CollectionPage() {
 				<div className="overflow-x-auto rounded-2xl border border-brand-primary-dark/10 bg-white shadow-sm">
 					<table className="w-full text-sm">
 						<thead>
-							<tr className="border-b border-brand-primary-dark/10 bg-brand-primary-dark">
-								<th className="px-4 py-4 text-left font-body font-medium text-brand-primary-lighter/80">
-									Caracteristica
-								</th>
-								{(["AAA", "AA", "A", "B"] as Clarity[]).map((grade) => (
-									<th
-										key={grade}
-										className="px-4 py-4 text-center font-heading text-lg text-brand-secondary-golden"
-									>
-										{grade}
-									</th>
-								))}
-							</tr>
+							{clarityTable.getHeaderGroups().map((headerGroup) => (
+								<tr
+									key={headerGroup.id}
+									className="border-b border-brand-primary-dark/10 bg-brand-primary-dark"
+								>
+									{headerGroup.headers.map((header, i) => (
+										<th
+											key={header.id}
+											className={
+												i === 0
+													? "px-4 py-4 text-left font-body font-medium text-brand-primary-lighter/80"
+													: "px-4 py-4 text-center font-heading text-lg text-brand-secondary-golden"
+											}
+										>
+											{header.isPlaceholder
+												? null
+												: flexRender(
+														header.column.columnDef.header,
+														header.getContext(),
+													)}
+										</th>
+									))}
+								</tr>
+							))}
 						</thead>
 						<tbody>
-							{clarityComparison.map((row, i) => (
+							{clarityTable.getRowModel().rows.map((row) => (
 								<tr
-									key={row.attribute}
+									key={row.id}
 									className={
-										i % 2 === 0 ? "bg-white" : "bg-brand-primary-lighter/40"
+										row.index % 2 === 0
+											? "bg-white"
+											: "bg-brand-primary-lighter/40"
 									}
 								>
-									<td className="px-4 py-3 font-medium text-brand-primary-dark">
-										{row.attribute}
-									</td>
-									{(["AAA", "AA", "A", "B"] as Clarity[]).map((grade) => {
-										const val = row[grade];
-										return (
-											<td
-												key={grade}
-												className="px-4 py-3 text-center text-brand-primary-dark/70"
-											>
-												{typeof val === "boolean" ? (
-													val ? (
-														<Check className="mx-auto h-4 w-4 text-emerald-600" />
-													) : (
-														<Minus className="mx-auto h-4 w-4 text-brand-primary-dark/30" />
-													)
-												) : (
-													val
-												)}
-											</td>
-										);
-									})}
+									{row.getVisibleCells().map((cell, j) => (
+										<td
+											key={cell.id}
+											className={
+												j === 0
+													? "px-4 py-3 font-medium text-brand-primary-dark"
+													: "px-4 py-3 text-center text-brand-primary-dark/70"
+											}
+										>
+											{flexRender(
+												cell.column.columnDef.cell,
+												cell.getContext(),
+											)}
+										</td>
+									))}
 								</tr>
 							))}
 						</tbody>

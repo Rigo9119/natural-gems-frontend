@@ -9,15 +9,13 @@ import ProductCard from "@/components/ProductCard";
 import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP";
 import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP";
 import { demoProducts } from "@/data/demo-products";
-import {
-	prefetchHomePageContentData,
-	useHomePageData,
-} from "@/data/home-page-data";
+import { prefetchHomePageData, useHomePageData } from "@/data/page-data";
 import { WHATSAPP_NUMBER } from "@/lib/constants";
 import type {
 	BrandStorySection,
 	DualCategorySection,
 	HeroSection,
+	HomePage,
 	NewsletterSection,
 	SeoMetadata,
 	WarrantySection,
@@ -36,11 +34,15 @@ export const Route = createFileRoute("/")({
 			}),
 		);
 	},
-	// @ts-expect-error — TanStack Router infers loader as `never` on child routes
+	// @ts-expect-error — TanStack Router infers loaderData as `never` on child routes
 	// when the root route has `beforeLoad: async () => Promise<void>`. This is a
 	// known framework bug; the loader works correctly at runtime.
 	loader: async ({ context }) => {
-		const page = await prefetchHomePageContentData(context.queryClient);
+		await prefetchHomePageData(context.queryClient);
+		const page = context.queryClient.getQueryData<HomePage | null>([
+			"sanity",
+			"homePage",
+		]);
 		return { seo: page?.seo ?? null };
 	},
 	component: HomePageComponent,
@@ -78,7 +80,8 @@ function HomePageComponent() {
 			{/* ── Section 4: Heritage / Brand Story ── */}
 			<BrandStory sectionContent={homePage?.brandStory as BrandStorySection} />
 
-			{/* ── Section 5: Jewelry teaser banner ── */}
+			{/* ── TODO: Borrar una vez se le haga deploy a la pagina de joyeria
+		    Section 5: Jewelry teaser banner ── */}
 			<section className="bg-brand-primary-lighter py-16 sm:py-24">
 				<div className="mx-auto max-w-7xl px-6 sm:px-8">
 					<div className="relative overflow-hidden rounded-3xl bg-brand-secondary-terra px-8 py-16 text-center sm:px-16 sm:py-20">

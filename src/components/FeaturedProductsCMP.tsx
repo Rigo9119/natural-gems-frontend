@@ -28,12 +28,14 @@ const variants = {
 export interface FeaturedProductsProps {
   sectionContent?: FeaturedProductsSection | null;
   variant?: keyof typeof variants;
+  backgroundColor?: string;
   children: React.ReactNode;
 }
 
 export default function FeaturedProductsCMP({
   sectionContent,
   variant = "emeralds",
+  backgroundColor,
   children,
 }: FeaturedProductsProps) {
   const v = variants[variant];
@@ -45,7 +47,7 @@ export default function FeaturedProductsCMP({
   const btnClasses = `rounded-full ${v.btnBorder} ${v.btnText} ${v.btnHoverBg} ${v.btnHoverText}`;
 
   return (
-    <section className={`${v.bg} py-16 sm:py-24`}>
+    <section className={`${backgroundColor ?? v.bg} py-16 sm:py-24`}>
       <div className="mx-auto max-w-7xl px-6 sm:px-8">
         <div className="mb-12 flex items-center justify-between">
           <div>

@@ -9,7 +9,6 @@ import {
 import { ArrowUpDown, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { Separator } from "@/components/ui/separator";
 import type { Product } from "@/data/demo-products";
 import { useCompareStore } from "@/store/compareStore";
 
@@ -46,7 +45,7 @@ export function CompareTable() {
 				header: ({ column }) => (
 					<button
 						type="button"
-						className="flex items-center gap-1 text-sm font-medium text-brand-primary-dark/70 hover:text-brand-primary-dark"
+						className="flex items-center gap-1 text-sm font-medium text-brand-primary-lighter/80 hover:text-brand-primary-lighter"
 						onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 					>
 						Atributo
@@ -77,13 +76,13 @@ export function CompareTable() {
 								<button
 									type="button"
 									onClick={() => removeFromCompare(product.id)}
-									className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary-dark text-white hover:bg-brand-primary-dark/80"
+									className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-brand-primary-dark hover:bg-brand-primary-lighter"
 									aria-label={`Eliminar ${product.name}`}
 								>
 									<X className="h-3 w-3" />
 								</button>
 							</div>
-							<span className="max-w-24 text-center font-heading text-xs font-medium text-brand-primary-dark">
+							<span className="max-w-24 text-center font-heading text-xs font-medium text-brand-primary-lighter">
 								{product.name}
 							</span>
 						</div>
@@ -104,8 +103,10 @@ export function CompareTable() {
 				columnHelper.display({
 					id: `empty_${i}`,
 					header: () => (
-						<div className="flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-brand-primary-dark/20">
-							<span className="text-xs text-brand-primary-dark/30">Vacío</span>
+						<div className="flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-brand-primary-lighter/30">
+							<span className="text-xs text-brand-primary-lighter/40">
+								Vacío
+							</span>
 						</div>
 					),
 					cell: () => (
@@ -155,13 +156,13 @@ export function CompareTable() {
 	return (
 		<>
 			{/* Mobile: card-based layout */}
-			<div className="md:hidden space-y-6">
+			<div className="space-y-6 md:hidden">
 				{compareItems.map((product) => (
 					<div
 						key={product.id}
 						className="rounded-lg border border-brand-primary-dark/10 p-4"
 					>
-						<div className="flex items-center gap-3 mb-4">
+						<div className="mb-4 flex items-center gap-3">
 							<OptimizedImage
 								src={product.image}
 								alt={product.name}
@@ -169,8 +170,8 @@ export function CompareTable() {
 								height={64}
 								className="h-16 w-16 rounded-lg object-cover"
 							/>
-							<div className="flex-1 min-w-0">
-								<h3 className="font-heading text-sm font-medium text-brand-primary-dark truncate">
+							<div className="min-w-0 flex-1">
+								<h3 className="truncate font-heading text-sm font-medium text-brand-primary-dark">
 									{product.name}
 								</h3>
 								<button
@@ -195,7 +196,7 @@ export function CompareTable() {
 							).map((attr) => (
 								<div
 									key={attr}
-									className="flex justify-between items-center py-1.5 border-b border-brand-primary-dark/5 last:border-0"
+									className="flex items-center justify-between border-b border-brand-primary-dark/5 py-1.5 last:border-0"
 								>
 									<dt className="text-xs text-brand-primary-dark/50">
 										{attributeLabels[attr]}
@@ -211,15 +212,22 @@ export function CompareTable() {
 			</div>
 
 			{/* Desktop: table layout */}
-			<div className="hidden md:block overflow-x-auto">
+			<div className="hidden overflow-x-auto rounded-2xl border border-brand-primary-dark/10 shadow-sm md:block">
 				<table className="w-full">
 					<thead>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<tr key={headerGroup.id}>
-								{headerGroup.headers.map((header) => (
+							<tr
+								key={headerGroup.id}
+								className="border-b border-brand-primary-dark/10 bg-brand-primary-dark"
+							>
+								{headerGroup.headers.map((header, i) => (
 									<th
 										key={header.id}
-										className="pb-4 text-left first:w-28 first:text-left"
+										className={
+											i === 0
+												? "w-28 px-4 py-4 text-left"
+												: "px-4 py-4 text-center"
+										}
 									>
 										{header.isPlaceholder
 											? null
@@ -233,20 +241,23 @@ export function CompareTable() {
 						))}
 					</thead>
 					<tbody>
-						<tr>
-							<td colSpan={columns.length} className="py-2">
-								<Separator />
-							</td>
-						</tr>
 						{table.getRowModel().rows.map((row) => (
 							<tr
 								key={row.id}
-								className="border-b border-brand-primary-dark/10 last:border-0"
+								className={`border-b border-brand-primary-dark/10 last:border-0 ${
+									row.index % 2 === 0
+										? "bg-white"
+										: "bg-brand-primary-lighter/40"
+								}`}
 							>
-								{row.getVisibleCells().map((cell) => (
+								{row.getVisibleCells().map((cell, j) => (
 									<td
 										key={cell.id}
-										className="py-3 text-center first:text-left"
+										className={
+											j === 0
+												? "px-4 py-3 text-left"
+												: "px-4 py-3 text-center"
+										}
 									>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
 									</td>

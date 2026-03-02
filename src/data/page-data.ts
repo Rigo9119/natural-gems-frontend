@@ -6,6 +6,7 @@ import {
 	faqPageQueryOptions,
 	guideBySlugQueryOptions,
 	guidesListQueryOptions,
+	homePageQueryOptions,
 } from "@/lib/sanity/sanity-queries";
 
 // ── Emerald Page ──────────────────────────────────────────────────────────────
@@ -63,5 +64,16 @@ export async function prefetchGuideBySlug(
 
 export function useGuideBySlug(slug: string) {
 	const { data } = useSuspenseQuery(guideBySlugQueryOptions(slug));
+	return data;
+}
+
+// ── Home Page ─────────────────────────────────────────────────────────────────
+
+export async function prefetchHomePageData(queryClient: QueryClient) {
+	await queryClient.ensureQueryData(homePageQueryOptions());
+}
+
+export function useHomePageData() {
+	const { data } = useSuspenseQuery(homePageQueryOptions());
 	return data;
 }

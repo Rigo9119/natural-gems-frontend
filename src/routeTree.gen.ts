@@ -14,15 +14,20 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as JewelryIndexRouteImport } from './routes/jewelry/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as EmeraldsIndexRouteImport } from './routes/emeralds/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
 import { Route as EmeraldsMayoristasRouteImport } from './routes/emeralds/mayoristas'
 import { Route as EmeraldsCompareRouteImport } from './routes/emeralds/compare'
 import { Route as EmeraldsCollectionRouteImport } from './routes/emeralds/collection'
+import { Route as AdminWholesaleRouteImport } from './routes/admin/wholesale'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
+import { Route as AdminEmeraldsRouteImport } from './routes/admin/emeralds'
 import { Route as EmeraldsTiendaIndexRouteImport } from './routes/emeralds/tienda/index'
 import { Route as EmeraldsTiendaSlugRouteImport } from './routes/emeralds/tienda/$slug'
 
@@ -51,6 +56,11 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -76,6 +86,11 @@ const EmeraldsIndexRoute = EmeraldsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => EmeraldsRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/guides/$slug',
   path: '/guides/$slug',
@@ -96,6 +111,21 @@ const EmeraldsCollectionRoute = EmeraldsCollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => EmeraldsRoute,
 } as any)
+const AdminWholesaleRoute = AdminWholesaleRouteImport.update({
+  id: '/wholesale',
+  path: '/wholesale',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmeraldsRoute = AdminEmeraldsRouteImport.update({
+  id: '/emeralds',
+  path: '/emeralds',
+  getParentRoute: () => AdminRoute,
+} as any)
 const EmeraldsTiendaIndexRoute = EmeraldsTiendaIndexRouteImport.update({
   id: '/tienda/',
   path: '/tienda/',
@@ -110,15 +140,20 @@ const EmeraldsTiendaSlugRoute = EmeraldsTiendaSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
+  '/admin/emeralds': typeof AdminEmeraldsRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/wholesale': typeof AdminWholesaleRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/jewelry/': typeof JewelryIndexRoute
@@ -131,10 +166,14 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
+  '/admin/emeralds': typeof AdminEmeraldsRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/wholesale': typeof AdminWholesaleRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/emeralds': typeof EmeraldsIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/jewelry': typeof JewelryIndexRoute
@@ -145,15 +184,20 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
   '/jewelry': typeof JewelryRouteWithChildren
+  '/admin/emeralds': typeof AdminEmeraldsRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/wholesale': typeof AdminWholesaleRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
   '/guides/$slug': typeof GuidesSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/jewelry/': typeof JewelryIndexRoute
@@ -165,15 +209,20 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/cart'
     | '/contact'
     | '/emeralds'
     | '/faq'
     | '/jewelry'
+    | '/admin/emeralds'
+    | '/admin/orders'
+    | '/admin/wholesale'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
     | '/guides/$slug'
+    | '/admin/'
     | '/emeralds/'
     | '/guides/'
     | '/jewelry/'
@@ -186,10 +235,14 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/faq'
+    | '/admin/emeralds'
+    | '/admin/orders'
+    | '/admin/wholesale'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
     | '/guides/$slug'
+    | '/admin'
     | '/emeralds'
     | '/guides'
     | '/jewelry'
@@ -199,15 +252,20 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/cart'
     | '/contact'
     | '/emeralds'
     | '/faq'
     | '/jewelry'
+    | '/admin/emeralds'
+    | '/admin/orders'
+    | '/admin/wholesale'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
     | '/guides/$slug'
+    | '/admin/'
     | '/emeralds/'
     | '/guides/'
     | '/jewelry/'
@@ -218,6 +276,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
@@ -264,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -299,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmeraldsIndexRouteImport
       parentRoute: typeof EmeraldsRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/guides/$slug': {
       id: '/guides/$slug'
       path: '/guides/$slug'
@@ -327,6 +400,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmeraldsCollectionRouteImport
       parentRoute: typeof EmeraldsRoute
     }
+    '/admin/wholesale': {
+      id: '/admin/wholesale'
+      path: '/wholesale'
+      fullPath: '/admin/wholesale'
+      preLoaderRoute: typeof AdminWholesaleRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/emeralds': {
+      id: '/admin/emeralds'
+      path: '/emeralds'
+      fullPath: '/admin/emeralds'
+      preLoaderRoute: typeof AdminEmeraldsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/emeralds/tienda/': {
       id: '/emeralds/tienda/'
       path: '/tienda'
@@ -343,6 +437,22 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminEmeraldsRoute: typeof AdminEmeraldsRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminWholesaleRoute: typeof AdminWholesaleRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminEmeraldsRoute: AdminEmeraldsRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
+  AdminWholesaleRoute: AdminWholesaleRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EmeraldsRouteChildren {
   EmeraldsCollectionRoute: typeof EmeraldsCollectionRoute
@@ -380,6 +490,7 @@ const JewelryRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
   EmeraldsRoute: EmeraldsRouteWithChildren,

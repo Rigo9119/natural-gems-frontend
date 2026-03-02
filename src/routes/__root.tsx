@@ -74,6 +74,7 @@ function RootComponent() {
 	const pathname = routerState.location.pathname;
 
 	const isHomePage = pathname === "/" || pathname === "";
+	const isAdminPage = pathname.startsWith("/admin");
 	const headerVariant = isHomePage ? "transparent" : "solid";
 
 	// SSR-safe Zustand hydration — runs once on client mount
@@ -81,6 +82,11 @@ function RootComponent() {
 		useCompareStore.persist.rehydrate();
 		useCartStore.persist.rehydrate();
 	}, []);
+
+	// Admin routes have their own layout — skip site chrome
+	if (isAdminPage) {
+		return <Outlet />;
+	}
 
 	return (
 		<>

@@ -123,12 +123,19 @@ export interface HomePage {
 	seo?: SeoMetadata;
 }
 
+export interface QualitySection {
+	title?: LocalizedString;
+	subTitle?: LocalizedString;
+}
+
 export interface EmeraldPage {
 	_id: string;
 	hero?: HeroSection;
 	exclusive?: SectionHeader;
 	brandStory?: BrandStorySection;
 	collection?: SectionHeader;
+	qualitySection?: QualitySection;
+	wholeSaleSection?: HeroSection;
 	seo?: SeoMetadata;
 }
 
