@@ -268,13 +268,13 @@ export function articleJsonLd(opts: {
 
 export function emeraldItemListJsonLd(
 	products: {
-		id: number;
+		id: string;
 		name: string;
 		price: number;
 		clarity: string;
 		origin: string;
-		carat: number;
-		image: string;
+		carats: number;
+		image_url: string | null;
 	}[],
 ) {
 	return {
@@ -288,8 +288,8 @@ export function emeraldItemListJsonLd(
 			item: {
 				"@type": "Product",
 				name: p.name,
-				image: p.image,
-				description: `Esmeralda colombiana ${p.clarity} de ${p.carat} quilates, origen ${p.origin}. Certificada con trazabilidad completa.`,
+				image: p.image_url ?? "",
+				description: `Esmeralda colombiana ${p.clarity} de ${p.carats} quilates, origen ${p.origin}. Certificada con trazabilidad completa.`,
 				brand: { "@type": "Brand", name: SITE_NAME },
 				offers: {
 					"@type": "Offer",

@@ -1,16 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { z } from "zod";
-import { CompareTray } from "@/components/store/CompareTray";
-import * as ProductFilters from "@/components/store/ProductFilters";
-import { ProductGrid } from "@/components/store/ProductGrid";
+import { createFileRoute } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
+import { z } from "zod"
+import { CompareTray } from "@/components/store/CompareTray"
+import * as ProductFilters from "@/components/store/ProductFilters"
+import { ProductGrid } from "@/components/store/ProductGrid"
 import {
 	type Clarity,
 	type Cut,
-	demoProducts,
 	type Origin,
-} from "@/data/demo-products";
-import { breadcrumbJsonLd, buildMeta, emeraldItemListJsonLd } from "@/lib/seo";
+	retailEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
+import {
+	breadcrumbJsonLd,
+	buildMeta,
+	emeraldItemListJsonLd,
+} from "@/lib/seo"
+import type { EmeraldWithImage } from "@/lib/supabase-queries"
 
 const searchSchema = z.object({
 	priceMin: z.number().optional(),
@@ -20,11 +26,12 @@ const searchSchema = z.object({
 	origin: z.string().optional(),
 	clarity: z.string().optional(),
 	cut: z.string().optional(),
-});
+})
 
 export const Route = createFileRoute("/emeralds/tienda/")({
-	head: () =>
-		buildMeta({
+	head: ({ loaderData }) => {
+		const emeralds = (loaderData as { emeralds?: EmeraldWithImage[] })?.emeralds ?? []
+		return buildMeta({
 			title: "Tienda de Esmeraldas",
 			description:
 				"Explora nuestra colección de esmeraldas sueltas colombianas. Filtra por claridad, quilates, origen y precio. Todas las piedras con certificado de autenticidad.",
@@ -35,29 +42,39 @@ export const Route = createFileRoute("/emeralds/tienda/")({
 					{ name: "Esmeraldas", path: "/emeralds" },
 					{ name: "Tienda", path: "/emeralds/tienda" },
 				]),
-				emeraldItemListJsonLd(demoProducts),
+				emeraldItemListJsonLd(emeralds),
 			],
-		}),
+		})
+	},
+	loader: async ({ context }) => {
+		const emeralds = await context.queryClient.ensureQueryData(
+			retailEmeraldsQueryOptions(),
+		)
+		return { emeralds }
+	},
 	validateSearch: searchSchema,
 	component: TiendaPage,
-});
+})
 
 function TiendaPage() {
-	const navigate = Route.useNavigate();
-	const search = Route.useSearch();
+	const navigate = Route.useNavigate()
+	const search = Route.useSearch()
+	const { data: emeralds } = useSuspenseQuery(retailEmeraldsQueryOptions())
 
 	const priceRange = useMemo(() => {
-		const prices = demoProducts.map((p) => p.price);
-		return { min: Math.min(...prices), max: Math.max(...prices) };
-	}, []);
+		if (emeralds.length === 0) return { min: 0, max: 10000 }
+		const prices = emeralds.map((p) => p.price)
+		return { min: Math.min(...prices), max: Math.max(...prices) }
+	}, [emeralds])
 
 	const caratRange = useMemo(() => {
-		const carats = demoProducts.map((p) => p.carat);
+		if (emeralds.length === 0) return { min: 0, max: 10 }
+		const carats = emeralds.map((p) => p.carats)
 		return {
 			min: Math.floor(Math.min(...carats) * 10) / 10,
 			max: Math.ceil(Math.max(...carats) * 10) / 10,
 		}
-	}, []);
+	}, [emeralds])
 
 	const filters: ProductFilters.FilterState = useMemo(
 		() => ({
@@ -106,26 +123,32 @@ function TiendaPage() {
 	}
 
 	const filteredProducts = useMemo(() => {
-		return demoProducts.filter((product) => {
+		return emeralds.filter((product) => {
 			if (product.price < filters.priceMin || product.price > filters.priceMax)
-				return false;
-			if (product.carat < filters.caratMin || product.carat > filters.caratMax)
-				return false;
+				return false
+			if (
+				product.carats < filters.caratMin ||
+				product.carats > filters.caratMax
+			)
+				return false
 			if (
 				filters.origins.length > 0 &&
-				!filters.origins.includes(product.origin)
+				!filters.origins.includes(product.origin as Origin)
 			)
-				return false;
+				return false
 			if (
 				filters.clarities.length > 0 &&
-				!filters.clarities.includes(product.clarity)
+				!filters.clarities.includes(product.clarity as Clarity)
 			)
-				return false;
-			if (filters.cuts.length > 0 && !filters.cuts.includes(product.cut))
-				return false;
-			return true;
+				return false
+			if (
+				filters.cuts.length > 0 &&
+				!filters.cuts.includes(product.cut as Cut)
+			)
+				return false
+			return true
 		})
-	}, [filters]);
+	}, [emeralds, filters])
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">

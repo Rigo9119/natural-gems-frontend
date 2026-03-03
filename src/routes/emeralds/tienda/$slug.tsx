@@ -1,4 +1,5 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	Award,
 	Check,
@@ -10,22 +11,25 @@ import {
 	ShoppingCart,
 	Sparkles,
 	Truck,
-} from "lucide-react";
-import ProductCard from "@/components/ProductCard";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import { demoProducts, getProductBySlug } from "@/data/demo-products";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
-import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
-import { useCartStore } from "@/store/cartStore";
+} from "lucide-react"
+import ProductCard from "@/components/ProductCard"
+import { OptimizedImage } from "@/components/ui/optimized-image"
+import { WHATSAPP_NUMBER } from "@/lib/constants"
+import {
+	emeraldBySlugQueryOptions,
+	retailEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
+import { useCartStore } from "@/store/cartStore"
 
 export const Route = createFileRoute("/emeralds/tienda/$slug")({
 	head: ({ loaderData }) => {
 		const p = loaderData as
 			| { name?: string; description?: string; slug?: string }
-			| undefined;
+			| undefined
 		return buildMeta({
 			title: p?.name,
-			description: p?.description,
+			description: p?.description ?? undefined,
 			path: `/emeralds/tienda/${p?.slug ?? ""}`,
 			ogType: "website",
 			jsonLd: p?.name
@@ -38,19 +42,24 @@ export const Route = createFileRoute("/emeralds/tienda/$slug")({
 						]),
 					]
 				: [],
-		});
+		})
 	},
-	loader: ({ params }) => {
-		const product = getProductBySlug(params.slug);
-		if (!product) throw notFound();
+	loader: async ({ context, params }) => {
+		const [product] = await Promise.all([
+			context.queryClient.ensureQueryData(
+				emeraldBySlugQueryOptions(params.slug),
+			),
+			context.queryClient.ensureQueryData(retailEmeraldsQueryOptions()),
+		])
+		if (!product) throw notFound()
 		return {
 			name: product.name,
 			description: product.description,
 			slug: product.slug,
-		};
+		}
 	},
 	component: EmeraldDetailPage,
-});
+})
 
 // ── Clarity descriptions ──────────────────────────────────────────────────────
 
@@ -59,14 +68,14 @@ const clarityMeaning: Record<string, string> = {
 	AA: "Claridad excepcional — inclusiones mínimas bajo lupa",
 	A: "Claridad muy buena — inclusiones leves no visibles a simple vista",
 	B: "Claridad estándar — inclusiones características del origen",
-};
+}
 
 const cutMeaning: Record<string, string> = {
 	Emerald: "Corte esmeralda — rectángulo escalonado, resalta el color profundo",
 	Oval: "Corte oval — equilibrio entre brillo y tamaño aparente",
 	Pear: "Corte pera — elegante, ideal para colgantes y aretes",
 	Round: "Corte redondo — máxima simetría y luminosidad",
-};
+}
 
 const originDetail: Record<string, { region: string; characteristic: string }> =
 	{
@@ -86,29 +95,30 @@ const originDetail: Record<string, { region: string; characteristic: string }> =
 			region: "Cundinamarca, Colombia",
 			characteristic: "Verde oscuro excepcional, producción muy limitada",
 		},
-	};
+	}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function EmeraldDetailPage() {
-	const { slug } = Route.useParams();
-	const product = getProductBySlug(slug);
-	const { addToCart, removeFromCart, isInCart } = useCartStore();
+	const { slug } = Route.useParams()
+	const { data: product } = useSuspenseQuery(emeraldBySlugQueryOptions(slug))
+	const { data: allRetail } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const { addToCart, removeFromCart, isInCart } = useCartStore()
 
 	// notFound() in loader already handles missing slugs, but TS needs the guard
-	if (!product) return null;
+	if (!product) return null
 
-	const inCart = isInCart(product.id);
+	const inCart = isInCart(product.id)
 
-	const origin = originDetail[product.origin];
-	const related = demoProducts
+	const origin = originDetail[product.origin]
+	const related = allRetail
 		.filter((p) => p.id !== product.id && p.origin === product.origin)
-		.slice(0, 4);
+		.slice(0, 4)
 
 	const waMessage = encodeURIComponent(
-		`Hola, me interesa la ${product.name} (${product.carat} ct, ${product.clarity}) que vi en su tienda. ¿Podría darme más información?`,
-	);
-	const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
+		`Hola, me interesa la ${product.name} (${product.carats} ct, ${product.clarity}) que vi en su tienda. ¿Podría darme más información?`,
+	)
+	const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
@@ -167,7 +177,7 @@ function EmeraldDetailPage() {
 					<div className="space-y-4">
 						<div className="relative overflow-hidden rounded-2xl bg-brand-primary-lighter aspect-square">
 							<OptimizedImage
-								src={product.image}
+								src={product.image_url ?? ""}
 								alt={product.name}
 								width={800}
 								height={800}
@@ -176,7 +186,7 @@ function EmeraldDetailPage() {
 							/>
 							{/* Clarity badge */}
 							<span className="absolute left-4 top-4 rounded-full bg-brand-primary-dark/80 px-4 py-1.5 text-xs font-semibold text-brand-secondary-golden backdrop-blur-sm">
-								{product.clarity} · {product.carat} ct
+								{product.clarity} · {product.carats} ct
 							</span>
 						</div>
 
@@ -258,7 +268,7 @@ function EmeraldDetailPage() {
 						{/* Specs table */}
 						<dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-3">
 							{[
-								{ label: "Quilates", value: `${product.carat} ct` },
+								{ label: "Quilates", value: `${product.carats} ct` },
 								{ label: "Corte", value: product.cut },
 								{ label: "Claridad", value: product.clarity },
 								{ label: "Origen", value: product.origin },
@@ -268,7 +278,7 @@ function EmeraldDetailPage() {
 								},
 								{
 									label: "Certificado",
-									value: product.certifiedBy ?? "—",
+									value: product.certified_by ?? "—",
 								},
 							].map(({ label, value }) => (
 								<div key={label}>
@@ -416,5 +426,5 @@ function EmeraldDetailPage() {
 				</section>
 			)}
 		</div>
-	);
+	)
 }

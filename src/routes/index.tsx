@@ -1,16 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
-import BrandStory from "@/components/BrandStory";
-import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySection";
-import FeaturedProductsCMP from "@/components/FeaturedProductsCMP";
-import Hero from "@/components/Hero";
-import Newsletter from "@/components/Newsletter";
-import ProductCard from "@/components/ProductCard";
-import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP";
-import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP";
-import { demoProducts } from "@/data/demo-products";
-import { prefetchHomePageData, useHomePageData } from "@/data/page-data";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { Sparkles } from "lucide-react"
+import BrandStory from "@/components/BrandStory"
+import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySection"
+import FeaturedProductsCMP from "@/components/FeaturedProductsCMP"
+import Hero from "@/components/Hero"
+import Newsletter from "@/components/Newsletter"
+import ProductCard from "@/components/ProductCard"
+import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP"
+import WhatsAppSectionCMP from "@/components/WhatsAppSectionCMP"
+import { prefetchHomePageData, useHomePageData } from "@/data/page-data"
+import { WHATSAPP_NUMBER } from "@/lib/constants"
+import { retailEmeraldsQueryOptions } from "@/lib/supabase-queries"
 import type {
 	BrandStorySection,
 	DualCategorySection,
@@ -20,41 +21,43 @@ import type {
 	SeoMetadata,
 	WarrantySection,
 	WhatsAppSection,
-} from "@/lib/sanity/sanity-types";
-import { buildMeta, resolveSanityMeta } from "@/lib/seo";
+} from "@/lib/sanity/sanity-types"
+import { buildMeta, resolveSanityMeta } from "@/lib/seo"
 
 export const Route = createFileRoute("/")({
 	head: ({ loaderData }) => {
-		const seo = (loaderData as { seo?: SeoMetadata } | undefined)?.seo;
+		const seo = (loaderData as { seo?: SeoMetadata } | undefined)?.seo
 		return buildMeta(
 			resolveSanityMeta(seo, {
 				path: "/",
 				description:
 					"Esmeraldas colombianas certificadas directamente desde las minas de Muzo. Joyería artesanal exclusiva con gemas de la más alta calidad. Envío asegurado a todo el mundo.",
 			}),
-		);
+		)
 	},
 	// @ts-expect-error — TanStack Router infers loaderData as `never` on child routes
 	// when the root route has `beforeLoad: async () => Promise<void>`. This is a
 	// known framework bug; the loader works correctly at runtime.
 	loader: async ({ context }) => {
-		await prefetchHomePageData(context.queryClient);
+		await prefetchHomePageData(context.queryClient)
+		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
 		const page = context.queryClient.getQueryData<HomePage | null>([
 			"sanity",
 			"homePage",
-		]);
-		return { seo: page?.seo ?? null };
+		])
+		return { seo: page?.seo ?? null }
 	},
 	component: HomePageComponent,
-});
+})
 
 function HomePageComponent() {
-	const homePage = useHomePageData();
-	const featuredEmeralds = demoProducts.slice(0, 4);
+	const homePage = useHomePageData()
+	const { data: emeralds } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const featuredEmeralds = emeralds.slice(0, 4)
 
 	const waJewelryUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
 		"Hola, me interesa la colección de joyería con esmeraldas colombianas. ¿Cuándo estará disponible?",
-	)}`;
+	)}`
 
 	return (
 		<div>
@@ -140,5 +143,5 @@ function HomePageComponent() {
 			{/* ── Section 8: Newsletter ── */}
 			<Newsletter sectionContent={homePage?.newsletter as NewsletterSection} />
 		</div>
-	);
+	)
 }

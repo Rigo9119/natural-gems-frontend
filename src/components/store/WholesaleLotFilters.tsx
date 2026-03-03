@@ -9,7 +9,7 @@ import {
   cuts,
   type Origin,
   origins,
-} from "@/data/demo-products";
+} from "@/lib/supabase-queries";
 import { FilterDropdown } from "./FilterDropdown";
 import { RangeFilter } from "./RangeFilter";
 

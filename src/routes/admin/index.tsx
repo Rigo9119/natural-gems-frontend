@@ -1,75 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
 import {
 	ArrowRight,
 	Gem,
 	Package,
 	ShoppingBag,
 	TrendingUp,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { demoProducts } from "@/data/demo-products";
-import { demoWholesaleLots } from "@/data/demo-wholesale-lots";
+} from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+	retailEmeraldsQueryOptions,
+	wholesaleEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
 
 export const Route = createFileRoute("/admin/")({
+	loader: async ({ context }) => {
+		await Promise.all([
+			context.queryClient.ensureQueryData(retailEmeraldsQueryOptions()),
+			context.queryClient.ensureQueryData(wholesaleEmeraldsQueryOptions()),
+		])
+	},
 	component: AdminDashboard,
-});
-
-// ── Demo summary data (replace with Supabase queries once tables are live) ──
-
-const totalRevenue = demoProducts.reduce((sum, p) => sum + p.price, 0);
-const availableEmeralds = demoProducts.length;
-const availableLots = demoWholesaleLots.length;
-
-const statCards = [
-	{
-		title: "Esmeraldas Disponibles",
-		value: availableEmeralds,
-		suffix: "piedras",
-		icon: Gem,
-		href: "/admin/emeralds",
-		color: "text-brand-primary-dark",
-		bg: "bg-brand-primary-dark/5",
-	},
-	{
-		title: "Lotes Mayoristas",
-		value: availableLots,
-		suffix: "lotes",
-		icon: Package,
-		href: "/admin/wholesale",
-		color: "text-brand-secondary-terra",
-		bg: "bg-brand-secondary-terra/10",
-	},
-	{
-		title: "Valor en Inventario",
-		value: `$${totalRevenue.toLocaleString()}`,
-		suffix: "USD",
-		icon: TrendingUp,
-		href: "/admin/emeralds",
-		color: "text-brand-secondary-golden",
-		bg: "bg-brand-secondary-golden/10",
-	},
-	{
-		title: "Órdenes",
-		value: 0,
-		suffix: "pendientes",
-		icon: ShoppingBag,
-		href: "/admin/orders",
-		color: "text-brand-primary-dark",
-		bg: "bg-brand-primary-dark/5",
-	},
-];
+})
 
 // ── Recent orders placeholder (replace with Supabase query) ──
 
 const recentOrders: {
-	id: string;
-	customer: string;
-	items: number;
-	total: string;
-	status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
-	date: string;
-}[] = [];
+	id: string
+	customer: string
+	items: number
+	total: string
+	status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+	date: string
+}[] = []
 
 const statusStyles: Record<string, string> = {
 	pending: "bg-brand-secondary-golden/20 text-brand-secondary-terra",
@@ -77,7 +42,7 @@ const statusStyles: Record<string, string> = {
 	shipped: "bg-blue-50 text-blue-700",
 	delivered: "bg-green-50 text-green-700",
 	cancelled: "bg-red-50 text-red-600",
-};
+}
 
 const statusLabels: Record<string, string> = {
 	pending: "Pendiente",
@@ -85,15 +50,64 @@ const statusLabels: Record<string, string> = {
 	shipped: "Enviada",
 	delivered: "Entregada",
 	cancelled: "Cancelada",
-};
+}
 
 function AdminDashboard() {
+	const { data: retail } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const { data: wholesale } = useSuspenseQuery(wholesaleEmeraldsQueryOptions())
+
+	const totalRevenue = useMemo(
+		() => retail.reduce((sum, p) => sum + p.price, 0),
+		[retail],
+	)
+	const availableEmeralds = retail.length
+	const availableLots = wholesale.length
+
+	const statCards = [
+		{
+			title: "Esmeraldas Disponibles",
+			value: availableEmeralds,
+			suffix: "piedras",
+			icon: Gem,
+			href: "/admin/emeralds",
+			color: "text-brand-primary-dark",
+			bg: "bg-brand-primary-dark/5",
+		},
+		{
+			title: "Lotes Mayoristas",
+			value: availableLots,
+			suffix: "lotes",
+			icon: Package,
+			href: "/admin/wholesale",
+			color: "text-brand-secondary-terra",
+			bg: "bg-brand-secondary-terra/10",
+		},
+		{
+			title: "Valor en Inventario",
+			value: `$${totalRevenue.toLocaleString()}`,
+			suffix: "USD",
+			icon: TrendingUp,
+			href: "/admin/emeralds",
+			color: "text-brand-secondary-golden",
+			bg: "bg-brand-secondary-golden/10",
+		},
+		{
+			title: "Órdenes",
+			value: 0,
+			suffix: "pendientes",
+			icon: ShoppingBag,
+			href: "/admin/orders",
+			color: "text-brand-primary-dark",
+			bg: "bg-brand-primary-dark/5",
+		},
+	]
+
 	return (
 		<div className="space-y-8">
 			{/* ── Stat cards ── */}
 			<div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
 				{statCards.map((card) => {
-					const Icon = card.icon;
+					const Icon = card.icon
 					return (
 						<Card
 							key={card.title}
@@ -123,7 +137,7 @@ function AdminDashboard() {
 								</Link>
 							</CardContent>
 						</Card>
-					);
+					)
 				})}
 			</div>
 
@@ -198,7 +212,9 @@ function AdminDashboard() {
 											<td className="px-6 py-4 text-gray-600">
 												{order.customer}
 											</td>
-											<td className="px-6 py-4 text-gray-500">{order.items}</td>
+											<td className="px-6 py-4 text-gray-500">
+												{order.items}
+											</td>
 											<td className="px-6 py-4 font-medium text-brand-primary-dark">
 												{order.total}
 											</td>
@@ -241,7 +257,7 @@ function AdminDashboard() {
 						icon: ShoppingBag,
 					},
 				].map((item) => {
-					const Icon = item.icon;
+					const Icon = item.icon
 					return (
 						<Link
 							key={item.href}
@@ -259,9 +275,9 @@ function AdminDashboard() {
 							</div>
 							<ArrowRight className="ml-auto h-4 w-4 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-primary-dark/50" />
 						</Link>
-					);
+					)
 				})}
 			</div>
 		</div>
-	);
+	)
 }

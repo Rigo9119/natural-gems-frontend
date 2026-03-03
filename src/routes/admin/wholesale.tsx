@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	type ColumnDef,
 	flexRender,
@@ -8,32 +9,32 @@ import {
 	type SortingState,
 	useReactTable,
 	type VisibilityState,
-} from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Package, Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+} from "@tanstack/react-table"
+import { ArrowUpDown, MoreHorizontal, Package, Search } from "lucide-react"
+import { useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
 	Table,
 	TableBody,
@@ -41,27 +42,30 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 import {
 	type Clarity,
 	type Cut,
+	type EmeraldWithImage,
+	type Origin,
 	clarities,
 	cuts,
-	demoWholesaleLots,
-	type Origin,
 	origins,
-	type WholesaleLot,
-} from "@/data/demo-wholesale-lots";
+	wholesaleEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
 
 export const Route = createFileRoute("/admin/wholesale")({
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(wholesaleEmeraldsQueryOptions())
+	},
 	component: AdminWholesale,
-});
+})
 
 // ── Status ────────────────────────────────────────────────────────────────────
 
-type LotStatus = "available" | "reserved" | "sold";
+type LotStatus = "available" | "reserved" | "sold"
 
-type LotRow = WholesaleLot & { status: LotStatus };
+type LotRow = EmeraldWithImage
 
 const statusConfig: Record<LotStatus, { label: string; style: string }> = {
 	available: {
@@ -77,23 +81,17 @@ const statusConfig: Record<LotStatus, { label: string; style: string }> = {
 		label: "Vendido",
 		style: "bg-gray-100 text-gray-500 border-gray-200",
 	},
-};
-
-function getDemoStatus(id: number): LotStatus {
-	if (id % 4 === 0) return "sold";
-	if (id % 3 === 0) return "reserved";
-	return "available";
 }
 
 function StatusBadge({ status }: { status: LotStatus }) {
-	const cfg = statusConfig[status];
+	const cfg = statusConfig[status] ?? statusConfig.available
 	return (
 		<span
 			className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-body text-xs font-medium ${cfg.style}`}
 		>
 			{cfg.label}
 		</span>
-	);
+	)
 }
 
 // ── Detail dialog ─────────────────────────────────────────────────────────────
@@ -103,11 +101,11 @@ function LotDetailDialog({
 	open,
 	onClose,
 }: {
-	lot: LotRow | null;
-	open: boolean;
-	onClose: () => void;
+	lot: LotRow | null
+	open: boolean
+	onClose: () => void
 }) {
-	if (!lot) return null;
+	if (!lot) return null
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
 			<DialogContent className="max-w-lg">
@@ -118,14 +116,14 @@ function LotDetailDialog({
 				</DialogHeader>
 				<div className="space-y-5">
 					<div className="flex items-center gap-3">
-						<StatusBadge status={lot.status} />
+						<StatusBadge status={(lot.status ?? "available") as LotStatus} />
 						<span className="font-body text-xs text-gray-400">
 							ID: {lot.id}
 						</span>
 					</div>
 					<div className="aspect-video w-full overflow-hidden rounded-lg bg-brand-primary-lighter">
 						<img
-							src={lot.image}
+							src={lot.image_url ?? ""}
 							alt={lot.name}
 							className="h-full w-full object-cover"
 						/>
@@ -138,11 +136,11 @@ function LotDetailDialog({
 							{ label: "Origen", value: lot.origin },
 							{ label: "Claridad", value: lot.clarity },
 							{ label: "Corte", value: lot.cut },
-							{ label: "Piedras", value: `${lot.stoneCount} unidades` },
-							{ label: "Total quilates", value: `${lot.totalCarats} ct` },
+							{ label: "Piedras", value: `${lot.stone_count} unidades` },
+							{ label: "Total quilates", value: `${lot.carats} ct` },
 							{
 								label: "Precio total",
-								value: `$${lot.totalPrice.toLocaleString()} USD`,
+								value: `$${lot.price.toLocaleString()} USD`,
 							},
 						].map((spec) => (
 							<div
@@ -161,7 +159,7 @@ function LotDetailDialog({
 							Precio por quilate
 						</p>
 						<p className="font-heading text-2xl text-brand-primary-dark">
-							${(lot.totalPrice / lot.totalCarats).toFixed(0)}{" "}
+							${(lot.price / lot.carats).toFixed(0)}{" "}
 							<span className="font-body text-sm font-normal text-gray-400">
 								USD/ct
 							</span>
@@ -170,7 +168,7 @@ function LotDetailDialog({
 				</div>
 			</DialogContent>
 		</Dialog>
-	);
+	)
 }
 
 // ── Column definitions ────────────────────────────────────────────────────────
@@ -255,7 +253,7 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 			),
 		},
 		{
-			accessorKey: "stoneCount",
+			accessorKey: "stone_count",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
@@ -268,12 +266,12 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 			),
 			cell: ({ row }) => (
 				<span className="font-body text-sm text-gray-600">
-					{row.original.stoneCount}
+					{row.original.stone_count}
 				</span>
 			),
 		},
 		{
-			accessorKey: "totalCarats",
+			accessorKey: "carats",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
@@ -286,12 +284,12 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 			),
 			cell: ({ row }) => (
 				<span className="font-body text-sm text-gray-600">
-					{row.original.totalCarats} ct
+					{row.original.carats} ct
 				</span>
 			),
 		},
 		{
-			accessorKey: "totalPrice",
+			accessorKey: "price",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
@@ -304,7 +302,7 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 			),
 			cell: ({ row }) => (
 				<span className="font-body font-medium text-brand-primary-dark">
-					${row.original.totalPrice.toLocaleString()}
+					${row.original.price.toLocaleString()}
 				</span>
 			),
 		},
@@ -315,7 +313,9 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 					Estado
 				</span>
 			),
-			cell: ({ row }) => <StatusBadge status={row.original.status} />,
+			cell: ({ row }) => (
+				<StatusBadge status={(row.original.status ?? "available") as LotStatus} />
+			),
 		},
 		{
 			id: "actions",
@@ -346,25 +346,21 @@ function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 				</DropdownMenu>
 			),
 		},
-	];
+	]
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function AdminWholesale() {
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [globalFilter, setGlobalFilter] = useState("");
-	const [originFilter, setOriginFilter] = useState("all");
-	const [clarityFilter, setClarityFilter] = useState("all");
-	const [cutFilter, setCutFilter] = useState("all");
-	const [statusFilter, setStatusFilter] = useState("all");
-	const [selectedLot, setSelectedLot] = useState<LotRow | null>(null);
-
-	const data = useMemo<LotRow[]>(
-		() => demoWholesaleLots.map((l) => ({ ...l, status: getDemoStatus(l.id) })),
-		[],
-	);
+	const { data } = useSuspenseQuery(wholesaleEmeraldsQueryOptions())
+	const [sorting, setSorting] = useState<SortingState>([])
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+	const [globalFilter, setGlobalFilter] = useState("")
+	const [originFilter, setOriginFilter] = useState("all")
+	const [clarityFilter, setClarityFilter] = useState("all")
+	const [cutFilter, setCutFilter] = useState("all")
+	const [statusFilter, setStatusFilter] = useState("all")
+	const [selectedLot, setSelectedLot] = useState<LotRow | null>(null)
 
 	const filteredData = useMemo(
 		() =>
@@ -374,12 +370,12 @@ function AdminWholesale() {
 					(clarityFilter === "all" ||
 						l.clarity === (clarityFilter as Clarity)) &&
 					(cutFilter === "all" || l.cut === (cutFilter as Cut)) &&
-					(statusFilter === "all" || l.status === (statusFilter as LotStatus)),
+					(statusFilter === "all" || l.status === statusFilter),
 			),
 		[data, originFilter, clarityFilter, cutFilter, statusFilter],
-	);
+	)
 
-	const columns = buildColumns(setSelectedLot);
+	const columns = buildColumns(setSelectedLot)
 
 	const table = useReactTable({
 		data: filteredData,
@@ -391,26 +387,26 @@ function AdminWholesale() {
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-	});
+	})
 
-	const totalValue = filteredData.reduce((s, l) => s + l.totalPrice, 0);
-	const totalCarats = filteredData.reduce((s, l) => s + l.totalCarats, 0);
-	const available = data.filter((l) => l.status === "available").length;
+	const totalValue = filteredData.reduce((s, l) => s + l.price, 0)
+	const totalCarats = filteredData.reduce((s, l) => s + l.carats, 0)
+	const available = data.filter((l) => l.status === "available").length
 
 	const clearFilters = () => {
-		setGlobalFilter("");
-		setOriginFilter("all");
-		setClarityFilter("all");
-		setCutFilter("all");
-		setStatusFilter("all");
-	};
+		setGlobalFilter("")
+		setOriginFilter("all")
+		setClarityFilter("all")
+		setCutFilter("all")
+		setStatusFilter("all")
+	}
 
 	const hasActiveFilters =
 		globalFilter ||
 		originFilter !== "all" ||
 		clarityFilter !== "all" ||
 		cutFilter !== "all" ||
-		statusFilter !== "all";
+		statusFilter !== "all"
 
 	return (
 		<div className="space-y-6">
@@ -567,7 +563,11 @@ function AdminWholesale() {
 								{table.getRowModel().rows.map((row) => (
 									<TableRow
 										key={row.id}
-										className={row.index % 2 === 0 ? "cursor-pointer bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20" : "cursor-pointer bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"}
+										className={
+											row.index % 2 === 0
+												? "cursor-pointer bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20"
+												: "cursor-pointer bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"
+										}
 										onClick={() => setSelectedLot(row.original)}
 									>
 										{row.getVisibleCells().map((cell) => (
@@ -592,5 +592,5 @@ function AdminWholesale() {
 				onClose={() => setSelectedLot(null)}
 			/>
 		</div>
-	);
+	)
 }

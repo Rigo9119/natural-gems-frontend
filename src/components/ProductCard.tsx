@@ -1,19 +1,19 @@
-import { Link } from "@tanstack/react-router";
-import { Checkbox } from "@/components/ui/checkbox";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import type { JewelryProduct } from "@/data/demo-jewelry-products";
-import type { Product } from "@/data/demo-products";
-import { useCompareStore } from "@/store/compareStore";
+import { Link } from "@tanstack/react-router"
+import { Checkbox } from "@/components/ui/checkbox"
+import { OptimizedImage } from "@/components/ui/optimized-image"
+import type { JewelryProduct } from "@/data/demo-jewelry-products"
+import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { useCompareStore } from "@/store/compareStore"
 
-type AnyProduct = Product | JewelryProduct;
+type AnyProduct = EmeraldWithImage | JewelryProduct
 
 interface ProductCardProps {
-	product: AnyProduct;
-	showCompare?: boolean;
+	product: AnyProduct
+	showCompare?: boolean
 }
 
-function isEmerald(product: AnyProduct): product is Product {
-	return "carat" in product;
+function isEmerald(product: AnyProduct): product is EmeraldWithImage {
+	return "carats" in product
 }
 
 export default function ProductCard({
@@ -21,27 +21,30 @@ export default function ProductCard({
 	showCompare = false,
 }: ProductCardProps) {
 	const { isInCompare, addToCompare, removeFromCompare, canAddMore } =
-		useCompareStore();
-	const isSelected = isInCompare(product.id);
+		useCompareStore()
+	const isSelected = isEmerald(product) && isInCompare(product.id)
 
 	const handleCompareToggle = () => {
+		if (!isEmerald(product)) return
 		if (isSelected) {
-			removeFromCompare(product.id);
+			removeFromCompare(product.id)
 		} else if (canAddMore) {
-			if (isEmerald(product)) {
-				addToCompare(product);
-			}
+			addToCompare(product)
 		}
-	};
+	}
 
 	const detailHref = isEmerald(product)
 		? `/emeralds/tienda/${product.slug}`
-		: undefined;
+		: undefined
+
+	const imageSrc = isEmerald(product)
+		? (product.image_url ?? "")
+		: product.image
 
 	const imageAndBadges = (
 		<figure className="relative aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
 			<OptimizedImage
-				src={product.image}
+				src={imageSrc}
 				alt={product.name}
 				width={400}
 				height={400}
@@ -72,7 +75,7 @@ export default function ProductCard({
 				</div>
 			)}
 		</figure>
-	);
+	)
 
 	return (
 		<article className="group flex flex-col">
@@ -102,7 +105,7 @@ export default function ProductCard({
 					{isEmerald(product) ? "Quilates" : "Material"}
 				</dt>
 				<dd className="text-sm text-brand-primary-dark/70">
-					{isEmerald(product) ? `${product.carat} quilates` : product.material}
+					{isEmerald(product) ? `${product.carats} quilates` : product.material}
 				</dd>
 				<dt className="sr-only">Precio</dt>
 				<dd className="font-body font-semibold text-brand-primary-dark">
@@ -120,5 +123,5 @@ export default function ProductCard({
 				)}
 			</dl>
 		</article>
-	);
+	)
 }

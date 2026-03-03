@@ -1,4 +1,4 @@
-import { Clarity } from "./demo-products";
+import type { Clarity } from "@/lib/supabase-queries";
 
 export const miningRegions = [
   {

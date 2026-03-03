@@ -24,7 +24,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 	const buildWhatsAppMessage = () => {
 		const lines = items.map(
 			(i) =>
-				`• ${i.product.name} (${i.product.carat} ct, ${i.product.clarity}) × ${i.quantity} — $${(i.product.price * i.quantity).toLocaleString()} USD`,
+				`• ${i.product.name} (${i.product.carats} ct, ${i.product.clarity}) × ${i.quantity} — $${(i.product.price * i.quantity).toLocaleString()} USD`,
 		);
 		const msg = [
 			"Hola, me interesa realizar el siguiente pedido:",
@@ -95,7 +95,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 									{/* Thumbnail */}
 									<div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-brand-primary-lighter">
 										<OptimizedImage
-											src={product.image}
+											src={product.image_url ?? ""}
 											alt={product.name}
 											width={64}
 											height={64}
@@ -109,7 +109,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 											{product.name}
 										</p>
 										<p className="text-xs text-brand-primary-dark/60">
-											{product.carat} ct · {product.clarity} · {product.origin}
+											{product.carats} ct · {product.clarity} · {product.origin}
 										</p>
 										<p className="text-sm font-semibold text-brand-primary-dark">
 											${(product.price * quantity).toLocaleString()} USD

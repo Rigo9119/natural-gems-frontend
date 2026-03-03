@@ -21,7 +21,7 @@ export function CompareTray() {
 							className="relative flex-shrink-0 rounded-lg border border-brand-primary-dark/10 bg-brand-primary-lighter p-1"
 						>
 							<OptimizedImage
-								src={product.image}
+								src={product.image_url ?? ""}
 								alt={product.name}
 								width={48}
 								height={48}

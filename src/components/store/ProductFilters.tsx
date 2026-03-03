@@ -11,7 +11,7 @@ import {
   type Origin,
   type Clarity,
   type Cut,
-} from "@/data/demo-products";
+} from "@/lib/supabase-queries";
 
 export interface FilterState {
   priceMin: number;

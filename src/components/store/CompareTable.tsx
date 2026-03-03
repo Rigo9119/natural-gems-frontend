@@ -5,39 +5,41 @@ import {
 	getSortedRowModel,
 	type SortingState,
 	useReactTable,
-} from "@tanstack/react-table";
-import { ArrowUpDown, X } from "lucide-react";
-import { useMemo, useState } from "react";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import type { Product } from "@/data/demo-products";
-import { useCompareStore } from "@/store/compareStore";
+} from "@tanstack/react-table"
+import { ArrowUpDown, X } from "lucide-react"
+import { useMemo, useState } from "react"
+import { OptimizedImage } from "@/components/ui/optimized-image"
+import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { useCompareStore } from "@/store/compareStore"
+
+type AttributeKey = "price" | "carats" | "origin" | "clarity" | "cut"
 
 interface CompareRow {
-	attribute: string;
-	attributeKey: keyof Product;
-	[productId: string]: string | number | keyof Product;
+	attribute: string
+	attributeKey: AttributeKey
+	[productId: string]: string | number | AttributeKey
 }
 
-const formatValue = (key: keyof Product, value: unknown): string => {
-	if (value === undefined || value === null) return "—";
-	if (key === "price") return `$${(value as number).toLocaleString()}`;
-	if (key === "carat") return `${value} ct`;
-	return String(value);
-};
+const formatValue = (key: AttributeKey, value: unknown): string => {
+	if (value === undefined || value === null) return "—"
+	if (key === "price") return `$${(value as number).toLocaleString()}`
+	if (key === "carats") return `${value} ct`
+	return String(value)
+}
 
-const attributeLabels: Record<string, string> = {
+const attributeLabels: Record<AttributeKey, string> = {
 	price: "Precio",
-	carat: "Quilates",
+	carats: "Quilates",
 	origin: "Origen",
 	clarity: "Claridad",
 	cut: "Corte",
-};
+}
 
 export function CompareTable() {
-	const { compareItems, removeFromCompare } = useCompareStore();
-	const [sorting, setSorting] = useState<SortingState>([]);
+	const { compareItems, removeFromCompare } = useCompareStore()
+	const [sorting, setSorting] = useState<SortingState>([])
 
-	const columnHelper = createColumnHelper<CompareRow>();
+	const columnHelper = createColumnHelper<CompareRow>()
 
 	const columns = useMemo(() => {
 		const cols = [
@@ -58,16 +60,17 @@ export function CompareTable() {
 					</span>
 				),
 			}),
-		];
+		]
 
 		compareItems.forEach((product) => {
 			cols.push(
+				// @ts-expect-error — dynamic accessor key is safe at runtime
 				columnHelper.accessor(`product_${product.id}` as keyof CompareRow, {
 					header: () => (
 						<div className="flex flex-col items-center gap-2">
 							<div className="relative">
 								<OptimizedImage
-									src={product.image}
+									src={product.image_url ?? ""}
 									alt={product.name}
 									width={80}
 									height={80}
@@ -93,11 +96,11 @@ export function CompareTable() {
 						</span>
 					),
 				}),
-			);
-		});
+			)
+		})
 
 		// Add empty columns for remaining slots
-		const emptySlots = 4 - compareItems.length;
+		const emptySlots = 4 - compareItems.length
 		for (let i = 0; i < emptySlots; i++) {
 			cols.push(
 				columnHelper.display({
@@ -115,34 +118,37 @@ export function CompareTable() {
 						</span>
 					),
 				}),
-			);
+			)
 		}
 
-		return cols;
-	}, [compareItems, columnHelper, removeFromCompare]);
+		return cols
+	}, [compareItems, columnHelper, removeFromCompare])
 
 	const data = useMemo<CompareRow[]>(() => {
-		const attributes: (keyof Product)[] = [
+		const attributes: AttributeKey[] = [
 			"price",
-			"carat",
+			"carats",
 			"origin",
 			"clarity",
 			"cut",
-		];
+		]
 
 		return attributes.map((attr) => {
 			const row: CompareRow = {
 				attribute: attributeLabels[attr],
 				attributeKey: attr,
-			};
+			}
 
 			compareItems.forEach((product) => {
-				row[`product_${product.id}`] = formatValue(attr, product[attr]);
-			});
+				row[`product_${product.id}`] = formatValue(
+					attr,
+					product[attr as keyof EmeraldWithImage],
+				)
+			})
 
-			return row;
-		});
-	}, [compareItems]);
+			return row
+		})
+	}, [compareItems])
 
 	const table = useReactTable({
 		data,
@@ -151,7 +157,7 @@ export function CompareTable() {
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-	});
+	})
 
 	return (
 		<>
@@ -164,7 +170,7 @@ export function CompareTable() {
 					>
 						<div className="mb-4 flex items-center gap-3">
 							<OptimizedImage
-								src={product.image}
+								src={product.image_url ?? ""}
 								alt={product.name}
 								width={64}
 								height={64}
@@ -185,27 +191,24 @@ export function CompareTable() {
 							</div>
 						</div>
 						<dl className="space-y-2">
-							{(
-								[
-									"price",
-									"carat",
-									"origin",
-									"clarity",
-									"cut",
-								] as (keyof Product)[]
-							).map((attr) => (
-								<div
-									key={attr}
-									className="flex items-center justify-between border-b border-brand-primary-dark/5 py-1.5 last:border-0"
-								>
-									<dt className="text-xs text-brand-primary-dark/50">
-										{attributeLabels[attr]}
-									</dt>
-									<dd className="text-sm font-medium text-brand-primary-dark">
-										{formatValue(attr, product[attr])}
-									</dd>
-								</div>
-							))}
+							{(["price", "carats", "origin", "clarity", "cut"] as AttributeKey[]).map(
+								(attr) => (
+									<div
+										key={attr}
+										className="flex items-center justify-between border-b border-brand-primary-dark/5 py-1.5 last:border-0"
+									>
+										<dt className="text-xs text-brand-primary-dark/50">
+											{attributeLabels[attr]}
+										</dt>
+										<dd className="text-sm font-medium text-brand-primary-dark">
+											{formatValue(
+												attr,
+												product[attr as keyof EmeraldWithImage],
+											)}
+										</dd>
+									</div>
+								),
+							)}
 						</dl>
 					</div>
 				))}
@@ -268,5 +271,5 @@ export function CompareTable() {
 				</table>
 			</div>
 		</>
-	);
+	)
 }

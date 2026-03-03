@@ -1,8 +1,8 @@
-import { WholesaleLotCard } from "@/components/WholesaleLotCard";
-import type { WholesaleLot } from "@/data/demo-wholesale-lots";
+import { WholesaleLotCard } from "@/components/WholesaleLotCard"
+import type { EmeraldWithImage } from "@/lib/supabase-queries"
 
 interface WholesaleLotGridProps {
-	lots: WholesaleLot[];
+	lots: EmeraldWithImage[]
 }
 
 export function WholesaleLotGrid({ lots }: WholesaleLotGridProps) {
@@ -16,7 +16,7 @@ export function WholesaleLotGrid({ lots }: WholesaleLotGridProps) {
 					Intenta ajustar los filtros para ver más resultados
 				</p>
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -25,5 +25,5 @@ export function WholesaleLotGrid({ lots }: WholesaleLotGridProps) {
 				<WholesaleLotCard key={lot.id} lot={lot} />
 			))}
 		</div>
-	);
+	)
 }

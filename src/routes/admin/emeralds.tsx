@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -9,7 +10,7 @@ import {
 	type SortingState,
 	useReactTable,
 	type VisibilityState,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 import {
 	ArrowUpDown,
 	ChevronDown,
@@ -17,10 +18,10 @@ import {
 	Gem,
 	MoreHorizontal,
 	Search,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+} from "lucide-react"
+import { useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -29,15 +30,15 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
 	Table,
 	TableBody,
@@ -45,27 +46,30 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 import {
 	type Clarity,
 	type Cut,
+	type EmeraldWithImage,
+	type Origin,
 	clarities,
 	cuts,
-	demoProducts,
-	type Origin,
 	origins,
-	type Product,
-} from "@/data/demo-products";
+	retailEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
 
 export const Route = createFileRoute("/admin/emeralds")({
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
+	},
 	component: AdminEmeralds,
-});
+})
 
 // ── Status ────────────────────────────────────────────────────────────────────
 
-type EmeraldStatus = "available" | "reserved" | "sold";
+type EmeraldStatus = "available" | "reserved" | "sold"
 
-type EmeraldRow = Product & { status: EmeraldStatus };
+type EmeraldRow = EmeraldWithImage
 
 const statusConfig: Record<EmeraldStatus, { label: string; style: string }> = {
 	available: {
@@ -81,23 +85,17 @@ const statusConfig: Record<EmeraldStatus, { label: string; style: string }> = {
 		label: "Vendida",
 		style: "bg-gray-100 text-gray-500 border-gray-200",
 	},
-};
-
-function getDemoStatus(id: number): EmeraldStatus {
-	if (id % 5 === 0) return "sold";
-	if (id % 3 === 0) return "reserved";
-	return "available";
 }
 
 function StatusBadge({ status }: { status: EmeraldStatus }) {
-	const cfg = statusConfig[status];
+	const cfg = statusConfig[status] ?? statusConfig.available
 	return (
 		<span
 			className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-body text-xs font-medium ${cfg.style}`}
 		>
 			{cfg.label}
 		</span>
-	);
+	)
 }
 
 // ── Column definitions ────────────────────────────────────────────────────────
@@ -183,7 +181,7 @@ const columns: ColumnDef<EmeraldRow>[] = [
 		),
 	},
 	{
-		accessorKey: "carat",
+		accessorKey: "carats",
 		header: ({ column }) => (
 			<Button
 				variant="ghost"
@@ -197,7 +195,7 @@ const columns: ColumnDef<EmeraldRow>[] = [
 		),
 		cell: ({ row }) => (
 			<span className="font-body text-sm text-gray-600">
-				{row.original.carat} ct
+				{row.original.carats} ct
 			</span>
 		),
 	},
@@ -227,7 +225,9 @@ const columns: ColumnDef<EmeraldRow>[] = [
 				Estado
 			</span>
 		),
-	cell: ({ row }) => <StatusBadge status={row.original.status} />,
+		cell: ({ row }) => (
+			<StatusBadge status={(row.original.status ?? "available") as EmeraldStatus} />
+		),
 		filterFn: (row, _id, value) =>
 			value === "all" || row.original.status === value,
 	},
@@ -268,24 +268,20 @@ const columns: ColumnDef<EmeraldRow>[] = [
 			</DropdownMenu>
 		),
 	},
-];
+]
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function AdminEmeralds() {
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [globalFilter, setGlobalFilter] = useState("");
-	const [originFilter, setOriginFilter] = useState("all");
-	const [clarityFilter, setClarityFilter] = useState("all");
-	const [cutFilter, setCutFilter] = useState("all");
-	const [statusFilter, setStatusFilter] = useState("all");
-
-	const data = useMemo<EmeraldRow[]>(
-		() => demoProducts.map((p) => ({ ...p, status: getDemoStatus(p.id) })),
-		[],
-	);
+	const { data } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const [sorting, setSorting] = useState<SortingState>([])
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+	const [globalFilter, setGlobalFilter] = useState("")
+	const [originFilter, setOriginFilter] = useState("all")
+	const [clarityFilter, setClarityFilter] = useState("all")
+	const [cutFilter, setCutFilter] = useState("all")
+	const [statusFilter, setStatusFilter] = useState("all")
 
 	// Apply dropdown filters as pre-filtered data so TanStack Table handles the rest
 	const filteredData = useMemo(
@@ -296,11 +292,10 @@ function AdminEmeralds() {
 					(clarityFilter === "all" ||
 						p.clarity === (clarityFilter as Clarity)) &&
 					(cutFilter === "all" || p.cut === (cutFilter as Cut)) &&
-					(statusFilter === "all" ||
-						p.status === (statusFilter as EmeraldStatus)),
+					(statusFilter === "all" || p.status === statusFilter),
 			),
 		[data, originFilter, clarityFilter, cutFilter, statusFilter],
-	);
+	)
 
 	const table = useReactTable({
 		data: filteredData,
@@ -313,25 +308,25 @@ function AdminEmeralds() {
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-	});
+	})
 
-	const totalValue = filteredData.reduce((sum, p) => sum + p.price, 0);
-	const available = data.filter((p) => p.status === "available").length;
+	const totalValue = filteredData.reduce((sum, p) => sum + p.price, 0)
+	const available = data.filter((p) => p.status === "available").length
 
 	const clearFilters = () => {
-		setGlobalFilter("");
-		setOriginFilter("all");
-		setClarityFilter("all");
-		setCutFilter("all");
-		setStatusFilter("all");
-	};
+		setGlobalFilter("")
+		setOriginFilter("all")
+		setClarityFilter("all")
+		setCutFilter("all")
+		setStatusFilter("all")
+	}
 
 	const hasActiveFilters =
 		globalFilter ||
 		originFilter !== "all" ||
 		clarityFilter !== "all" ||
 		cutFilter !== "all" ||
-		statusFilter !== "all";
+		statusFilter !== "all"
 
 	return (
 		<div className="space-y-6">
@@ -511,7 +506,11 @@ function AdminEmeralds() {
 								{table.getRowModel().rows.map((row) => (
 									<TableRow
 										key={row.id}
-										className={row.index % 2 === 0 ? "bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20" : "bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"}
+										className={
+											row.index % 2 === 0
+												? "bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20"
+												: "bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"
+										}
 									>
 										{row.getVisibleCells().map((cell) => (
 											<TableCell key={cell.id}>
@@ -529,5 +528,5 @@ function AdminEmeralds() {
 				</CardContent>
 			</Card>
 		</div>
-	);
+	)
 }

@@ -1,15 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
-} from "@tanstack/react-table";
-import { Check, Minus } from "lucide-react";
-import { useMemo } from "react";
-import { OptimizedImage } from "@/components/ui/optimized-image";
-import { type Clarity, demoProducts } from "@/data/demo-products";
-import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
+} from "@tanstack/react-table"
+import { Check, Minus } from "lucide-react"
+import { useMemo } from "react"
+import { OptimizedImage } from "@/components/ui/optimized-image"
+import { type Clarity, retailEmeraldsQueryOptions } from "@/lib/supabase-queries"
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
 
 export const Route = createFileRoute("/emeralds/collection")({
 	head: () =>
@@ -26,14 +27,17 @@ export const Route = createFileRoute("/emeralds/collection")({
 				]),
 			],
 		}),
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
+	},
 	component: CollectionPage,
-});
+})
 
 const collections: {
-	grade: Clarity;
-	title: string;
-	description: string;
-	image: string;
+	grade: Clarity
+	title: string
+	description: string
+	image: string
 }[] = [
 	{
 		grade: "AAA",
@@ -67,14 +71,14 @@ const collections: {
 		image:
 			"https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=600&h=800&fit=crop",
 	},
-];
+]
 
 const clarityComparison: {
-	attribute: string;
-	AAA: string | boolean;
-	AA: string | boolean;
-	A: string | boolean;
-	B: string | boolean;
+	attribute: string
+	AAA: string | boolean
+	AA: string | boolean
+	A: string | boolean
+	B: string | boolean
 }[] = [
 	{
 		attribute: "Transparencia",
@@ -125,11 +129,11 @@ const clarityComparison: {
 		A: true,
 		B: true,
 	},
-];
+]
 
-type ClarityRow = (typeof clarityComparison)[0];
+type ClarityRow = (typeof clarityComparison)[0]
 
-const clarityColumnHelper = createColumnHelper<ClarityRow>();
+const clarityColumnHelper = createColumnHelper<ClarityRow>()
 
 const clarityColumns = [
 	clarityColumnHelper.accessor("attribute", {
@@ -141,46 +145,45 @@ const clarityColumns = [
 			id: grade,
 			header: () => grade,
 			cell: (info) => {
-				const val = info.getValue();
-				if (typeof val !== "boolean") return val;
+				const val = info.getValue()
+				if (typeof val !== "boolean") return val
 				return val ? (
 					<Check className="mx-auto h-4 w-4 text-emerald-600" />
 				) : (
 					<Minus className="mx-auto h-4 w-4 text-brand-primary-dark/30" />
-				);
+				)
 			},
 		}),
 	),
-];
+]
 
 function CollectionPage() {
+	const { data: emeralds } = useSuspenseQuery(retailEmeraldsQueryOptions())
+
 	const statsByGrade = useMemo(() => {
-		const map = new Map<
-			Clarity,
-			{ count: number; minPrice: number; maxPrice: number }
-		>();
-		for (const product of demoProducts) {
-			const entry = map.get(product.clarity);
+		const map = new Map<string, { count: number; minPrice: number; maxPrice: number }>()
+		for (const product of emeralds) {
+			const entry = map.get(product.clarity)
 			if (entry) {
-				entry.count++;
-				entry.minPrice = Math.min(entry.minPrice, product.price);
-				entry.maxPrice = Math.max(entry.maxPrice, product.price);
+				entry.count++
+				entry.minPrice = Math.min(entry.minPrice, product.price)
+				entry.maxPrice = Math.max(entry.maxPrice, product.price)
 			} else {
 				map.set(product.clarity, {
 					count: 1,
 					minPrice: product.price,
 					maxPrice: product.price,
-				});
+				})
 			}
 		}
-		return map;
-	}, []);
+		return map
+	}, [emeralds])
 
 	const clarityTable = useReactTable({
 		data: clarityComparison,
 		columns: clarityColumns,
 		getCoreRowModel: getCoreRowModel(),
-	});
+	})
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">
@@ -198,7 +201,7 @@ function CollectionPage() {
 			<div className="mx-auto max-w-7xl px-4 py-8 md:px-6 lg:px-8">
 				<div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
 					{collections.map((collection) => {
-						const stats = statsByGrade.get(collection.grade);
+						const stats = statsByGrade.get(collection.grade)
 						return (
 							<Link
 								key={collection.grade}
@@ -233,7 +236,7 @@ function CollectionPage() {
 									)}
 								</div>
 							</Link>
-						);
+						)
 					})}
 				</div>
 			</div>
@@ -308,5 +311,5 @@ function CollectionPage() {
 				</div>
 			</div>
 		</div>
-	);
+	)
 }

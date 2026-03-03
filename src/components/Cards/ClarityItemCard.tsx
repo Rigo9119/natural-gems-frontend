@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Gem } from "lucide-react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import type { Clarity } from "@/data/demo-products";
+import type { Clarity } from "@/lib/supabase-queries";
 
 export interface ClarityItemCardProps {
 	grade: Clarity;

@@ -1,8 +1,8 @@
-import ProductCard from "@/components/ProductCard";
-import type { Product } from "@/data/demo-products";
+import ProductCard from "@/components/ProductCard"
+import type { EmeraldWithImage } from "@/lib/supabase-queries"
 
 interface ProductGridProps {
-	products: Product[];
+	products: EmeraldWithImage[]
 }
 
 export function ProductGrid({ products }: ProductGridProps) {
@@ -16,7 +16,7 @@ export function ProductGrid({ products }: ProductGridProps) {
 					Intenta ajustar los filtros para ver más resultados
 				</p>
 			</div>
-		);
+		)
 	}
 
 	return (
@@ -25,5 +25,5 @@ export function ProductGrid({ products }: ProductGridProps) {
 				<ProductCard key={product.id} product={product} showCompare />
 			))}
 		</div>
-	);
+	)
 }

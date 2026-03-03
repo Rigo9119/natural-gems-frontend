@@ -1,18 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { z } from "zod";
-import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
+import { createFileRoute } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
+import { z } from "zod"
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
 import {
 	type WholesaleFilterState,
 	WholesaleLotFilters,
-} from "@/components/store/WholesaleLotFilters";
-import { WholesaleLotGrid } from "@/components/store/WholesaleLotGrid";
+} from "@/components/store/WholesaleLotFilters"
+import { WholesaleLotGrid } from "@/components/store/WholesaleLotGrid"
 import {
 	type Clarity,
 	type Cut,
-	demoWholesaleLots,
 	type Origin,
-} from "@/data/demo-wholesale-lots";
+	wholesaleEmeraldsQueryOptions,
+} from "@/lib/supabase-queries"
 
 const searchSchema = z.object({
 	priceMin: z.number().optional(),
@@ -24,44 +25,55 @@ const searchSchema = z.object({
 	origin: z.string().optional(),
 	clarity: z.string().optional(),
 	cut: z.string().optional(),
-});
+})
 
 export const Route = createFileRoute("/emeralds/mayoristas")({
-	head: () => buildMeta({
-		title: "Mayoristas",
-		description: "Precios especiales en esmeraldas colombianas para joyeros y mayoristas. Lotes certificados con trazabilidad completa desde las minas de Colombia.",
-		path: "/emeralds/mayoristas",
-		jsonLd: [breadcrumbJsonLd([
-			{ name: "Inicio", path: "/" },
-			{ name: "Esmeraldas", path: "/emeralds" },
-			{ name: "Mayoristas", path: "/emeralds/mayoristas" },
-		])],
-	}),
+	head: () =>
+		buildMeta({
+			title: "Mayoristas",
+			description:
+				"Precios especiales en esmeraldas colombianas para joyeros y mayoristas. Lotes certificados con trazabilidad completa desde las minas de Colombia.",
+			path: "/emeralds/mayoristas",
+			jsonLd: [
+				breadcrumbJsonLd([
+					{ name: "Inicio", path: "/" },
+					{ name: "Esmeraldas", path: "/emeralds" },
+					{ name: "Mayoristas", path: "/emeralds/mayoristas" },
+				]),
+			],
+		}),
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(wholesaleEmeraldsQueryOptions())
+	},
 	validateSearch: searchSchema,
 	component: MayoristasPage,
-});
+})
 
 function MayoristasPage() {
-	const navigate = Route.useNavigate();
-	const search = Route.useSearch();
+	const navigate = Route.useNavigate()
+	const search = Route.useSearch()
+	const { data: lots } = useSuspenseQuery(wholesaleEmeraldsQueryOptions())
 
 	const priceRange = useMemo(() => {
-		const prices = demoWholesaleLots.map((l) => l.totalPrice);
-		return { min: Math.min(...prices), max: Math.max(...prices) };
-	}, []);
+		if (lots.length === 0) return { min: 0, max: 100000 }
+		const prices = lots.map((l) => l.price)
+		return { min: Math.min(...prices), max: Math.max(...prices) }
+	}, [lots])
 
 	const caratRange = useMemo(() => {
-		const carats = demoWholesaleLots.map((l) => l.totalCarats);
+		if (lots.length === 0) return { min: 0, max: 100 }
+		const carats = lots.map((l) => l.carats)
 		return {
 			min: Math.floor(Math.min(...carats) * 10) / 10,
 			max: Math.ceil(Math.max(...carats) * 10) / 10,
 		}
-	}, []);
+	}, [lots])
 
 	const stoneCountRange = useMemo(() => {
-		const counts = demoWholesaleLots.map((l) => l.stoneCount);
-		return { min: Math.min(...counts), max: Math.max(...counts) };
-	}, []);
+		if (lots.length === 0) return { min: 0, max: 100 }
+		const counts = lots.map((l) => l.stone_count)
+		return { min: Math.min(...counts), max: Math.max(...counts) }
+	}, [lots])
 
 	const filters: WholesaleFilterState = useMemo(
 		() => ({
@@ -72,7 +84,9 @@ function MayoristasPage() {
 			stoneCountMin: search.stoneCountMin ?? stoneCountRange.min,
 			stoneCountMax: search.stoneCountMax ?? stoneCountRange.max,
 			origins: search.origin ? (search.origin.split(",") as Origin[]) : [],
-			clarities: search.clarity ? (search.clarity.split(",") as Clarity[]) : [],
+			clarities: search.clarity
+				? (search.clarity.split(",") as Clarity[])
+				: [],
 			cuts: search.cut ? (search.cut.split(",") as Cut[]) : [],
 		}),
 		[search, priceRange, caratRange, stoneCountRange],
@@ -113,41 +127,39 @@ function MayoristasPage() {
 					newFilters.clarities.length > 0
 						? newFilters.clarities.join(",")
 						: undefined,
-				cut: newFilters.cuts.length > 0 ? newFilters.cuts.join(",") : undefined,
+				cut:
+					newFilters.cuts.length > 0 ? newFilters.cuts.join(",") : undefined,
 			},
 			replace: true,
 		})
 	}
 
 	const filteredLots = useMemo(() => {
-		return demoWholesaleLots.filter((lot) => {
+		return lots.filter((lot) => {
+			if (lot.price < filters.priceMin || lot.price > filters.priceMax)
+				return false
+			if (lot.carats < filters.caratMin || lot.carats > filters.caratMax)
+				return false
 			if (
-				lot.totalPrice < filters.priceMin ||
-				lot.totalPrice > filters.priceMax
+				lot.stone_count < filters.stoneCountMin ||
+				lot.stone_count > filters.stoneCountMax
 			)
-				return false;
+				return false
 			if (
-				lot.totalCarats < filters.caratMin ||
-				lot.totalCarats > filters.caratMax
+				filters.origins.length > 0 &&
+				!filters.origins.includes(lot.origin as Origin)
 			)
-				return false;
-			if (
-				lot.stoneCount < filters.stoneCountMin ||
-				lot.stoneCount > filters.stoneCountMax
-			)
-				return false;
-			if (filters.origins.length > 0 && !filters.origins.includes(lot.origin))
-				return false;
+				return false
 			if (
 				filters.clarities.length > 0 &&
-				!filters.clarities.includes(lot.clarity)
+				!filters.clarities.includes(lot.clarity as Clarity)
 			)
-				return false;
-			if (filters.cuts.length > 0 && !filters.cuts.includes(lot.cut))
-				return false;
-			return true;
+				return false
+			if (filters.cuts.length > 0 && !filters.cuts.includes(lot.cut as Cut))
+				return false
+			return true
 		})
-	}, [filters]);
+	}, [lots, filters])
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">
