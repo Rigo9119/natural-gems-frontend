@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	type ColumnDef,
@@ -15,8 +15,10 @@ import {
 	ArrowUpDown,
 	ChevronDown,
 	ExternalLink,
+	FileSpreadsheet,
 	Gem,
 	MoreHorizontal,
+	Plus,
 	Search,
 } from "lucide-react"
 import { useMemo, useState } from "react"
@@ -62,8 +64,17 @@ export const Route = createFileRoute("/admin/emeralds")({
 	loader: async ({ context }) => {
 		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
 	},
-	component: AdminEmeralds,
+	component: AdminEmeraldsLayout,
 })
+
+function AdminEmeraldsLayout() {
+	const pathname = useRouterState({ select: (s) => s.location.pathname })
+	// When at a child route (e.g. /admin/emeralds/new), render only the child
+	if (pathname !== "/admin/emeralds" && pathname !== "/admin/emeralds/") {
+		return <Outlet />
+	}
+	return <AdminEmeralds />
+}
 
 // ── Status ────────────────────────────────────────────────────────────────────
 
@@ -330,6 +341,31 @@ function AdminEmeralds() {
 
 	return (
 		<div className="space-y-6">
+			{/* Action buttons */}
+			<div className="flex justify-end gap-3">
+				<Button
+					asChild
+					variant="outline"
+					size="sm"
+					className="border-brand-primary-dark/20 font-body text-sm text-brand-primary-dark"
+				>
+					<Link to="/admin/import">
+						<FileSpreadsheet className="mr-2 h-4 w-4" />
+						Importar desde Excel
+					</Link>
+				</Button>
+				<Button
+					asChild
+					size="sm"
+					className="bg-brand-primary-dark font-body text-sm text-brand-primary-lighter hover:bg-brand-primary-dark/90"
+				>
+					<Link to="/admin/emeralds/new">
+						<Plus className="mr-2 h-4 w-4" />
+						Nueva esmeralda
+					</Link>
+				</Button>
+			</div>
+
 			{/* Summary strip */}
 			<div className="flex flex-wrap gap-4">
 				{[

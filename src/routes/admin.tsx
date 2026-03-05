@@ -13,6 +13,7 @@ import {
 	LogOut,
 	Package,
 	ShoppingBag,
+	Upload,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/lib/supabase";
@@ -53,6 +54,11 @@ const navItems = [
 		label: "Lotes Mayoristas",
 		href: "/admin/wholesale",
 		icon: Package,
+	},
+	{
+		label: "Importar",
+		href: "/admin/import",
+		icon: Upload,
 	},
 ];
 
