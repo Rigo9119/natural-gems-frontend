@@ -62,11 +62,11 @@ function HomePageComponent() {
 
 	return (
 		<div>
-			{/* ── Section 1: Full-Screen Hero ── */}
-			<Hero hero={homePage?.hero as HeroSection} />
-
-			{/* ── Section 2: Mine Imagery Carousel ── */}
+			{/* ── Section 1: Mine Imagery Carousel ── */}
 			<MineCarousel />
+
+			{/* ── Section 2: Full-Screen Hero ── */}
+			<Hero hero={homePage?.hero as HeroSection} />
 
 			{/* ── Section 3: Dual Category Showcase ── */}
 			{homePage?.dualCategory && (

@@ -1,10 +1,9 @@
-import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, ShoppingCart, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { CartDrawer } from "@/components/store/CartDrawer";
-import { COMPANY_NAME, WHATSAPP_URL } from "@/lib/constants";
+import { COMPANY_NAME } from "@/lib/constants";
 import { useCartStore } from "@/store/cartStore";
 
 export interface NavItem {
@@ -18,12 +17,7 @@ export interface HeaderProps {
 	variant?: "transparent" | "solid";
 }
 
-export default function Header({
-	navItems,
-	subNavItems,
-	variant = "transparent",
-}: HeaderProps) {
-	const [isScrolled, setIsScrolled] = useState(false);
+export default function Header({ navItems, subNavItems }: HeaderProps) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isCartOpen, setIsCartOpen] = useState(false);
 	const routerState = useRouterState();
@@ -32,30 +26,9 @@ export default function Header({
 
 	const totalItems = useCartStore((s) => s.totalItems);
 
-	const isSolid = variant === "solid";
-
-	useEffect(() => {
-		if (isSolid) return;
-
-		const handleScroll = () => {
-			setIsScrolled(window.scrollY > 50);
-		};
-
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, [isSolid]);
-
-	const showSolidBg = isSolid || isScrolled || isMobileMenuOpen;
-
 	return (
 		<>
-			<header
-				className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-					showSolidBg
-						? "bg-brand-primary-dark/95 backdrop-blur-md shadow-lg"
-						: "bg-transparent"
-				}`}
-			>
+			<header className="fixed top-0 left-0 w-full z-50 bg-brand-primary-dark shadow-lg">
 				{/* Skip to content link for accessibility */}
 				<a
 					href="#main-content"
@@ -104,16 +77,6 @@ export default function Header({
 									</span>
 								)}
 							</button>
-
-							<a
-								href={WHATSAPP_URL}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="inline-flex items-center gap-2 bg-brand-secondary-golden text-brand-primary-dark px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 hover:bg-brand-primary-lighter hover:scale-105"
-							>
-								<SiWhatsapp className="w-4 h-4" aria-hidden="true" />
-								<span className="sr-only">Contactar por </span>WhatsApp
-							</a>
 						</nav>
 
 						{/* Mobile right side: cart + hamburger */}
@@ -172,15 +135,6 @@ export default function Header({
 							<div className="py-2">
 								<LocaleSwitcher />
 							</div>
-							<a
-								href={WHATSAPP_URL}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="inline-flex items-center justify-center gap-2 bg-brand-secondary-golden text-brand-primary-dark px-5 py-3 rounded-full font-medium transition-all duration-300 hover:bg-brand-primary-lighter mt-2"
-							>
-								<SiWhatsapp className="w-4 h-4" aria-hidden="true" />
-								<span className="sr-only">Contactar por </span>WhatsApp
-							</a>
 						</div>
 					</nav>
 				</div>

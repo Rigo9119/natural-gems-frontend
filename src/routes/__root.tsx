@@ -73,10 +73,8 @@ function RootComponent() {
 	const routerState = useRouterState();
 	const pathname = routerState.location.pathname;
 
-	const isHomePage = pathname === "/" || pathname === "";
 	const isAdminPage = pathname.startsWith("/admin");
 	const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/auth");
-	const headerVariant = isHomePage ? "transparent" : "solid";
 
 	// SSR-safe Zustand hydration — runs once on client mount
 	useEffect(() => {
@@ -91,8 +89,8 @@ function RootComponent() {
 
 	return (
 		<>
-			<Header variant={headerVariant} navItems={appNavItems} />
-			<main id="main-content" className={isHomePage ? "" : "pt-20"}>
+			<Header navItems={appNavItems} />
+			<main id="main-content" className="pt-20">
 				<Outlet />
 			</main>
 			<Footer />
