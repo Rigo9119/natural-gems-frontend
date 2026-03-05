@@ -14,6 +14,7 @@ import { Route as JewelryRouteImport } from './routes/jewelry'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -26,6 +27,8 @@ import { Route as GuidesSlugRouteImport } from './routes/guides/$slug'
 import { Route as EmeraldsMayoristasRouteImport } from './routes/emeralds/mayoristas'
 import { Route as EmeraldsCompareRouteImport } from './routes/emeralds/compare'
 import { Route as EmeraldsCollectionRouteImport } from './routes/emeralds/collection'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as CheckoutCancelRouteImport } from './routes/checkout.cancel'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as AdminWholesaleRouteImport } from './routes/admin/wholesale'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
@@ -56,6 +59,11 @@ const EmeraldsRoute = EmeraldsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -118,6 +126,16 @@ const EmeraldsCollectionRoute = EmeraldsCollectionRouteImport.update({
   path: '/collection',
   getParentRoute: () => EmeraldsRoute,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => CheckoutRoute,
+} as any)
+const CheckoutCancelRoute = CheckoutCancelRouteImport.update({
+  id: '/cancel',
+  path: '/cancel',
+  getParentRoute: () => CheckoutRoute,
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -154,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
@@ -163,6 +182,8 @@ export interface FileRoutesByFullPath {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -178,6 +199,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
@@ -185,6 +207,8 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -202,6 +226,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
@@ -211,6 +236,8 @@ export interface FileRoutesById {
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/emeralds/collection': typeof EmeraldsCollectionRoute
   '/emeralds/compare': typeof EmeraldsCompareRoute
   '/emeralds/mayoristas': typeof EmeraldsMayoristasRoute
@@ -229,6 +256,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/emeralds'
     | '/faq'
@@ -238,6 +266,8 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/wholesale'
     | '/auth/callback'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -253,6 +283,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/faq'
     | '/login'
@@ -260,6 +291,8 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/wholesale'
     | '/auth/callback'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -276,6 +309,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/cart'
+    | '/checkout'
     | '/contact'
     | '/emeralds'
     | '/faq'
@@ -285,6 +319,8 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/wholesale'
     | '/auth/callback'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/emeralds/collection'
     | '/emeralds/compare'
     | '/emeralds/mayoristas'
@@ -302,6 +338,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   ContactRoute: typeof ContactRoute
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
   FaqRoute: typeof FaqRoute
@@ -347,6 +384,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -433,6 +477,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmeraldsCollectionRouteImport
       parentRoute: typeof EmeraldsRoute
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
+    '/checkout/cancel': {
+      id: '/checkout/cancel'
+      path: '/cancel'
+      fullPath: '/checkout/cancel'
+      preLoaderRoute: typeof CheckoutCancelRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
@@ -494,6 +552,20 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface CheckoutRouteChildren {
+  CheckoutCancelRoute: typeof CheckoutCancelRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutCancelRoute: CheckoutCancelRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 interface EmeraldsRouteChildren {
   EmeraldsCollectionRoute: typeof EmeraldsCollectionRoute
   EmeraldsCompareRoute: typeof EmeraldsCompareRoute
@@ -532,6 +604,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   ContactRoute: ContactRoute,
   EmeraldsRoute: EmeraldsRouteWithChildren,
   FaqRoute: FaqRoute,

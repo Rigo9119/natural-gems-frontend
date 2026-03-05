@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
 	flexRender,
@@ -9,7 +10,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, ShoppingBag } from "lucide-react";
+import { ArrowUpDown, MessageCircle, MoreHorizontal, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,62 +42,40 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import {
+	ordersQueryOptions,
+	updateOrderStatus,
+	type OrderWithItems,
+} from "@/lib/supabase-queries";
 
 export const Route = createFileRoute("/admin/orders")({
+	loader: async ({ context }) => {
+		await context.queryClient.ensureQueryData(ordersQueryOptions())
+	},
 	component: AdminOrders,
 });
 
-// ── Types (mirror Supabase schema) ────────────────────────────────────────────
+// ── Status config ─────────────────────────────────────────────────────────────
 
 type OrderStatus =
 	| "pending"
+	| "in_progress"
 	| "confirmed"
 	| "shipped"
 	| "delivered"
 	| "cancelled";
 type PaymentStatus = "unpaid" | "partial" | "paid";
 
-interface OrderItem {
-	emerald_name: string;
-	emerald_slug: string;
-	unit_price: number;
-	currency: string;
-	quantity: number;
-	carat: number;
-	clarity: string;
-	origin: string;
-}
-
-interface Order {
-	id: string;
-	order_number: string;
-	customer_name: string;
-	customer_whatsapp: string;
-	customer_email?: string;
-	shipping_address?: string;
-	shipping_country?: string;
-	tracking_number?: string;
-	subtotal: number;
-	currency: string;
-	status: OrderStatus;
-	payment_method?: string;
-	payment_status: PaymentStatus;
-	notes?: string;
-	created_at: string;
-	items: OrderItem[];
-}
-
-// ── Placeholder data (replace with Supabase query) ───────────────────────────
-
-const mockOrders: Order[] = [];
-
-// ── Status config ─────────────────────────────────────────────────────────────
-
 const statusConfig: Record<OrderStatus, { label: string; style: string }> = {
 	pending: {
 		label: "Pendiente",
 		style:
 			"bg-brand-secondary-golden/20 text-brand-secondary-terra border-brand-secondary-golden/30",
+	},
+	in_progress: {
+		label: "En proceso",
+		style:
+			"bg-blue-50 text-blue-700 border-blue-200",
 	},
 	confirmed: {
 		label: "Confirmada",
@@ -130,8 +109,11 @@ const paymentConfig: Record<PaymentStatus, { label: string; style: string }> = {
 	},
 };
 
-function StatusBadge({ status }: { status: OrderStatus }) {
-	const cfg = statusConfig[status];
+function StatusBadge({ status }: { status: string }) {
+	const cfg = statusConfig[status as OrderStatus] ?? {
+		label: status,
+		style: "bg-gray-100 text-gray-600 border-gray-200",
+	};
 	return (
 		<span
 			className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-body text-xs font-medium ${cfg.style}`}
@@ -141,8 +123,11 @@ function StatusBadge({ status }: { status: OrderStatus }) {
 	);
 }
 
-function PaymentBadge({ status }: { status: PaymentStatus }) {
-	const cfg = paymentConfig[status];
+function PaymentBadge({ status }: { status: string }) {
+	const cfg = paymentConfig[status as PaymentStatus] ?? {
+		label: status,
+		style: "bg-gray-100 text-gray-600 border-gray-200",
+	};
 	return (
 		<span
 			className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-body text-xs font-medium ${cfg.style}`}
@@ -159,7 +144,7 @@ function OrderDetailDialog({
 	open,
 	onClose,
 }: {
-	order: Order | null;
+	order: OrderWithItems | null;
 	open: boolean;
 	onClose: () => void;
 }) {
@@ -190,9 +175,20 @@ function OrderDetailDialog({
 							{order.customer_name}
 						</p>
 						{order.customer_whatsapp && (
-							<p className="font-body text-sm text-gray-500">
-								WhatsApp: {order.customer_whatsapp}
-							</p>
+							<div className="flex items-center gap-2 mt-1">
+								<p className="font-body text-sm text-gray-500">
+									WhatsApp: {order.customer_whatsapp}
+								</p>
+								<a
+									href={`https://wa.me/${order.customer_whatsapp.replace(/\D/g, "")}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-brand-primary-dark/50 hover:text-brand-primary-dark transition-colors"
+									aria-label="Abrir WhatsApp"
+								>
+									<MessageCircle className="h-4 w-4" />
+								</a>
+							</div>
 						)}
 						{order.customer_email && (
 							<p className="font-body text-sm text-gray-500">
@@ -217,17 +213,17 @@ function OrderDetailDialog({
 							Artículos
 						</p>
 						<div className="divide-y divide-gray-100 rounded-lg border border-gray-100">
-							{order.items.map((item) => (
+							{order.order_items.map((item) => (
 								<div
-									key={item.emerald_slug}
+									key={item.id}
 									className="flex items-center justify-between px-4 py-3"
 								>
 									<div>
 										<p className="font-body text-sm font-medium text-brand-primary-dark">
-											{item.emerald_name}
+											{item.product_name}
 										</p>
 										<p className="font-body text-xs text-gray-400">
-											{item.carat} ct · {item.clarity} · {item.origin}
+											{item.carats} ct · {item.clarity} · {item.origin}
 										</p>
 									</div>
 									<p className="font-body text-sm font-medium text-brand-primary-dark">
@@ -261,7 +257,10 @@ function OrderDetailDialog({
 
 // ── Column definitions ────────────────────────────────────────────────────────
 
-function buildColumns(onOpen: (order: Order) => void): ColumnDef<Order>[] {
+function buildColumns(
+	onOpen: (order: OrderWithItems) => void,
+	onStatusChange: (orderId: string, status: string) => void,
+): ColumnDef<OrderWithItems>[] {
 	return [
 		{
 			accessorKey: "order_number",
@@ -298,9 +297,23 @@ function buildColumns(onOpen: (order: Order) => void): ColumnDef<Order>[] {
 					<p className="font-body text-sm text-gray-700">
 						{row.original.customer_name}
 					</p>
-					<p className="font-body text-xs text-gray-400">
-						{row.original.customer_whatsapp}
-					</p>
+					{row.original.customer_whatsapp && (
+						<div className="flex items-center gap-1">
+							<p className="font-body text-xs text-gray-400">
+								{row.original.customer_whatsapp}
+							</p>
+							<a
+								href={`https://wa.me/${row.original.customer_whatsapp.replace(/\D/g, "")}`}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-gray-300 hover:text-brand-primary-dark transition-colors"
+								onClick={(e) => e.stopPropagation()}
+								aria-label="WhatsApp"
+							>
+								<MessageCircle className="h-3.5 w-3.5" />
+							</a>
+						</div>
+					)}
 				</div>
 			),
 		},
@@ -354,7 +367,7 @@ function buildColumns(onOpen: (order: Order) => void): ColumnDef<Order>[] {
 			),
 			cell: ({ row }) => (
 				<span className="font-body text-sm text-gray-400">
-					{new Date(row.original.created_at).toLocaleDateString("es-CO", {
+					{new Date(row.original.created_at ?? "").toLocaleDateString("es-CO", {
 						day: "2-digit",
 						month: "short",
 						year: "numeric",
@@ -381,7 +394,27 @@ function buildColumns(onOpen: (order: Order) => void): ColumnDef<Order>[] {
 							Ver detalle
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem className="text-red-600">
+						{(["pending", "in_progress", "confirmed", "shipped", "delivered"] as OrderStatus[])
+							.filter((s) => s !== row.original.status)
+							.map((s) => (
+								<DropdownMenuItem
+									key={s}
+									onClick={(e) => {
+										e.stopPropagation()
+										onStatusChange(row.original.id, s)
+									}}
+								>
+									→ {statusConfig[s].label}
+								</DropdownMenuItem>
+							))}
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							className="text-red-600"
+							onClick={(e) => {
+								e.stopPropagation()
+								onStatusChange(row.original.id, "cancelled")
+							}}
+						>
 							Cancelar orden
 						</DropdownMenuItem>
 					</DropdownMenuContent>
@@ -394,19 +427,31 @@ function buildColumns(onOpen: (order: Order) => void): ColumnDef<Order>[] {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function AdminOrders() {
+	const queryClient = useQueryClient()
+	const { data } = useSuspenseQuery(ordersQueryOptions())
 	const [sorting, setSorting] = useState<SortingState>([
 		{ id: "created_at", desc: true },
 	]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [statusFilter, setStatusFilter] = useState("all");
-	const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+	const [selectedOrder, setSelectedOrder] = useState<OrderWithItems | null>(null);
+
+	const statusMutation = useMutation({
+		mutationFn: ({ id, status }: { id: string; status: string }) =>
+			updateOrderStatus(id, status),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["orders"] })
+		},
+	})
 
 	const filteredData =
 		statusFilter === "all"
-			? mockOrders
-			: mockOrders.filter((o) => o.status === statusFilter);
+			? data
+			: data.filter((o) => o.status === statusFilter);
 
-	const columns = buildColumns(setSelectedOrder);
+	const columns = buildColumns(setSelectedOrder, (id, status) =>
+		statusMutation.mutate({ id, status }),
+	);
 
 	const table = useReactTable({
 		data: filteredData,
@@ -457,8 +502,7 @@ function AdminOrders() {
 									: ""}
 							</p>
 							<p className="mt-1 font-body text-xs text-gray-300">
-								Las órdenes se crean automáticamente al hacer clic en el botón
-								de WhatsApp en el carrito
+								Las órdenes aparecen cuando los clientes confirman en /checkout
 							</p>
 						</div>
 					) : (

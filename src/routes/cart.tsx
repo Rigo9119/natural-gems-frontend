@@ -1,14 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowLeft,
-	MessageCircle,
 	Minus,
 	Plus,
 	ShoppingBag,
 	Trash2,
 } from "lucide-react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 import { useCartStore } from "@/store/cartStore";
 
@@ -39,21 +37,6 @@ function CartPage() {
 		totalItems,
 		totalPrice,
 	} = useCartStore();
-
-	// Build WhatsApp message with all cart items
-	const waMessage = encodeURIComponent(
-		items.length > 0
-			? `Hola, me gustaría consultar sobre las siguientes esmeraldas:\n\n${items
-					.map(
-						(i) =>
-							`• ${i.product.name} (${i.product.carat} ct, ${i.product.clarity}) × ${i.quantity} — $${(i.product.price * i.quantity).toLocaleString()} USD`,
-					)
-					.join(
-						"\n",
-					)}\n\nTotal: $${totalPrice.toLocaleString()} USD\n\n¿Podría darme más información?`
-			: "Hola, me gustaría recibir más información sobre sus esmeraldas.",
-	);
-	const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
@@ -128,7 +111,7 @@ function CartPage() {
 										>
 											<div className="h-20 w-20 overflow-hidden rounded-xl bg-brand-primary-lighter sm:h-24 sm:w-24">
 												<OptimizedImage
-													src={product.image}
+													src={product.image_url ?? ""}
 													alt={product.name}
 													width={96}
 													height={96}
@@ -147,7 +130,7 @@ function CartPage() {
 												{product.name}
 											</Link>
 											<p className="text-xs text-brand-primary-dark/50">
-												{product.carat} ct · {product.clarity} ·{" "}
+												{product.carats} ct · {product.clarity} ·{" "}
 												{product.origin}
 											</p>
 											<p className="mt-1 font-medium text-brand-primary-dark">
@@ -247,16 +230,13 @@ function CartPage() {
 									</span>
 								</div>
 
-								{/* WhatsApp CTA */}
-								<a
-									href={waUrl}
-									target="_blank"
-									rel="noopener noreferrer"
+								{/* Checkout CTA */}
+								<Link
+									to="/checkout"
 									className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3.5 font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 								>
-									<MessageCircle className="h-5 w-5" />
-									Finalizar por WhatsApp
-								</a>
+									Solicitar pedido
+								</Link>
 
 								<p className="text-center text-xs text-brand-primary-dark/40">
 									Los precios se confirman con nuestro equipo por WhatsApp.

@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
+	ordersQueryOptions,
 	retailEmeraldsQueryOptions,
 	wholesaleEmeraldsQueryOptions,
 } from "@/lib/supabase-queries"
@@ -20,24 +21,15 @@ export const Route = createFileRoute("/admin/")({
 		await Promise.all([
 			context.queryClient.ensureQueryData(retailEmeraldsQueryOptions()),
 			context.queryClient.ensureQueryData(wholesaleEmeraldsQueryOptions()),
+			context.queryClient.ensureQueryData(ordersQueryOptions()),
 		])
 	},
 	component: AdminDashboard,
 })
 
-// ── Recent orders placeholder (replace with Supabase query) ──
-
-const recentOrders: {
-	id: string
-	customer: string
-	items: number
-	total: string
-	status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
-	date: string
-}[] = []
-
 const statusStyles: Record<string, string> = {
 	pending: "bg-brand-secondary-golden/20 text-brand-secondary-terra",
+	in_progress: "bg-blue-50 text-blue-700",
 	confirmed: "bg-brand-primary-dark/10 text-brand-primary-dark",
 	shipped: "bg-blue-50 text-blue-700",
 	delivered: "bg-green-50 text-green-700",
@@ -46,6 +38,7 @@ const statusStyles: Record<string, string> = {
 
 const statusLabels: Record<string, string> = {
 	pending: "Pendiente",
+	in_progress: "En proceso",
 	confirmed: "Confirmada",
 	shipped: "Enviada",
 	delivered: "Entregada",
@@ -55,6 +48,7 @@ const statusLabels: Record<string, string> = {
 function AdminDashboard() {
 	const { data: retail } = useSuspenseQuery(retailEmeraldsQueryOptions())
 	const { data: wholesale } = useSuspenseQuery(wholesaleEmeraldsQueryOptions())
+	const { data: orders } = useSuspenseQuery(ordersQueryOptions())
 
 	const totalRevenue = useMemo(
 		() => retail.reduce((sum, p) => sum + p.price, 0),
@@ -62,6 +56,14 @@ function AdminDashboard() {
 	)
 	const availableEmeralds = retail.length
 	const availableLots = wholesale.length
+	const pendingOrders = useMemo(
+		() => orders.filter((o) => o.status === "pending").length,
+		[orders],
+	)
+	const recentOrders = useMemo(
+		() => [...orders].slice(0, 5),
+		[orders],
+	)
 
 	const statCards = [
 		{
@@ -92,8 +94,8 @@ function AdminDashboard() {
 			bg: "bg-brand-secondary-golden/10",
 		},
 		{
-			title: "Órdenes",
-			value: 0,
+			title: "Órdenes Pendientes",
+			value: pendingOrders,
 			suffix: "pendientes",
 			icon: ShoppingBag,
 			href: "/admin/orders",
@@ -172,8 +174,8 @@ function AdminDashboard() {
 									No hay órdenes todavía
 								</p>
 								<p className="mt-1 font-body text-xs text-gray-300">
-									Las órdenes aparecerán aquí cuando los clientes contacten por
-									WhatsApp
+									Las órdenes aparecerán aquí cuando los clientes confirmen en
+									/checkout
 								</p>
 							</div>
 						) : (
@@ -207,25 +209,30 @@ function AdminDashboard() {
 											className="transition-colors hover:bg-gray-50"
 										>
 											<td className="px-6 py-4 font-body font-medium text-brand-primary-dark">
-												{order.id}
+												{order.order_number}
 											</td>
 											<td className="px-6 py-4 text-gray-600">
-												{order.customer}
+												{order.customer_name}
 											</td>
 											<td className="px-6 py-4 text-gray-500">
-												{order.items}
+												{order.order_items.length}
 											</td>
 											<td className="px-6 py-4 font-medium text-brand-primary-dark">
-												{order.total}
+												${order.subtotal.toLocaleString()} {order.currency}
 											</td>
 											<td className="px-6 py-4">
 												<span
-													className={`inline-flex rounded-full px-2.5 py-0.5 font-body text-xs font-medium ${statusStyles[order.status]}`}
+													className={`inline-flex rounded-full px-2.5 py-0.5 font-body text-xs font-medium ${statusStyles[order.status] ?? "bg-gray-100 text-gray-600"}`}
 												>
-													{statusLabels[order.status]}
+													{statusLabels[order.status] ?? order.status}
 												</span>
 											</td>
-											<td className="px-6 py-4 text-gray-400">{order.date}</td>
+											<td className="px-6 py-4 text-gray-400">
+												{new Date(order.created_at ?? "").toLocaleDateString("es-CO", {
+													day: "2-digit",
+													month: "short",
+												})}
+											</td>
 										</tr>
 									))}
 								</tbody>
@@ -253,7 +260,7 @@ function AdminDashboard() {
 					{
 						href: "/admin/orders",
 						label: "Ver Órdenes",
-						sub: "Historial completo",
+						sub: `${pendingOrders} pendiente${pendingOrders !== 1 ? "s" : ""}`,
 						icon: ShoppingBag,
 					},
 				].map((item) => {

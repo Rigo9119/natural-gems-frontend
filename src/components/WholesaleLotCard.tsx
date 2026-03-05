@@ -1,11 +1,16 @@
+import { ShoppingCart } from "lucide-react"
 import { OptimizedImage } from "@/components/ui/optimized-image"
 import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { useCartStore } from "@/store/cartStore"
 
 interface WholesaleLotCardProps {
 	lot: EmeraldWithImage
 }
 
 export function WholesaleLotCard({ lot }: WholesaleLotCardProps) {
+	const { addToCart, isInCart } = useCartStore()
+	const inCart = isInCart(lot.id)
+
 	return (
 		<article className="group cursor-pointer">
 			<figure className="relative aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
@@ -44,6 +49,19 @@ export function WholesaleLotCard({ lot }: WholesaleLotCardProps) {
 					<data value={lot.price}>${lot.price.toLocaleString()}</data>
 				</dd>
 			</dl>
+			<button
+				type="button"
+				onClick={() => addToCart(lot)}
+				disabled={inCart}
+				className={`mt-3 flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-colors ${
+					inCart
+						? "bg-brand-primary-dark/10 text-brand-primary-dark/50 cursor-default"
+						: "bg-brand-primary-dark text-brand-primary-lighter hover:bg-brand-primary-dark/85"
+				}`}
+			>
+				<ShoppingCart className="h-4 w-4" />
+				{inCart ? "En el carrito" : "Añadir al pedido"}
+			</button>
 		</article>
 	)
 }

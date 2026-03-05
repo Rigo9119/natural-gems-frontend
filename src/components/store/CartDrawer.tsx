@@ -7,7 +7,6 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { WHATSAPP_NUMBER } from "@/lib/constants";
 import { useCartStore } from "@/store/cartStore";
 
 interface CartDrawerProps {
@@ -20,23 +19,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 		useCartStore();
 
 	const totalItems = useCartStore((s) => s.totalItems);
-
-	const buildWhatsAppMessage = () => {
-		const lines = items.map(
-			(i) =>
-				`• ${i.product.name} (${i.product.carats} ct, ${i.product.clarity}) × ${i.quantity} — $${(i.product.price * i.quantity).toLocaleString()} USD`,
-		);
-		const msg = [
-			"Hola, me interesa realizar el siguiente pedido:",
-			"",
-			...lines,
-			"",
-			`Total estimado: $${totalPrice.toLocaleString()} USD`,
-			"",
-			"¿Me pueden confirmar disponibilidad y condiciones de envío?",
-		].join("\n");
-		return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-	};
 
 	return (
 		<Sheet open={open} onOpenChange={(v) => !v && onClose()}>
@@ -168,14 +150,13 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 							</div>
 
 							{/* CTAs */}
-							<a
-								href={buildWhatsAppMessage()}
-								target="_blank"
-								rel="noopener noreferrer"
+											<Link
+								to="/checkout"
+								onClick={onClose}
 								className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 							>
-								Finalizar por WhatsApp
-							</a>
+								Solicitar pedido
+							</Link>
 
 							<Link
 								to="/cart"

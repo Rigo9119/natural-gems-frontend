@@ -5,6 +5,7 @@ import BrandStory from "@/components/BrandStory"
 import DualCategorySectionCMP from "@/components/DualCategory/DualCategorySection"
 import FeaturedProductsCMP from "@/components/FeaturedProductsCMP"
 import Hero from "@/components/Hero"
+import MineCarousel from "@/components/MineCarousel"
 import Newsletter from "@/components/Newsletter"
 import ProductCard from "@/components/ProductCard"
 import WarrantiesSectionCMP from "@/components/WarrantiesSectionCMP"
@@ -64,14 +65,17 @@ function HomePageComponent() {
 			{/* ── Section 1: Full-Screen Hero ── */}
 			<Hero hero={homePage?.hero as HeroSection} />
 
-			{/* ── Section 2: Dual Category Showcase ── */}
+			{/* ── Section 2: Mine Imagery Carousel ── */}
+			<MineCarousel />
+
+			{/* ── Section 3: Dual Category Showcase ── */}
 			{homePage?.dualCategory && (
 				<DualCategorySectionCMP
 					dualCategory={homePage.dualCategory as DualCategorySection}
 				/>
 			)}
 
-			{/* ── Section 3: Featured Emeralds ── */}
+			{/* ── Section 4: Featured Emeralds ── */}
 			<FeaturedProductsCMP sectionContent={homePage?.featuredEmeralds}>
 				<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 					{featuredEmeralds.map((product) => (
@@ -80,11 +84,11 @@ function HomePageComponent() {
 				</div>
 			</FeaturedProductsCMP>
 
-			{/* ── Section 4: Heritage / Brand Story ── */}
+			{/* ── Section 5: Heritage / Brand Story ── */}
 			<BrandStory sectionContent={homePage?.brandStory as BrandStorySection} />
 
 			{/* ── TODO: Borrar una vez se le haga deploy a la pagina de joyeria
-		    Section 5: Jewelry teaser banner ── */}
+		    Section 6: Jewelry teaser banner ── */}
 			<section className="bg-brand-primary-lighter py-16 sm:py-24">
 				<div className="mx-auto max-w-7xl px-6 sm:px-8">
 					<div className="relative overflow-hidden rounded-3xl bg-brand-secondary-terra px-8 py-16 text-center sm:px-16 sm:py-20">
@@ -130,17 +134,17 @@ function HomePageComponent() {
 				</div>
 			</section>
 
-			{/* ── Section 6: Trust & warranties ── */}
+			{/* ── Section 7: Trust & warranties ── */}
 			<WarrantiesSectionCMP
 				sectionContent={homePage?.warranty as WarrantySection}
 			/>
 
-			{/* ── Section 7: WhatsApp CTA ── */}
+			{/* ── Section 8: WhatsApp CTA ── */}
 			<WhatsAppSectionCMP
 				sectionContent={homePage?.whatsApp as WhatsAppSection}
 			/>
 
-			{/* ── Section 8: Newsletter ── */}
+			{/* ── Section 9: Newsletter ── */}
 			<Newsletter sectionContent={homePage?.newsletter as NewsletterSection} />
 		</div>
 	)
