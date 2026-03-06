@@ -28,7 +28,12 @@ function AuthCallbackPage() {
 				setError("El enlace no es válido o ya expiró.");
 				return;
 			}
-			navigate({ to: (redirectTo ?? "/admin") as any });
+			// Only allow internal paths to prevent open-redirect attacks
+			const safeTo =
+				redirectTo?.startsWith("/") && !redirectTo.startsWith("//")
+					? redirectTo
+					: "/admin";
+			navigate({ to: safeTo as any });
 		});
 	}, [code, redirectTo, navigate]);
 

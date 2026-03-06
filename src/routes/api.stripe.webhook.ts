@@ -1,6 +1,6 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api"
 import { stripe } from "@/lib/stripe"
-import { updateOrderPayment, updateOrderStatus } from "@/lib/supabase-queries"
+import { supabaseAdmin } from "@/lib/supabase-server"
 
 export const APIRoute = createAPIFileRoute("/api/stripe/webhook")({
 	POST: async ({ request }) => {
@@ -24,8 +24,15 @@ export const APIRoute = createAPIFileRoute("/api/stripe/webhook")({
 			const session = event.data.object
 			const orderId = session.metadata?.order_id
 			if (orderId) {
-				await updateOrderStatus(orderId, "confirmed")
-				await updateOrderPayment(orderId, "paid", "stripe")
+				// Use admin client to bypass RLS for trusted server-side mutation
+				await supabaseAdmin
+					.from("orders")
+					.update({
+						status: "confirmed",
+						payment_status: "paid",
+						payment_method: "stripe",
+					})
+					.eq("id", orderId)
 			}
 		}
 

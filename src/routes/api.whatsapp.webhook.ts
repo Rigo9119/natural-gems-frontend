@@ -1,6 +1,38 @@
 import { createAPIFileRoute } from "@tanstack/react-start/api"
-import { supabase } from "@/lib/supabase"
-import { updateOrderStatus } from "@/lib/supabase-queries"
+import { supabaseAdmin } from "@/lib/supabase-server"
+
+// Verifies the X-Hub-Signature-256 header sent by Meta.
+// Requires WHATSAPP_APP_SECRET env variable (found in Meta Developer Console
+// → Your App → Settings → Basic → App Secret).
+async function verifyWebhookSignature(
+	rawBody: string,
+	signature: string | null,
+): Promise<boolean> {
+	const appSecret = process.env.WHATSAPP_APP_SECRET
+	if (!appSecret || !signature) return false
+
+	const encoder = new TextEncoder()
+	const key = await crypto.subtle.importKey(
+		"raw",
+		encoder.encode(appSecret),
+		{ name: "HMAC", hash: "SHA-256" },
+		false,
+		["sign"],
+	)
+	const mac = await crypto.subtle.sign("HMAC", key, encoder.encode(rawBody))
+	const hex = Array.from(new Uint8Array(mac))
+		.map((b) => b.toString(16).padStart(2, "0"))
+		.join("")
+	const expected = `sha256=${hex}`
+
+	// Constant-time comparison to prevent timing attacks
+	if (signature.length !== expected.length) return false
+	let diff = 0
+	for (let i = 0; i < signature.length; i++) {
+		diff |= signature.charCodeAt(i) ^ expected.charCodeAt(i)
+	}
+	return diff === 0
+}
 
 export const APIRoute = createAPIFileRoute("/api/whatsapp/webhook")({
 	GET: async ({ request }) => {
@@ -20,9 +52,16 @@ export const APIRoute = createAPIFileRoute("/api/whatsapp/webhook")({
 	},
 
 	POST: async ({ request }) => {
-		try {
-			const body = await request.json()
+		const rawBody = await request.text()
+		const signature = request.headers.get("x-hub-signature-256")
 
+		const valid = await verifyWebhookSignature(rawBody, signature)
+		if (!valid) {
+			return new Response("Forbidden", { status: 403 })
+		}
+
+		try {
+			const body = JSON.parse(rawBody)
 			const message =
 				body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
 
@@ -33,14 +72,18 @@ export const APIRoute = createAPIFileRoute("/api/whatsapp/webhook")({
 				if (match) {
 					const orderNumber = match[0]
 
-					const { data: orders } = await supabase
+					// Use admin client to bypass RLS for trusted server-side mutation
+					const { data: orders } = await supabaseAdmin
 						.from("orders")
 						.select("id, status")
 						.eq("order_number", orderNumber)
 						.maybeSingle()
 
 					if (orders && orders.status === "pending") {
-						await updateOrderStatus(orders.id, "in_progress")
+						await supabaseAdmin
+							.from("orders")
+							.update({ status: "in_progress" })
+							.eq("id", orders.id)
 					}
 				}
 			}

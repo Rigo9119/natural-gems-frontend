@@ -20,7 +20,6 @@ import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin")({
 	beforeLoad: async ({ location }) => {
-		if (typeof window === "undefined") return;
 		const {
 			data: { session },
 		} = await supabase.auth.getSession();
