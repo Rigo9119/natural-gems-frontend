@@ -25,6 +25,7 @@ import {
   emeraldGuideSection,
   faqType,
   guide,
+  siteSettings,
 } from './sections'
 
 export const schemaTypes = [
@@ -63,6 +64,7 @@ export const schemaTypes = [
   aboutPage,
   faqPage,
   guide,
+  siteSettings,
 
   // Documents — Shared sections
   newsletterSection,

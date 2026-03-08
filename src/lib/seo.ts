@@ -106,22 +106,58 @@ export function resolveSanityMeta(
 }
 
 // ── Organization / LocalBusiness JSON-LD ─────────────────────────────────────
+// Both functions accept optional overrides from Sanity siteSettings.
+// When the siteSettings document exists, live data is used.
+// When it doesn't, hardcoded constants serve as fallback.
 
-export function organizationJsonLd() {
+export interface SiteSettingsOverride {
+	companyName?: string
+	whatsapp?: string
+	phone?: string
+	email?: string
+	about?: string
+	address?: {
+		street?: string
+		city?: string
+		region?: string
+		country?: string
+		postalCode?: string
+	}
+	businessHours?: {
+		dayOfWeek?: string[]
+		opens?: string
+		closes?: string
+	}[]
+	socialInstagram?: string
+	socialFacebook?: string
+	socialLinkedin?: string
+	defaultOgImage?: { asset?: { url?: string } }
+	priceRange?: string
+}
+
+export function organizationJsonLd(s?: SiteSettingsOverride) {
+	const name = s?.companyName ?? SITE_NAME
+	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`
+	const instagram = s?.socialInstagram
+		? `https://instagram.com/${s.socialInstagram.replace(/^@/, "")}`
+		: INSTAGRAM_URL
+	const sameAs = [instagram, `https://wa.me/${telephone.replace(/\D/g, "")}`]
+	if (s?.socialFacebook) sameAs.push(s.socialFacebook)
+	if (s?.socialLinkedin) sameAs.push(s.socialLinkedin)
+
 	return {
 		"@context": "https://schema.org",
 		"@type": "Organization",
-		name: SITE_NAME,
+		name,
 		url: SITE_URL,
 		logo: `${SITE_URL}/logo512.png`,
 		foundingDate: "1985",
 		foundingLocation: { "@type": "Place", name: "Muzo, Boyaca, Colombia" },
-		description:
-			"Familia colombiana con tres generaciones de experiencia en el comercio de esmeraldas, directamente desde las minas de Muzo, Chivor y Coscuez.",
-		sameAs: [INSTAGRAM_URL, WHATSAPP_URL],
+		description: s?.about ?? "Familia colombiana con tres generaciones de experiencia en el comercio de esmeraldas, directamente desde las minas de Muzo, Chivor y Coscuez.",
+		sameAs,
 		contactPoint: {
 			"@type": "ContactPoint",
-			telephone: `+${WHATSAPP_NUMBER}`,
+			telephone,
 			contactType: "customer service",
 			availableLanguage: ["Spanish", "English"],
 		},
@@ -139,42 +175,67 @@ export function organizationJsonLd() {
 	};
 }
 
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(s?: SiteSettingsOverride) {
+	const name = s?.companyName ?? SITE_NAME
+	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`
+	const email = s?.email ?? "info@naturagems.co"
+	const street = s?.address?.street ?? "Centro Internacional de Esmeraldas, Oficina 301"
+	const city = s?.address?.city ?? "Bogota"
+	const region = s?.address?.region ?? "Cundinamarca"
+	const country = s?.address?.country ?? "Colombia"
+	const postalCode = s?.address?.postalCode
+	const priceRange = s?.priceRange ?? "$$$"
+	const ogImage = s?.defaultOgImage?.asset?.url ?? `${SITE_URL}/og-image.jpg`
+	const mapQuery = `${street}, ${city}, ${country}`
+
+	const openingHours =
+		s?.businessHours && s.businessHours.length > 0
+			? s.businessHours
+					.filter((h) => h.dayOfWeek?.length && h.opens && h.closes)
+					.map((h) => ({
+						"@type": "OpeningHoursSpecification",
+						dayOfWeek: h.dayOfWeek,
+						opens: h.opens,
+						closes: h.closes,
+					}))
+			: [
+					{
+						"@type": "OpeningHoursSpecification",
+						dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+						opens: "09:00",
+						closes: "18:00",
+					},
+					{
+						"@type": "OpeningHoursSpecification",
+						dayOfWeek: "Saturday",
+						opens: "10:00",
+						closes: "14:00",
+					},
+				]
+
 	return {
 		"@context": "https://schema.org",
 		"@type": ["LocalBusiness", "JewelryStore"],
-		name: SITE_NAME,
+		name,
 		url: SITE_URL,
-		image: `${SITE_URL}/og-image.jpg`,
+		image: ogImage,
 		logo: `${SITE_URL}/logo512.png`,
-		email: "info@naturagems.co",
-		telephone: `+${WHATSAPP_NUMBER}`,
-		priceRange: "$$$",
+		email,
+		telephone,
+		priceRange,
 		currenciesAccepted: "USD, COP",
 		paymentAccepted: "Cash, Credit Card, Wire Transfer",
-		hasMap: `https://maps.google.com/?q=${encodeURIComponent(COMPANY_LOCATION)}`,
+		hasMap: `https://maps.google.com/?q=${encodeURIComponent(mapQuery)}`,
 		address: {
 			"@type": "PostalAddress",
-			streetAddress: "Centro Internacional de Esmeraldas, Oficina 301",
-			addressLocality: "Bogota",
-			addressRegion: "Cundinamarca",
-			addressCountry: "CO",
+			streetAddress: street,
+			addressLocality: city,
+			addressRegion: region,
+			addressCountry: country,
+			...(postalCode ? { postalCode } : {}),
 		},
 		geo: { "@type": "GeoCoordinates", latitude: 4.711, longitude: -74.0721 },
-		openingHoursSpecification: [
-			{
-				"@type": "OpeningHoursSpecification",
-				dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-				opens: "09:00",
-				closes: "18:00",
-			},
-			{
-				"@type": "OpeningHoursSpecification",
-				dayOfWeek: "Saturday",
-				opens: "10:00",
-				closes: "14:00",
-			},
-		],
+		openingHoursSpecification: openingHours,
 		areaServed: "Worldwide",
 	};
 }

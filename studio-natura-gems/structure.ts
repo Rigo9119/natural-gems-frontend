@@ -1,8 +1,9 @@
 import type {StructureResolver} from 'sanity/structure'
-import {HomeIcon, DiamondIcon, EnvelopeIcon} from '@sanity/icons'
+import {HomeIcon, DiamondIcon, EnvelopeIcon, CogIcon} from '@sanity/icons'
 
 // Document types managed inside page/section groups — excluded from the auto-generated list
 const MANAGED_TYPES = [
+  'siteSettings',
   'homePage',
   'emeraldPage',
   'aboutPage',
@@ -15,6 +16,14 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title('Contenido')
     .items([
+      // ── Site Settings (singleton) ──
+      S.listItem()
+        .title('Configuración del sitio')
+        .icon(CogIcon)
+        .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+
+      S.divider(),
+
       // ── Home Page (singleton) ──
       S.listItem()
         .title('Página de Inicio')

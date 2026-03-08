@@ -14,4 +14,6 @@ export {faqPage, emeraldGuideSection, faqType} from '../pages/faqPage'
 
 export {guide} from '../pages/guide'
 
+export {siteSettings} from '../pages/siteSettings'
+
 export {newsletterSection, whatsAppSection} from './shared'

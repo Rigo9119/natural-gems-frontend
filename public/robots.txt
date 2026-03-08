@@ -1,10 +1,8 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
 
-Sitemap: https://naturagems.co/sitemap.xml
+Sitemap: https://naturagems.co/api/sitemap
 
-# GEO: AI/LLM crawlers
-# https://llmstxt.org
-LLMs-Txt: https://naturagems.co/llms.txt
-LLMs-Full-Txt: https://naturagems.co/llms-full.txt
+# GEO: AI/LLM crawlers — https://llmstxt.org
+LLMs-Txt: https://naturagems.co/api/llms
+LLMs-Full-Txt: https://naturagems.co/api/llms-full

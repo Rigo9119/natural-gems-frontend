@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -20,10 +20,18 @@ import {
 	MoreHorizontal,
 	Plus,
 	Search,
+	Trash2,
 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogFooter,
+} from "@/components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -54,22 +62,23 @@ import {
 	type Cut,
 	type EmeraldWithImage,
 	type Origin,
+	adminEmeraldsQueryOptions,
 	clarities,
 	cuts,
+	deleteEmerald,
 	origins,
-	retailEmeraldsQueryOptions,
+	updateEmeraldStatus,
 } from "@/lib/supabase-queries"
 
 export const Route = createFileRoute("/admin/emeralds")({
 	loader: async ({ context }) => {
-		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
+		await context.queryClient.ensureQueryData(adminEmeraldsQueryOptions())
 	},
 	component: AdminEmeraldsLayout,
 })
 
 function AdminEmeraldsLayout() {
 	const pathname = useRouterState({ select: (s) => s.location.pathname })
-	// When at a child route (e.g. /admin/emeralds/new), render only the child
 	if (pathname !== "/admin/emeralds" && pathname !== "/admin/emeralds/") {
 		return <Outlet />
 	}
@@ -109,182 +118,286 @@ function StatusBadge({ status }: { status: EmeraldStatus }) {
 	)
 }
 
+// ── Delete confirmation dialog ─────────────────────────────────────────────────
+
+function DeleteConfirmDialog({
+	emerald,
+	open,
+	onClose,
+	onConfirm,
+	isPending,
+}: {
+	emerald: EmeraldRow | null
+	open: boolean
+	onClose: () => void
+	onConfirm: () => void
+	isPending: boolean
+}) {
+	if (!emerald) return null
+	return (
+		<Dialog open={open} onOpenChange={onClose}>
+			<DialogContent className="max-w-sm">
+				<DialogHeader>
+					<DialogTitle className="font-heading text-lg text-brand-primary-dark">
+						Eliminar esmeralda
+					</DialogTitle>
+				</DialogHeader>
+				<p className="font-body text-sm text-gray-600">
+					¿Estás seguro de que deseas eliminar{" "}
+					<span className="font-medium text-brand-primary-dark">
+						{emerald.name}
+					</span>
+					? Esta acción no se puede deshacer.
+				</p>
+				<DialogFooter className="gap-2">
+					<Button
+						variant="outline"
+						onClick={onClose}
+						disabled={isPending}
+						className="font-body text-sm"
+					>
+						Cancelar
+					</Button>
+					<Button
+						onClick={onConfirm}
+						disabled={isPending}
+						className="bg-red-600 font-body text-sm text-white hover:bg-red-700"
+					>
+						<Trash2 className="mr-2 h-4 w-4" />
+						{isPending ? "Eliminando..." : "Eliminar"}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	)
+}
+
 // ── Column definitions ────────────────────────────────────────────────────────
 
-const columns: ColumnDef<EmeraldRow>[] = [
-	{
-		accessorKey: "name",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Nombre
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<div>
-				<p className="font-body font-medium text-brand-primary-dark">
-					{row.original.name}
-				</p>
-				<p className="font-body text-xs text-gray-400">{row.original.slug}</p>
-			</div>
-		),
-	},
-	{
-		accessorKey: "origin",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Origen
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<span className="font-body text-sm text-gray-600">
-				{row.original.origin}
-			</span>
-		),
-	},
-	{
-		accessorKey: "clarity",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Claridad
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<span className="rounded-full bg-brand-primary-dark/5 px-2.5 py-0.5 font-body text-xs font-medium text-brand-primary-dark">
-				{row.original.clarity}
-			</span>
-		),
-	},
-	{
-		accessorKey: "cut",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Corte
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<span className="font-body text-sm text-gray-600">
-				{row.original.cut}
-			</span>
-		),
-	},
-	{
-		accessorKey: "carats",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Quilates
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<span className="font-body text-sm text-gray-600">
-				{row.original.carats} ct
-			</span>
-		),
-	},
-	{
-		accessorKey: "price",
-		header: ({ column }) => (
-			<Button
-				variant="ghost"
-				size="sm"
-				className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
-				onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-			>
-				Precio
-				<ArrowUpDown className="ml-1.5 h-3 w-3" />
-			</Button>
-		),
-		cell: ({ row }) => (
-			<span className="font-body font-medium text-brand-primary-dark">
-				${row.original.price.toLocaleString()}
-			</span>
-		),
-	},
-	{
-		accessorKey: "status",
-		header: () => (
-			<span className="font-body text-xs uppercase tracking-wider text-brand-primary-lighter/80">
-				Estado
-			</span>
-		),
-		cell: ({ row }) => (
-			<StatusBadge status={(row.original.status ?? "available") as EmeraldStatus} />
-		),
-		filterFn: (row, _id, value) =>
-			value === "all" || row.original.status === value,
-	},
-	{
-		id: "actions",
-		cell: ({ row }) => (
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						size="icon"
-						className="h-8 w-8 text-gray-400 hover:text-brand-primary-dark"
-					>
-						<MoreHorizontal className="h-4 w-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="font-body text-sm">
-					<DropdownMenuLabel className="font-body text-xs text-gray-400">
-						Acciones
-					</DropdownMenuLabel>
-					<DropdownMenuItem asChild>
-						<a
-							href={`/emeralds/tienda/${row.original.slug}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="flex items-center gap-2"
+function buildColumns(
+	onStatusChange: (id: string, status: string) => void,
+	onDelete: (row: EmeraldRow) => void,
+): ColumnDef<EmeraldRow>[] {
+	return [
+		{
+			accessorKey: "name",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Nombre
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<div>
+					<p className="font-body font-medium text-brand-primary-dark">
+						{row.original.name}
+					</p>
+					<p className="font-body text-xs text-gray-400">{row.original.slug}</p>
+				</div>
+			),
+		},
+		{
+			accessorKey: "origin",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Origen
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="font-body text-sm text-gray-600">
+					{row.original.origin}
+				</span>
+			),
+		},
+		{
+			accessorKey: "clarity",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Claridad
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="rounded-full bg-brand-primary-dark/5 px-2.5 py-0.5 font-body text-xs font-medium text-brand-primary-dark">
+					{row.original.clarity}
+				</span>
+			),
+		},
+		{
+			accessorKey: "cut",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Corte
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="font-body text-sm text-gray-600">
+					{row.original.cut}
+				</span>
+			),
+		},
+		{
+			accessorKey: "stone_count",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Piedras
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="font-body text-sm text-gray-600">
+					{row.original.stone_count}
+				</span>
+			),
+		},
+		{
+			accessorKey: "carats",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Quilates
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="font-body text-sm text-gray-600">
+					{row.original.carats} ct
+				</span>
+			),
+		},
+		{
+			accessorKey: "price",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Precio
+					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+				</Button>
+			),
+			cell: ({ row }) => (
+				<span className="font-body font-medium text-brand-primary-dark">
+					${row.original.price.toLocaleString()} {row.original.currency}
+				</span>
+			),
+		},
+		{
+			accessorKey: "status",
+			header: () => (
+				<span className="font-body text-xs uppercase tracking-wider text-brand-primary-lighter/80">
+					Estado
+				</span>
+			),
+			cell: ({ row }) => (
+				<StatusBadge status={(row.original.status ?? "available") as EmeraldStatus} />
+			),
+			filterFn: (row, _id, value) =>
+				value === "all" || row.original.status === value,
+		},
+		{
+			id: "actions",
+			cell: ({ row }) => (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="h-8 w-8 text-gray-400 hover:text-brand-primary-dark"
 						>
-							<ExternalLink className="h-3.5 w-3.5" />
-							Ver en tienda
-						</a>
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem>Marcar como reservada</DropdownMenuItem>
-					<DropdownMenuItem>Marcar como vendida</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem className="text-red-600">Eliminar</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		),
-	},
-]
+							<MoreHorizontal className="h-4 w-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="font-body text-sm">
+						<DropdownMenuLabel className="font-body text-xs text-gray-400">
+							Acciones
+						</DropdownMenuLabel>
+						<DropdownMenuItem asChild>
+							<a
+								href={`/emeralds/tienda/${row.original.slug}`}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="flex items-center gap-2"
+							>
+								<ExternalLink className="h-3.5 w-3.5" />
+								Ver en tienda
+							</a>
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						{row.original.status !== "available" && (
+							<DropdownMenuItem
+								onClick={() => onStatusChange(row.original.id, "available")}
+							>
+								Marcar como disponible
+							</DropdownMenuItem>
+						)}
+						{row.original.status !== "reserved" && (
+							<DropdownMenuItem
+								onClick={() => onStatusChange(row.original.id, "reserved")}
+							>
+								Marcar como reservada
+							</DropdownMenuItem>
+						)}
+						{row.original.status !== "sold" && (
+							<DropdownMenuItem
+								onClick={() => onStatusChange(row.original.id, "sold")}
+							>
+								Marcar como vendida
+							</DropdownMenuItem>
+						)}
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							className="text-red-600 focus:bg-red-50 focus:text-red-600"
+							onClick={() => onDelete(row.original)}
+						>
+							<Trash2 className="mr-2 h-3.5 w-3.5" />
+							Eliminar
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			),
+		},
+	]
+}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function AdminEmeralds() {
-	const { data } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const queryClient = useQueryClient()
+	const { data } = useSuspenseQuery(adminEmeraldsQueryOptions())
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -293,8 +406,22 @@ function AdminEmeralds() {
 	const [clarityFilter, setClarityFilter] = useState("all")
 	const [cutFilter, setCutFilter] = useState("all")
 	const [statusFilter, setStatusFilter] = useState("all")
+	const [pendingDelete, setPendingDelete] = useState<EmeraldRow | null>(null)
 
-	// Apply dropdown filters as pre-filtered data so TanStack Table handles the rest
+	const statusMutation = useMutation({
+		mutationFn: ({ id, status }: { id: string; status: string }) =>
+			updateEmeraldStatus(id, status),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["emeralds"] }),
+	})
+
+	const deleteMutation = useMutation({
+		mutationFn: (id: string) => deleteEmerald(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["emeralds"] })
+			setPendingDelete(null)
+		},
+	})
+
 	const filteredData = useMemo(
 		() =>
 			data.filter(
@@ -306,6 +433,11 @@ function AdminEmeralds() {
 					(statusFilter === "all" || p.status === statusFilter),
 			),
 		[data, originFilter, clarityFilter, cutFilter, statusFilter],
+	)
+
+	const columns = buildColumns(
+		(id, status) => statusMutation.mutate({ id, status }),
+		(row) => setPendingDelete(row),
 	)
 
 	const table = useReactTable({
@@ -563,6 +695,14 @@ function AdminEmeralds() {
 					)}
 				</CardContent>
 			</Card>
+
+			<DeleteConfirmDialog
+				emerald={pendingDelete}
+				open={!!pendingDelete}
+				onClose={() => setPendingDelete(null)}
+				onConfirm={() => pendingDelete && deleteMutation.mutate(pendingDelete.id)}
+				isPending={deleteMutation.isPending}
+			/>
 		</div>
 	)
 }

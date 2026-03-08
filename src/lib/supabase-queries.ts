@@ -39,6 +39,40 @@ function mapRow(row: RawRow): EmeraldWithImage {
 
 // ── Query options ─────────────────────────────────────────────────────────────
 
+/** Admin: all emeralds regardless of status or stone_count */
+export function adminEmeraldsQueryOptions() {
+	return queryOptions({
+		queryKey: ["emeralds", "admin"],
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from("emeralds")
+				.select("*, emerald_images(url, position)")
+				.order("created_at", { ascending: false })
+			if (error) throw error
+			return (data as unknown as RawRow[]).map(mapRow)
+		},
+	})
+}
+
+export async function updateEmeraldStatus(
+	emeraldId: string,
+	status: string,
+): Promise<void> {
+	const { error } = await supabase
+		.from("emeralds")
+		.update({ status })
+		.eq("id", emeraldId)
+	if (error) throw error
+}
+
+export async function deleteEmerald(emeraldId: string): Promise<void> {
+	const { error } = await supabase
+		.from("emeralds")
+		.delete()
+		.eq("id", emeraldId)
+	if (error) throw error
+}
+
 /** Single retail stones: stone_count = 1 AND status = available */
 export function retailEmeraldsQueryOptions() {
 	return queryOptions({
