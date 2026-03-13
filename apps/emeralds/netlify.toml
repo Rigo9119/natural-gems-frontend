@@ -1,5 +1,5 @@
 [build]
-  command = "bun --bun run build"
+  command = "cd ../.. && bun install && cd apps/emeralds && bun --bun run build"
   dir = "dist/client"
 [dev]
   command = "bun --bun run dev"
