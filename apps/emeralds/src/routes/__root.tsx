@@ -59,10 +59,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+const jewelryUrl = import.meta.env.VITE_JEWELRY_URL ?? "https://joyeria.naturagems.com";
+
 const appNavItems = [
-	{ label: "Inicio", href: "/" },
+	// { label: "Inicio", href: "/" }, // portal selector — hidden until needed
 	{ label: "Esmeraldas", href: "/emeralds" },
-	{ label: "Joyería", href: "/jewelry" },
+	{ label: "Joyería", href: jewelryUrl },
 	{ label: "Nosotros", href: "/about" },
 	{ label: "FAQ", href: "/faq" },
 	{ label: "Blog", href: "/guides" },
@@ -75,6 +77,7 @@ function RootComponent() {
 
 	const isAdminPage = pathname.startsWith("/admin");
 	const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/auth");
+	const isLandingPage = pathname === "/" || pathname === "/en";
 
 	// SSR-safe Zustand hydration — runs once on client mount
 	useEffect(() => {
@@ -82,8 +85,8 @@ function RootComponent() {
 		useCartStore.persist.rehydrate();
 	}, []);
 
-	// Admin and auth routes have their own layout — skip site chrome
-	if (isAdminPage || isAuthPage) {
+	// Admin, auth and landing routes have their own layout — skip site chrome
+	if (isAdminPage || isAuthPage || isLandingPage) {
 		return <Outlet />;
 	}
 

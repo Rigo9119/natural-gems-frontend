@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as JewelryRouteImport } from './routes/jewelry'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EmeraldsRouteImport } from './routes/emeralds'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -19,7 +18,6 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as JewelryIndexRouteImport } from './routes/jewelry/index'
 import { Route as GuidesIndexRouteImport } from './routes/guides/index'
 import { Route as EmeraldsIndexRouteImport } from './routes/emeralds/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -41,11 +39,6 @@ import { Route as AdminEmeraldsNewRouteImport } from './routes/admin/emeralds.ne
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JewelryRoute = JewelryRouteImport.update({
-  id: '/jewelry',
-  path: '/jewelry',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -87,11 +80,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const JewelryIndexRoute = JewelryIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => JewelryRoute,
 } as any)
 const GuidesIndexRoute = GuidesIndexRouteImport.update({
   id: '/guides/',
@@ -188,7 +176,6 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
-  '/jewelry': typeof JewelryRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/emeralds': typeof AdminEmeraldsRouteWithChildren
   '/admin/import': typeof AdminImportRoute
@@ -204,7 +191,6 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
-  '/jewelry/': typeof JewelryIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
   '/emeralds/tienda/': typeof EmeraldsTiendaIndexRoute
@@ -231,7 +217,6 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/emeralds': typeof EmeraldsIndexRoute
   '/guides': typeof GuidesIndexRoute
-  '/jewelry': typeof JewelryIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
   '/emeralds/tienda': typeof EmeraldsTiendaIndexRoute
@@ -246,7 +231,6 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/emeralds': typeof EmeraldsRouteWithChildren
   '/faq': typeof FaqRoute
-  '/jewelry': typeof JewelryRouteWithChildren
   '/login': typeof LoginRoute
   '/admin/emeralds': typeof AdminEmeraldsRouteWithChildren
   '/admin/import': typeof AdminImportRoute
@@ -262,7 +246,6 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
-  '/jewelry/': typeof JewelryIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/emeralds/tienda/$slug': typeof EmeraldsTiendaSlugRoute
   '/emeralds/tienda/': typeof EmeraldsTiendaIndexRoute
@@ -278,7 +261,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/emeralds'
     | '/faq'
-    | '/jewelry'
     | '/login'
     | '/admin/emeralds'
     | '/admin/import'
@@ -294,7 +276,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/emeralds/'
     | '/guides/'
-    | '/jewelry/'
     | '/admin/emeralds/new'
     | '/emeralds/tienda/$slug'
     | '/emeralds/tienda/'
@@ -321,7 +302,6 @@ export interface FileRouteTypes {
     | '/admin'
     | '/emeralds'
     | '/guides'
-    | '/jewelry'
     | '/admin/emeralds/new'
     | '/emeralds/tienda/$slug'
     | '/emeralds/tienda'
@@ -335,7 +315,6 @@ export interface FileRouteTypes {
     | '/contact'
     | '/emeralds'
     | '/faq'
-    | '/jewelry'
     | '/login'
     | '/admin/emeralds'
     | '/admin/import'
@@ -351,7 +330,6 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/emeralds/'
     | '/guides/'
-    | '/jewelry/'
     | '/admin/emeralds/new'
     | '/emeralds/tienda/$slug'
     | '/emeralds/tienda/'
@@ -366,7 +344,6 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
   FaqRoute: typeof FaqRoute
-  JewelryRoute: typeof JewelryRouteWithChildren
   LoginRoute: typeof LoginRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
@@ -380,13 +357,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jewelry': {
-      id: '/jewelry'
-      path: '/jewelry'
-      fullPath: '/jewelry'
-      preLoaderRoute: typeof JewelryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -444,13 +414,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/jewelry/': {
-      id: '/jewelry/'
-      path: '/'
-      fullPath: '/jewelry/'
-      preLoaderRoute: typeof JewelryIndexRouteImport
-      parentRoute: typeof JewelryRoute
     }
     '/guides/': {
       id: '/guides/'
@@ -640,17 +603,6 @@ const EmeraldsRouteWithChildren = EmeraldsRoute._addFileChildren(
   EmeraldsRouteChildren,
 )
 
-interface JewelryRouteChildren {
-  JewelryIndexRoute: typeof JewelryIndexRoute
-}
-
-const JewelryRouteChildren: JewelryRouteChildren = {
-  JewelryIndexRoute: JewelryIndexRoute,
-}
-
-const JewelryRouteWithChildren =
-  JewelryRoute._addFileChildren(JewelryRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -660,7 +612,6 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EmeraldsRoute: EmeraldsRouteWithChildren,
   FaqRoute: FaqRoute,
-  JewelryRoute: JewelryRouteWithChildren,
   LoginRoute: LoginRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   GuidesSlugRoute: GuidesSlugRoute,
