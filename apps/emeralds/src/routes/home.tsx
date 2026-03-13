@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import BrandStory from "@/components/BrandStory";
 import Hero from "@/components/Hero";
 import { prefetchEmeraldPageData, useEmeraldPageData } from "@/data/page-data";
-import { useLocalizedContent } from "apps/hooks/sanity-helper";
+import { useLocalizedContent } from "@/hooks/sanity-helper";
 import type {
   BrandStorySection,
   EmeraldPage,
