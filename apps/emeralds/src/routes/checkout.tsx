@@ -207,7 +207,7 @@ function CheckoutPage() {
 						Abrir WhatsApp
 					</a>
 					<Link
-						to="/tienda"
+						to="/emeralds/tienda"
 						className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
 					>
 						Seguir comprando

@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 import { useCompareStore } from "@/store/compareStore";
 
-export const Route = createFileRoute("/compare")({
+export const Route = createFileRoute("/emeralds/compare")({
 	head: () =>
 		buildMeta({
 			title: "Comparar Esmeraldas",
 			description:
 				"Compara esmeraldas colombianas lado a lado por claridad, peso en quilates, origen, corte y precio. Encuentra la piedra perfecta para ti.",
-			path: "/compare",
+			path: "/emeralds/compare",
 			noIndex: true,
 			jsonLd: [
 				breadcrumbJsonLd([
 					{ name: "Inicio", path: "/" },
-					{ name: "Inicio", path: "/" },
-					{ name: "Comparar", path: "/compare" },
+					{ name: "Esmeraldas", path: "/emeralds" },
+					{ name: "Comparar", path: "/emeralds/compare" },
 				]),
 			],
 		}),
@@ -32,7 +32,7 @@ function ComparePage() {
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<Link
-						to="/"
+						to="/emeralds"
 						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark"
 					>
 						<ArrowLeft className="h-4 w-4" />
@@ -61,7 +61,7 @@ function ComparePage() {
 							asChild
 							className="mt-6 bg-brand-primary hover:bg-brand-primary/90"
 						>
-							<Link to="/">Ir a la tienda</Link>
+							<Link to="/emeralds">Ir a la tienda</Link>
 						</Button>
 					</div>
 				) : (
@@ -71,5 +71,5 @@ function ComparePage() {
 				)}
 			</div>
 		</div>
-	)
+	);
 }

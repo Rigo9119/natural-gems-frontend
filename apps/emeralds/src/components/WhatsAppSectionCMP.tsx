@@ -1,6 +1,6 @@
 import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { Button } from "./ui/button";
-import { localizeContent } from "apps/hooks/sanity-helper";
+import { localizeContent } from "@/hooks/sanity-helper";
 import { WHATSAPP_URL } from "@/lib/constants";
 import { WhatsAppSection } from "@/lib/sanity/sanity-types";
 
@@ -12,8 +12,7 @@ export default function WhatsAppSectionCMP({
   sectionContent,
 }: WhatsAppSectionProps) {
   const title =
-    localizeContent(sectionContent?.header?.title ?? {}) ??
-    "Atención Personalizada";
+    localizeContent(sectionContent?.header?.title ?? {}) ?? "Atención Personalizada";
   const description =
     localizeContent(sectionContent?.header?.description ?? {}) ??
     "Cada esmeralda es única, como tú. Nuestros expertos gemólogos están listos para ayudarte a encontrar la piedra perfecta con una atención exclusiva y personalizada.";

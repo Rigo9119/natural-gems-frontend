@@ -1,5 +1,5 @@
 import type { WarrantySection } from "@/lib/sanity/sanity-types";
-import { localizeContent } from "apps/hooks/sanity-helper";
+import { localizeContent } from "@/hooks/sanity-helper";
 import { iconMap } from "@/lib/icon-map";
 
 export interface WarrantiesSectionProps {

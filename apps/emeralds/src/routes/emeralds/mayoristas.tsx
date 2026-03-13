@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Breadcrumb } from "@natura-gems/ui"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { z } from "zod"
@@ -28,17 +27,18 @@ const searchSchema = z.object({
 	cut: z.string().optional(),
 })
 
-export const Route = createFileRoute("/mayoristas")({
+export const Route = createFileRoute("/emeralds/mayoristas")({
 	head: () =>
 		buildMeta({
 			title: "Mayoristas",
 			description:
 				"Precios especiales en esmeraldas colombianas para joyeros y mayoristas. Lotes certificados con trazabilidad completa desde las minas de Colombia.",
-			path: "/mayoristas",
+			path: "/emeralds/mayoristas",
 			jsonLd: [
 				breadcrumbJsonLd([
 					{ name: "Inicio", path: "/" },
-					{ name: "Mayoristas", path: "/mayoristas" },
+					{ name: "Esmeraldas", path: "/emeralds" },
+					{ name: "Mayoristas", path: "/emeralds/mayoristas" },
 				]),
 			],
 		}),
@@ -163,8 +163,7 @@ function MayoristasPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">
-			<Breadcrumb items={[{ label: "Inicio", href: "/" }, { label: "Mayoristas" }]} />
-			<div className="bg-white py-8">
+			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<h1 className="font-heading text-3xl text-brand-primary-dark md:text-4xl">
 						Mayoristas

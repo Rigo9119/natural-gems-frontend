@@ -44,7 +44,7 @@ function CartPage() {
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<Link
-						to="/tienda"
+						to="/emeralds/tienda"
 						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark transition-colors"
 					>
 						<ArrowLeft className="h-4 w-4" />
@@ -76,7 +76,7 @@ function CartPage() {
 							que te interesen.
 						</p>
 						<Link
-							to="/tienda"
+							to="/emeralds/tienda"
 							className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-primary-dark px-8 py-3.5 font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 						>
 							Ver esmeraldas
@@ -105,7 +105,7 @@ function CartPage() {
 									<li key={product.id} className="flex gap-4 p-5 sm:gap-6">
 										{/* Thumbnail */}
 										<Link
-											to="/tienda/$slug"
+											to="/emeralds/tienda/$slug"
 											params={{ slug: product.slug }}
 											className="shrink-0"
 										>
@@ -123,7 +123,7 @@ function CartPage() {
 										{/* Info */}
 										<div className="flex flex-1 flex-col gap-1 min-w-0">
 											<Link
-												to="/tienda/$slug"
+												to="/emeralds/tienda/$slug"
 												params={{ slug: product.slug }}
 												className="font-heading text-sm leading-snug text-brand-primary-dark hover:underline underline-offset-2 truncate"
 											>

@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	Award,
 	Check,
+	ChevronRight,
 	Gem,
 	MapPin,
 	MessageCircle,
@@ -11,7 +12,6 @@ import {
 	Sparkles,
 	Truck,
 } from "lucide-react"
-import { Breadcrumb } from "@natura-gems/ui"
 import ProductCard from "@/components/ProductCard"
 import { OptimizedImage } from "@/components/ui/optimized-image"
 import { WHATSAPP_NUMBER } from "@/lib/constants"
@@ -22,7 +22,7 @@ import {
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
 import { useCartStore } from "@/store/cartStore"
 
-export const Route = createFileRoute("/tienda/$slug")({
+export const Route = createFileRoute("/emeralds/tienda/$slug")({
 	head: ({ loaderData }) => {
 		const p = loaderData as
 			| { name?: string; description?: string; slug?: string }
@@ -30,14 +30,15 @@ export const Route = createFileRoute("/tienda/$slug")({
 		return buildMeta({
 			title: p?.name,
 			description: p?.description ?? undefined,
-			path: `/tienda/${p?.slug ?? ""}`,
+			path: `/emeralds/tienda/${p?.slug ?? ""}`,
 			ogType: "website",
 			jsonLd: p?.name
 				? [
 						breadcrumbJsonLd([
 							{ name: "Inicio", path: "/" },
-							{ name: "Tienda", path: "/tienda" },
-							{ name: p.name, path: `/tienda/${p.slug}` },
+							{ name: "Esmeraldas", path: "/emeralds" },
+							{ name: "Tienda", path: "/emeralds/tienda" },
+							{ name: p.name, path: `/emeralds/tienda/${p.slug}` },
 						]),
 					]
 				: [],
@@ -122,13 +123,52 @@ function EmeraldDetailPage() {
 	return (
 		<div className="min-h-screen bg-brand-surface">
 			{/* ── Breadcrumb ── */}
-			<Breadcrumb
-				items={[
-					{ label: "Inicio", href: "/" },
-					{ label: "Tienda", href: "/tienda" },
-					{ label: product.name },
-				]}
-			/>
+			<nav
+				aria-label="Breadcrumb"
+				className="border-b border-brand-primary-dark/10 bg-white"
+			>
+				<ol className="mx-auto flex max-w-7xl items-center gap-1.5 px-4 py-3 text-xs text-brand-primary-dark/60 md:px-6 lg:px-8">
+					<li>
+						<Link
+							to="/"
+							className="hover:text-brand-primary-dark transition-colors"
+						>
+							Inicio
+						</Link>
+					</li>
+					<li aria-hidden="true">
+						<ChevronRight className="h-3 w-3" />
+					</li>
+					<li>
+						<Link
+							to="/emeralds"
+							className="hover:text-brand-primary-dark transition-colors"
+						>
+							Esmeraldas
+						</Link>
+					</li>
+					<li aria-hidden="true">
+						<ChevronRight className="h-3 w-3" />
+					</li>
+					<li>
+						<Link
+							to="/emeralds/tienda"
+							className="hover:text-brand-primary-dark transition-colors"
+						>
+							Tienda
+						</Link>
+					</li>
+					<li aria-hidden="true">
+						<ChevronRight className="h-3 w-3" />
+					</li>
+					<li
+						className="truncate font-medium text-brand-primary-dark"
+						aria-current="page"
+					>
+						{product.name}
+					</li>
+				</ol>
+			</nav>
 
 			{/* ── Main grid: image + info ── */}
 			<section className="mx-auto max-w-7xl px-4 py-10 md:px-6 lg:px-8">
@@ -371,7 +411,7 @@ function EmeraldDetailPage() {
 								</h2>
 							</div>
 							<Link
-								to="/tienda"
+								to="/emeralds/tienda"
 								className="hidden text-sm font-medium text-brand-primary-dark underline-offset-4 hover:underline sm:block"
 							>
 								Ver todas

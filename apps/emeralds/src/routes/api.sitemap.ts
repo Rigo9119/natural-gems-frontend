@@ -60,9 +60,9 @@ export const APIRoute = createAPIFileRoute("/api/sitemap")({
 		const staticUrls: SitemapUrl[] = [
 			{ loc: `${SITE_URL}/`, changefreq: "weekly", priority: "1.0", lastmod: today },
 			{ loc: `${SITE_URL}/emeralds`, changefreq: "weekly", priority: "0.9", lastmod: today },
-			{ loc: `${SITE_URL}/tienda`, changefreq: "weekly", priority: "0.9", lastmod: today },
-			{ loc: `${SITE_URL}/collection`, changefreq: "monthly", priority: "0.7" },
-			{ loc: `${SITE_URL}/mayoristas`, changefreq: "monthly", priority: "0.7" },
+			{ loc: `${SITE_URL}/emeralds/tienda`, changefreq: "weekly", priority: "0.9", lastmod: today },
+			{ loc: `${SITE_URL}/emeralds/collection`, changefreq: "monthly", priority: "0.7" },
+			{ loc: `${SITE_URL}/emeralds/mayoristas`, changefreq: "monthly", priority: "0.7" },
 			{ loc: `${SITE_URL}/jewelry`, changefreq: "weekly", priority: "0.9", lastmod: today },
 			{ loc: `${SITE_URL}/guides`, changefreq: "weekly", priority: "0.8", lastmod: today },
 			{ loc: `${SITE_URL}/about`, changefreq: "monthly", priority: "0.6" },
@@ -72,7 +72,7 @@ export const APIRoute = createAPIFileRoute("/api/sitemap")({
 
 		// Dynamic emerald detail pages
 		const emeraldUrls: SitemapUrl[] = emeralds.map((e) => ({
-			loc: `${SITE_URL}/tienda/${e.slug}`,
+			loc: `${SITE_URL}/emeralds/tienda/${e.slug}`,
 			lastmod: e.created_at ? e.created_at.slice(0, 10) : today,
 			changefreq: "weekly",
 			priority: "0.8",

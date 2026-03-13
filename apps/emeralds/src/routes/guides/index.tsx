@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Breadcrumb } from "@natura-gems/ui";
 import { ArrowRight, BookOpen, Calendar, Gem, Tag } from "lucide-react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { prefetchGuidesList, useGuidesList } from "@/data/page-data";
@@ -68,14 +67,8 @@ function GuidesIndexPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
-			<Breadcrumb
-				items={[
-					{ label: "Inicio", href: "/" },
-					{ label: "Guías" },
-				]}
-			/>
 			{/* Header */}
-			<div className="bg-white py-12">
+			<div className="border-b border-brand-primary-dark/10 bg-white py-12">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<p className="mb-3 font-body text-xs tracking-[0.2em] uppercase text-brand-primary-dark/60">
 						Conocimiento Experto
@@ -208,7 +201,7 @@ function GuidesIndexPage() {
 						Explora nuestra coleccion de esmeraldas colombianas certificadas.
 					</p>
 					<Link
-						to="/tienda"
+						to="/emeralds/tienda"
 						className="inline-flex items-center gap-2 rounded-full bg-brand-secondary-golden px-8 py-3 font-body font-medium text-brand-primary-dark transition-all hover:scale-105 hover:bg-brand-secondary-golden/90"
 					>
 						Explorar Tienda

@@ -34,7 +34,7 @@ export default function ProductCard({
 	}
 
 	const detailHref = isEmerald(product)
-		? `/tienda/${product.slug}`
+		? `/emeralds/tienda/${product.slug}`
 		: undefined
 
 	const imageSrc = isEmerald(product)

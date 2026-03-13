@@ -36,7 +36,7 @@ export function NotFound() {
           variant="outline"
           className="gap-2 border-brand-primary-dark/20 text-brand-primary-dark hover:bg-brand-primary-lighter"
         >
-          <Link to="/">
+          <Link to="/emeralds">
             <Search className="h-4 w-4" />
             Ver tienda
           </Link>

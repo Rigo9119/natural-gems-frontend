@@ -41,7 +41,7 @@ export default function Hero({ hero }: HeroProps) {
         </p>
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
-            to={hero?.ctaLeft?.link || "/tienda"}
+            to={hero?.ctaLeft?.link || "/emeralds"}
             className="inline-flex items-center gap-2 rounded-full border border-brand-primary-lighter px-6 py-3 font-body font-medium text-brand-primary-lighter transition-all duration-300 hover:bg-brand-primary-lighter hover:text-brand-primary-dark sm:px-8 sm:py-4 sm:text-lg"
           >
             {heroCtaLeft}
