@@ -105,7 +105,7 @@ function CheckoutSuccessPage() {
 					)}
 
 					<Link
-						to="/emeralds/tienda"
+						to="/tienda"
 						className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 					>
 						Seguir comprando

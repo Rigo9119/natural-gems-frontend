@@ -61,7 +61,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 							Explora nuestra colección de esmeraldas colombianas
 						</p>
 						<Link
-							to="/emeralds/tienda"
+							to="/tienda"
 							onClick={onClose}
 							className="mt-2 rounded-full bg-brand-primary-dark px-6 py-2.5 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 						>

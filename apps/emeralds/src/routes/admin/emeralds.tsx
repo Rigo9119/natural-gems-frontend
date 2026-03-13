@@ -347,7 +347,7 @@ function buildColumns(
 						</DropdownMenuLabel>
 						<DropdownMenuItem asChild>
 							<a
-								href={`/emeralds/tienda/${row.original.slug}`}
+								href={`/tienda/${row.original.slug}`}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="flex items-center gap-2"

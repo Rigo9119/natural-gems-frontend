@@ -1,4 +1,4 @@
-import { localizeContent } from "@/hooks/sanity-helper";
+import { localizeContent } from "apps/hooks/sanity-helper";
 import DualCategoryCard from "./DualCategoryCard";
 import type { DualCategorySection } from "@/lib/sanity/sanity-types";
 

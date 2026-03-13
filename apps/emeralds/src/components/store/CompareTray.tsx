@@ -66,7 +66,7 @@ export function CompareTray() {
 						asChild
 						className="gap-2 bg-brand-primary-dark hover:bg-brand-primary-dark/90 h-10 px-4"
 					>
-						<Link to="/emeralds/compare">
+						<Link to="/compare">
 							<GitCompare className="h-4 w-4" />
 							<span className="hidden sm:inline">Comparar</span> (
 							{compareItems.length})

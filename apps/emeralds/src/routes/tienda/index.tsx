@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 import { z } from "zod"
+import { Breadcrumb } from "@natura-gems/ui"
 import { CompareTray } from "@/components/store/CompareTray"
 import * as ProductFilters from "@/components/store/ProductFilters"
 import { ProductGrid } from "@/components/store/ProductGrid"
@@ -28,19 +29,18 @@ const searchSchema = z.object({
 	cut: z.string().optional(),
 })
 
-export const Route = createFileRoute("/emeralds/tienda/")({
+export const Route = createFileRoute("/tienda/")({
 	head: ({ loaderData }) => {
 		const emeralds = (loaderData as { emeralds?: EmeraldWithImage[] })?.emeralds ?? []
 		return buildMeta({
 			title: "Tienda de Esmeraldas",
 			description:
 				"Explora nuestra colección de esmeraldas sueltas colombianas. Filtra por claridad, quilates, origen y precio. Todas las piedras con certificado de autenticidad.",
-			path: "/emeralds/tienda",
+			path: "/tienda",
 			jsonLd: [
 				breadcrumbJsonLd([
 					{ name: "Inicio", path: "/" },
-					{ name: "Esmeraldas", path: "/emeralds" },
-					{ name: "Tienda", path: "/emeralds/tienda" },
+					{ name: "Tienda", path: "/tienda" },
 				]),
 				emeraldItemListJsonLd(emeralds),
 			],
@@ -152,7 +152,13 @@ function TiendaPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface pb-24">
-			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
+			<Breadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Tienda" },
+				]}
+			/>
+			<div className="bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
 					<h1 className="font-heading text-3xl text-brand-primary-dark md:text-4xl">
 						Tienda de Esmeraldas
