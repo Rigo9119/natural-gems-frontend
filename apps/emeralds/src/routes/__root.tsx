@@ -62,13 +62,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 const jewelryUrl = import.meta.env.VITE_JEWELRY_URL ?? "https://joyeria.naturagems.com";
 
 const appNavItems = [
-	// { label: "Inicio", href: "/" }, // portal selector — hidden until needed
-	{ label: "Esmeraldas", href: "/emeralds" },
-	{ label: "Joyería", href: jewelryUrl },
-	{ label: "Nosotros", href: "/about" },
-	{ label: "FAQ", href: "/faq" },
+	{ label: "Esmeraldas", href: "/emeralds/shop" },
 	{ label: "Blog", href: "/guides" },
+	{ label: "Nosotros", href: "/about" },
 	{ label: "Contacto", href: "/contact" },
+	{ label: "Joyería", href: jewelryUrl },
 ];
 
 function RootComponent() {

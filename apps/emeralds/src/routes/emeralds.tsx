@@ -1,21 +1,14 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import SubNav from "@/components/SubNav";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/emeralds")({
+  beforeLoad: ({ location }) => {
+    if (location.pathname === "/emeralds" || location.pathname === "/emeralds/") {
+      throw redirect({ to: "/emeralds/shop", replace: true });
+    }
+  },
   component: EmeraldsLayout,
 });
 
-const emeraldsSubNav = [
-  { label: "Tienda", href: "/emeralds/tienda" },
-  { label: "Mayoristas", href: "/emeralds/mayoristas" },
-  { label: "Colección", href: "/emeralds/collection" },
-];
-
 function EmeraldsLayout() {
-  return (
-    <>
-      <SubNav items={emeraldsSubNav} />
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }

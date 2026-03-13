@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
+import { AppBreadcrumb } from "@/components/AppBreadcrumb"
 import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
 import { CheckCircle, CreditCard, MessageCircle, ShoppingBag } from "lucide-react"
@@ -15,18 +16,19 @@ import {
 } from "@/lib/supabase-queries"
 import { useCartStore } from "@/store/cartStore"
 
-export const Route = createFileRoute("/checkout")({
+export const Route = createFileRoute("/emeralds/checkout")({
 	head: () =>
 		buildMeta({
 			title: "Solicitar pedido",
 			description: "Completa tu información para enviar tu pedido.",
-			path: "/checkout",
+			path: "/emeralds/checkout",
 			noIndex: true,
 			jsonLd: [
 				breadcrumbJsonLd([
 					{ name: "Inicio", path: "/" },
-					{ name: "Carrito", path: "/cart" },
-					{ name: "Solicitar pedido", path: "/checkout" },
+					{ name: "Esmeraldas", path: "/emeralds" },
+					{ name: "Carrito", path: "/emeralds/cart" },
+					{ name: "Solicitar pedido", path: "/emeralds/checkout" },
 				]),
 			],
 		}),
@@ -90,9 +92,8 @@ function CheckoutPage() {
 
 	const showPaymentChoice = totalPrice >= PAYMENT_ADVISOR_THRESHOLD
 
-	// Guard: redirect to cart if empty (after hydration)
 	if (items.length === 0 && !successOrderNumber) {
-		navigate({ to: "/cart" })
+		navigate({ to: "/emeralds/cart" })
 		return null
 	}
 
@@ -127,7 +128,6 @@ function CheckoutPage() {
 				return { type: "whatsapp" as const, order, url }
 			}
 
-			// Stripe path
 			const res = await fetch("/api/stripe/checkout", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -144,7 +144,6 @@ function CheckoutPage() {
 				}),
 			})
 			const { url } = await res.json()
-			// Do NOT clearCart here — do it on success page
 			window.location.href = url
 			return { type: "stripe" as const, order, url }
 		},
@@ -153,7 +152,6 @@ function CheckoutPage() {
 				setWaUrl(result.url)
 				setSuccessOrderNumber(result.order.order_number)
 			}
-			// stripe path: browser already redirecting
 		},
 	})
 
@@ -169,7 +167,6 @@ function CheckoutPage() {
 		},
 	})
 
-	// WhatsApp success state
 	if (successOrderNumber) {
 		return (
 			<div className="min-h-screen bg-brand-surface flex items-center justify-center px-4">
@@ -207,7 +204,7 @@ function CheckoutPage() {
 						Abrir WhatsApp
 					</a>
 					<Link
-						to="/emeralds/tienda"
+						to="/emeralds/shop"
 						className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
 					>
 						Seguir comprando
@@ -219,15 +216,16 @@ function CheckoutPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
-			{/* Header */}
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Tienda", href: "/emeralds/shop" },
+					{ label: "Carrito", href: "/emeralds/cart" },
+					{ label: "Solicitar pedido" },
+				]}
+			/>
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
-					<Link
-						to="/cart"
-						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark transition-colors"
-					>
-						← Volver al carrito
-					</Link>
 					<h1 className="font-heading text-3xl text-brand-primary-dark md:text-4xl">
 						Solicitar pedido
 					</h1>
@@ -251,7 +249,6 @@ function CheckoutPage() {
 									Tus datos de contacto
 								</h2>
 
-								{/* Nombre */}
 								<form.Field
 									name="nombre"
 									validators={{
@@ -278,7 +275,6 @@ function CheckoutPage() {
 									)}
 								</form.Field>
 
-								{/* WhatsApp */}
 								<form.Field
 									name="whatsapp"
 									validators={{
@@ -313,7 +309,6 @@ function CheckoutPage() {
 									)}
 								</form.Field>
 
-								{/* Email */}
 								<form.Field
 									name="email"
 									validators={{
@@ -349,7 +344,6 @@ function CheckoutPage() {
 									)}
 								</form.Field>
 
-								{/* Notas */}
 								<form.Field name="notas">
 									{(field) => (
 										<div className="space-y-1.5">
@@ -371,7 +365,6 @@ function CheckoutPage() {
 								</form.Field>
 							</div>
 
-							{/* Payment choice — only shown for high-value orders */}
 							{showPaymentChoice && (
 								<div className="rounded-2xl bg-white p-6 shadow-sm space-y-3">
 									<h2 className="font-heading text-lg text-brand-primary-dark">

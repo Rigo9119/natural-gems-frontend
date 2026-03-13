@@ -1,5 +1,6 @@
 import { SiInstagram, SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { createFileRoute } from "@tanstack/react-router";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +65,12 @@ const contactMethods = [
 function ContactPage() {
   return (
     <div>
+      <AppBreadcrumb
+        items={[
+          { label: "Inicio", href: "/" },
+          { label: "Contacto" },
+        ]}
+      />
       {/* Hero Section */}
       <section className="bg-brand-secondary-terra px-6 sm:px-8 py-16 sm:py-24 text-center">
         <p className="text-brand-secondary-golden font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-4 sm:mb-6">

@@ -61,7 +61,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 							Explora nuestra colección de esmeraldas colombianas
 						</p>
 						<Link
-							to="/emeralds/tienda"
+							to="/emeralds/shop"
 							onClick={onClose}
 							className="mt-2 rounded-full bg-brand-primary-dark px-6 py-2.5 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 						>
@@ -151,7 +151,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
 							{/* CTAs */}
 											<Link
-								to="/checkout"
+								to="/emeralds/checkout"
 								onClick={onClose}
 								className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 							>
@@ -159,7 +159,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 							</Link>
 
 							<Link
-								to="/cart"
+								to="/emeralds/cart"
 								onClick={onClose}
 								className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
 							>

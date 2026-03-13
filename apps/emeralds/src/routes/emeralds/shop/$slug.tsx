@@ -3,7 +3,6 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	Award,
 	Check,
-	ChevronRight,
 	Gem,
 	MapPin,
 	MessageCircle,
@@ -12,6 +11,7 @@ import {
 	Sparkles,
 	Truck,
 } from "lucide-react"
+import { AppBreadcrumb } from "@/components/AppBreadcrumb"
 import ProductCard from "@/components/ProductCard"
 import { OptimizedImage } from "@/components/ui/optimized-image"
 import { WHATSAPP_NUMBER } from "@/lib/constants"
@@ -22,7 +22,7 @@ import {
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
 import { useCartStore } from "@/store/cartStore"
 
-export const Route = createFileRoute("/emeralds/tienda/$slug")({
+export const Route = createFileRoute("/emeralds/shop/$slug")({
 	head: ({ loaderData }) => {
 		const p = loaderData as
 			| { name?: string; description?: string; slug?: string }
@@ -30,15 +30,15 @@ export const Route = createFileRoute("/emeralds/tienda/$slug")({
 		return buildMeta({
 			title: p?.name,
 			description: p?.description ?? undefined,
-			path: `/emeralds/tienda/${p?.slug ?? ""}`,
+			path: `/emeralds/shop/${p?.slug ?? ""}`,
 			ogType: "website",
 			jsonLd: p?.name
 				? [
 						breadcrumbJsonLd([
 							{ name: "Inicio", path: "/" },
 							{ name: "Esmeraldas", path: "/emeralds" },
-							{ name: "Tienda", path: "/emeralds/tienda" },
-							{ name: p.name, path: `/emeralds/tienda/${p.slug}` },
+							{ name: "Tienda", path: "/emeralds/shop" },
+							{ name: p.name, path: `/emeralds/shop/${p.slug}` },
 						]),
 					]
 				: [],
@@ -105,7 +105,6 @@ function EmeraldDetailPage() {
 	const { data: allRetail } = useSuspenseQuery(retailEmeraldsQueryOptions())
 	const { addToCart, removeFromCart, isInCart } = useCartStore()
 
-	// notFound() in loader already handles missing slugs, but TS needs the guard
 	if (!product) return null
 
 	const inCart = isInCart(product.id)
@@ -122,53 +121,13 @@ function EmeraldDetailPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
-			{/* ── Breadcrumb ── */}
-			<nav
-				aria-label="Breadcrumb"
-				className="border-b border-brand-primary-dark/10 bg-white"
-			>
-				<ol className="mx-auto flex max-w-7xl items-center gap-1.5 px-4 py-3 text-xs text-brand-primary-dark/60 md:px-6 lg:px-8">
-					<li>
-						<Link
-							to="/"
-							className="hover:text-brand-primary-dark transition-colors"
-						>
-							Inicio
-						</Link>
-					</li>
-					<li aria-hidden="true">
-						<ChevronRight className="h-3 w-3" />
-					</li>
-					<li>
-						<Link
-							to="/emeralds"
-							className="hover:text-brand-primary-dark transition-colors"
-						>
-							Esmeraldas
-						</Link>
-					</li>
-					<li aria-hidden="true">
-						<ChevronRight className="h-3 w-3" />
-					</li>
-					<li>
-						<Link
-							to="/emeralds/tienda"
-							className="hover:text-brand-primary-dark transition-colors"
-						>
-							Tienda
-						</Link>
-					</li>
-					<li aria-hidden="true">
-						<ChevronRight className="h-3 w-3" />
-					</li>
-					<li
-						className="truncate font-medium text-brand-primary-dark"
-						aria-current="page"
-					>
-						{product.name}
-					</li>
-				</ol>
-			</nav>
+		<AppBreadcrumb
+			items={[
+				{ label: "Inicio", href: "/" },
+				{ label: "Tienda", href: "/emeralds/shop" },
+				{ label: product.name },
+			]}
+		/>
 
 			{/* ── Main grid: image + info ── */}
 			<section className="mx-auto max-w-7xl px-4 py-10 md:px-6 lg:px-8">
@@ -184,7 +143,6 @@ function EmeraldDetailPage() {
 								priority
 								className="h-full w-full object-cover"
 							/>
-							{/* Clarity badge */}
 							<span className="absolute left-4 top-4 rounded-full bg-brand-primary-dark/80 px-4 py-1.5 text-xs font-semibold text-brand-secondary-golden backdrop-blur-sm">
 								{product.clarity} · {product.carats} ct
 							</span>
@@ -210,7 +168,6 @@ function EmeraldDetailPage() {
 
 					{/* Right — product info */}
 					<div className="flex flex-col">
-						{/* Origin tag */}
 						<p className="mb-2 text-xs font-medium tracking-widest uppercase text-brand-secondary-terra">
 							Esmeralda de {product.origin}
 						</p>
@@ -219,7 +176,6 @@ function EmeraldDetailPage() {
 							{product.name}
 						</h1>
 
-						{/* Price */}
 						<p className="mt-4 font-heading text-4xl text-brand-primary-dark">
 							<span className="text-2xl">$</span>
 							{product.price.toLocaleString()}
@@ -230,14 +186,12 @@ function EmeraldDetailPage() {
 
 						<hr className="my-6 border-brand-primary-dark/10" />
 
-						{/* Description */}
 						{product.description && (
 							<p className="font-body leading-relaxed text-brand-primary-dark/80">
 								{product.description}
 							</p>
 						)}
 
-						{/* Color */}
 						{product.color && (
 							<div className="mt-4 flex items-start gap-2">
 								<Gem className="mt-0.5 h-4 w-4 shrink-0 text-brand-secondary-terra" />
@@ -250,7 +204,6 @@ function EmeraldDetailPage() {
 							</div>
 						)}
 
-						{/* Origin detail */}
 						{origin && (
 							<div className="mt-3 flex items-start gap-2">
 								<MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-secondary-terra" />
@@ -265,7 +218,6 @@ function EmeraldDetailPage() {
 
 						<hr className="my-6 border-brand-primary-dark/10" />
 
-						{/* Specs table */}
 						<dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-3">
 							{[
 								{ label: "Quilates", value: `${product.carats} ct` },
@@ -296,7 +248,6 @@ function EmeraldDetailPage() {
 
 						{/* CTA buttons */}
 						<div className="flex flex-col gap-3 sm:flex-row">
-							{/* Add to cart */}
 							<button
 								type="button"
 								onClick={() =>
@@ -321,7 +272,6 @@ function EmeraldDetailPage() {
 								)}
 							</button>
 
-							{/* WhatsApp */}
 							<a
 								href={waUrl}
 								target="_blank"
@@ -333,7 +283,6 @@ function EmeraldDetailPage() {
 							</a>
 						</div>
 
-						{/* Clarity & cut explainer */}
 						<div className="mt-6 space-y-2 rounded-xl bg-brand-primary-lighter/60 p-4 text-xs text-brand-primary-dark/70">
 							<p>
 								<span className="font-semibold text-brand-primary-dark">
@@ -411,7 +360,7 @@ function EmeraldDetailPage() {
 								</h2>
 							</div>
 							<Link
-								to="/emeralds/tienda"
+								to="/emeralds/shop"
 								className="hidden text-sm font-medium text-brand-primary-dark underline-offset-4 hover:underline sm:block"
 							>
 								Ver todas

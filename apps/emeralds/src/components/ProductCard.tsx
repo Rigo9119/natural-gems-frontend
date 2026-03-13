@@ -34,58 +34,66 @@ export default function ProductCard({
 	}
 
 	const detailHref = isEmerald(product)
-		? `/emeralds/tienda/${product.slug}`
+		? `/emeralds/shop/${product.slug}`
 		: undefined
 
 	const imageSrc = isEmerald(product)
 		? (product.image_url ?? "")
 		: product.image
 
-	const imageAndBadges = (
-		<figure className="relative aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
-			<OptimizedImage
-				src={imageSrc}
-				alt={product.name}
-				width={400}
-				height={400}
-				className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-			/>
-			{!isEmerald(product) && product.isBestSeller && (
-				<span className="absolute left-3 top-3 rounded-full bg-brand-secondary-terra px-3 py-1 text-xs font-medium text-white">
-					Más Vendido
-				</span>
-			)}
-			{showCompare && isEmerald(product) && (
-				<div className="absolute right-2 top-2 z-10">
-					<label
-						className={`flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${
-							isSelected
-								? "bg-brand-primary text-white"
-								: "bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90"
-						}`}
-					>
-						<Checkbox
-							checked={isSelected}
-							onCheckedChange={handleCompareToggle}
-							disabled={!isSelected && !canAddMore}
-							className="border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary"
-						/>
-						<span className="text-xs font-medium">Comparar</span>
-					</label>
-				</div>
-			)}
-		</figure>
-	)
-
 	return (
 		<article className="group flex flex-col">
-			{detailHref ? (
-				<Link to={detailHref} aria-label={`Ver detalles de ${product.name}`}>
-					{imageAndBadges}
-				</Link>
-			) : (
-				imageAndBadges
-			)}
+			<figure className="relative aspect-square overflow-hidden rounded-lg bg-brand-primary-lighter">
+				{detailHref ? (
+					<Link
+						to={detailHref}
+						className="block h-full w-full"
+						aria-label={`Ver detalles de ${product.name}`}
+					>
+						<OptimizedImage
+							src={imageSrc}
+							alt={product.name}
+							width={400}
+							height={400}
+							className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+						/>
+					</Link>
+				) : (
+					<OptimizedImage
+						src={imageSrc}
+						alt={product.name}
+						width={400}
+						height={400}
+						className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+					/>
+				)}
+				{!isEmerald(product) && product.isBestSeller && (
+					<span className="absolute left-3 top-3 rounded-full bg-brand-secondary-terra px-3 py-1 text-xs font-medium text-white">
+						Más Vendido
+					</span>
+				)}
+				{showCompare && isEmerald(product) && (
+					<div className="absolute right-2 top-2 z-10">
+						<button
+							type="button"
+							onClick={handleCompareToggle}
+							disabled={!isSelected && !canAddMore}
+							className={`flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors disabled:opacity-50 ${
+								isSelected
+									? "bg-brand-primary text-white"
+									: "bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90"
+							}`}
+						>
+							<Checkbox
+								checked={isSelected}
+								tabIndex={-1}
+								className="pointer-events-none border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary"
+							/>
+							<span className="text-xs font-medium">Comparar</span>
+						</button>
+					</div>
+				)}
+			</figure>
 
 			<dl className="mt-4 flex flex-1 flex-col space-y-1">
 				<dt className="sr-only">Nombre</dt>

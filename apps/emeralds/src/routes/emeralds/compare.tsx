@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { CompareTable } from "@/components/store/CompareTable";
 import { Button } from "@/components/ui/button";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
@@ -29,15 +30,15 @@ function ComparePage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Tienda", href: "/emeralds/shop" },
+					{ label: "Comparar" },
+				]}
+			/>
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
-					<Link
-						to="/emeralds"
-						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						Volver a la tienda
-					</Link>
 					<h1 className="font-heading text-3xl text-brand-primary-dark md:text-4xl">
 						Comparar Esmeraldas
 					</h1>

@@ -1,7 +1,8 @@
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
+import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Calendar, Tag, User } from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { prefetchGuideBySlug, useGuideBySlug } from "@/data/page-data";
 import { urlFor } from "@/lib/sanity/sanity";
@@ -193,6 +194,13 @@ function GuideDetailPage() {
 
 	return (
 		<div className="min-h-screen bg-white">
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Guías", href: "/guides" },
+					{ label: guide.title },
+				]}
+			/>
 			{/* Cover image hero */}
 			{coverUrl && (
 				<div className="relative h-64 w-full overflow-hidden bg-brand-primary-lighter sm:h-96 lg:h-[28rem]">
@@ -210,14 +218,6 @@ function GuideDetailPage() {
 
 			{/* Article header */}
 			<div className="mx-auto max-w-3xl px-4 py-10 md:px-6 lg:px-8">
-				{/* Back link */}
-				<Link
-					to="/guides"
-					className="mb-6 inline-flex items-center gap-2 text-sm text-brand-primary-dark/50 transition-colors hover:text-brand-primary-dark"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Todas las guias
-				</Link>
 
 				{/* Meta row */}
 				<div className="mb-4 flex flex-wrap items-center gap-3">
@@ -277,7 +277,7 @@ function GuideDetailPage() {
 					</h2>
 					<div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
 						<Link
-							to="/emeralds/tienda"
+							to="/emeralds/shop"
 							className="inline-flex items-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 font-body font-medium text-brand-primary-lighter transition-all hover:scale-105"
 						>
 							Ver Tienda

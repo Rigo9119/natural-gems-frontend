@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import {
 	Award,
 	Gem,
@@ -127,6 +128,12 @@ const values = [
 function AboutPageComponent() {
 	return (
 		<div>
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Quiénes Somos" },
+				]}
+			/>
 			{/* Hero / Story Section */}
 			<section className="bg-brand-primary-lighter">
 				<div className="flex flex-col md:flex-row items-stretch">

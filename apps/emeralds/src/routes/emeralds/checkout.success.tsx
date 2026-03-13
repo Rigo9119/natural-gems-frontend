@@ -8,13 +8,13 @@ import { supabase } from "@/lib/supabase"
 import { useCartStore } from "@/store/cartStore"
 import type { OrderWithItems } from "@/lib/supabase-queries"
 
-export const Route = createFileRoute("/checkout/success")({
+export const Route = createFileRoute("/emeralds/checkout/success")({
 	validateSearch: z.object({ order_id: z.string() }),
 	head: () =>
 		buildMeta({
 			title: "Pago completado",
 			description: "Tu pago fue procesado exitosamente.",
-			path: "/checkout/success",
+			path: "/emeralds/checkout/success",
 			noIndex: true,
 		}),
 	component: CheckoutSuccessPage,
@@ -44,7 +44,6 @@ function CheckoutSuccessPage() {
 	return (
 		<div className="min-h-screen bg-brand-surface flex items-center justify-center px-4 py-16">
 			<div className="w-full max-w-md space-y-6">
-				{/* Success card */}
 				<div className="rounded-2xl bg-white p-8 shadow-sm text-center space-y-5">
 					<div className="flex justify-center">
 						<CheckCircle className="h-16 w-16 text-brand-primary-dark" />
@@ -76,7 +75,6 @@ function CheckoutSuccessPage() {
 								</p>
 							</div>
 
-							{/* Items summary */}
 							<ul className="space-y-2 text-left">
 								{order.order_items.map((item) => (
 									<li key={item.id} className="flex justify-between text-sm">
@@ -105,7 +103,7 @@ function CheckoutSuccessPage() {
 					)}
 
 					<Link
-						to="/emeralds/tienda"
+						to="/emeralds/shop"
 						className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 					>
 						Seguir comprando

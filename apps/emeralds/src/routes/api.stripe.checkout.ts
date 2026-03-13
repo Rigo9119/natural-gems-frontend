@@ -44,8 +44,8 @@ export const APIRoute = createAPIFileRoute("/api/stripe/checkout")({
 				order_id: order.id,
 				order_number: order.order_number,
 			},
-			success_url: `${origin}/checkout/success?order_id=${order.id}`,
-			cancel_url: `${origin}/checkout/cancel?order_id=${order.id}`,
+			success_url: `${origin}/emeralds/checkout/success?order_id=${order.id}`,
+			cancel_url: `${origin}/emeralds/checkout/cancel?order_id=${order.id}`,
 		})
 
 		return Response.json({ url: session.url })

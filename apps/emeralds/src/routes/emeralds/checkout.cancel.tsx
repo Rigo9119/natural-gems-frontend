@@ -7,13 +7,13 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import type { OrderWithItems } from "@/lib/supabase-queries"
 
-export const Route = createFileRoute("/checkout/cancel")({
+export const Route = createFileRoute("/emeralds/checkout/cancel")({
 	validateSearch: z.object({ order_id: z.string() }),
 	head: () =>
 		buildMeta({
 			title: "Pago cancelado",
 			description: "El pago fue cancelado.",
-			path: "/checkout/cancel",
+			path: "/emeralds/checkout/cancel",
 			noIndex: true,
 		}),
 	component: CheckoutCancelPage,
@@ -100,7 +100,7 @@ function CheckoutCancelPage() {
 				</div>
 
 				<Link
-					to="/checkout"
+					to="/emeralds/checkout"
 					className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 				>
 					<RefreshCcw className="h-4 w-4" />

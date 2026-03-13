@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import {
 	Droplets,
 	Eye,
@@ -218,6 +219,12 @@ import type React from "react";
 function FaqPage() {
 	return (
 		<div>
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Preguntas Frecuentes" },
+				]}
+			/>
 			{/* Hero Section */}
 			<section className="bg-brand-primary-dark px-6 py-16 text-center sm:px-8 sm:py-24">
 				<p className="mb-4 font-body text-xs tracking-[0.2em] uppercase text-brand-secondary-golden sm:mb-6 sm:text-sm">

@@ -1,27 +1,28 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-	ArrowLeft,
 	Minus,
 	Plus,
 	ShoppingBag,
 	Trash2,
 } from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 import { useCartStore } from "@/store/cartStore";
 
-export const Route = createFileRoute("/cart")({
+export const Route = createFileRoute("/emeralds/cart")({
 	head: () =>
 		buildMeta({
 			title: "Carrito de compra",
 			description:
 				"Revisa las esmeraldas colombianas que has seleccionado y consulta tu pedido por WhatsApp.",
-			path: "/cart",
+			path: "/emeralds/cart",
 			noIndex: true,
 			jsonLd: [
 				breadcrumbJsonLd([
 					{ name: "Inicio", path: "/" },
-					{ name: "Carrito", path: "/cart" },
+					{ name: "Esmeraldas", path: "/emeralds" },
+					{ name: "Carrito", path: "/emeralds/cart" },
 				]),
 			],
 		}),
@@ -40,16 +41,16 @@ function CartPage() {
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Tienda", href: "/emeralds/shop" },
+					{ label: "Carrito" },
+				]}
+			/>
 			{/* ── Header ── */}
 			<div className="border-b border-brand-primary-dark/10 bg-white py-8">
 				<div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
-					<Link
-						to="/emeralds/tienda"
-						className="mb-4 inline-flex items-center gap-2 text-sm text-brand-primary-dark/70 hover:text-brand-primary-dark transition-colors"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						Seguir comprando
-					</Link>
 					<div className="flex items-baseline gap-3">
 						<h1 className="font-heading text-3xl text-brand-primary-dark md:text-4xl">
 							Carrito de compra
@@ -76,7 +77,7 @@ function CartPage() {
 							que te interesen.
 						</p>
 						<Link
-							to="/emeralds/tienda"
+							to="/emeralds/shop"
 							className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-primary-dark px-8 py-3.5 font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 						>
 							Ver esmeraldas
@@ -105,7 +106,7 @@ function CartPage() {
 									<li key={product.id} className="flex gap-4 p-5 sm:gap-6">
 										{/* Thumbnail */}
 										<Link
-											to="/emeralds/tienda/$slug"
+											to="/emeralds/shop/$slug"
 											params={{ slug: product.slug }}
 											className="shrink-0"
 										>
@@ -123,7 +124,7 @@ function CartPage() {
 										{/* Info */}
 										<div className="flex flex-1 flex-col gap-1 min-w-0">
 											<Link
-												to="/emeralds/tienda/$slug"
+												to="/emeralds/shop/$slug"
 												params={{ slug: product.slug }}
 												className="font-heading text-sm leading-snug text-brand-primary-dark hover:underline underline-offset-2 truncate"
 											>
@@ -142,7 +143,6 @@ function CartPage() {
 
 											{/* Qty + remove row */}
 											<div className="mt-auto flex items-center justify-between pt-2">
-												{/* Quantity stepper */}
 												<div className="flex items-center rounded-full border border-brand-primary-dark/20 overflow-hidden">
 													<button
 														type="button"
@@ -169,7 +169,6 @@ function CartPage() {
 													</button>
 												</div>
 
-												{/* Remove */}
 												<button
 													type="button"
 													aria-label="Eliminar producto"
@@ -193,7 +192,6 @@ function CartPage() {
 									Resumen del pedido
 								</h2>
 
-								{/* Line items summary */}
 								<ul className="space-y-2">
 									{items.map(({ product, quantity }) => (
 										<li
@@ -217,7 +215,6 @@ function CartPage() {
 
 								<hr className="border-brand-primary-dark/10" />
 
-								{/* Total */}
 								<div className="flex justify-between">
 									<span className="font-medium text-brand-primary-dark">
 										Total
@@ -230,9 +227,8 @@ function CartPage() {
 									</span>
 								</div>
 
-								{/* Checkout CTA */}
 								<Link
-									to="/checkout"
+									to="/emeralds/checkout"
 									className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3.5 font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
 								>
 									Solicitar pedido
@@ -242,7 +238,6 @@ function CartPage() {
 									Los precios se confirman con nuestro equipo por WhatsApp.
 								</p>
 
-								{/* Trust badges */}
 								<div className="rounded-xl bg-brand-primary-lighter/50 p-4 text-xs text-brand-primary-dark/60 space-y-1.5">
 									<p>✓ Certificado de autenticidad incluido</p>
 									<p>✓ Envío asegurado a todo el mundo</p>

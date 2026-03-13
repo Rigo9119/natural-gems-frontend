@@ -165,7 +165,7 @@ function EmeraldsIndexPage() {
 						title: page?.exclusive?.title ?? { es: "Colección Accesible" },
 						cta: page?.exclusive?.cta ?? {
 							text: { es: "Ver Todas" },
-							link: "/emeralds/tienda",
+							link: "/emeralds/shop",
 						},
 					},
 				}}

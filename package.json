@@ -9,5 +9,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4"
+	},
+	"patchedDependencies": {
+		"@netlify/config@24.4.3": "patches/@netlify%2Fconfig@24.4.3.patch"
 	}
 }

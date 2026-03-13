@@ -20,8 +20,8 @@ export default function ClarityItemCard({
 }: ClarityItemCardProps) {
 	return (
 		<Link
-			to="/emeralds/tienda"
-			search={{ clarity: grade }}
+			to="/emeralds/shop"
+			search={{ view: "retail", clarity: grade }}
 			className={`group flex flex-col overflow-hidden rounded-2xl bg-brand-primary-lighter/50 transition-shadow hover:shadow-lg sm:h-56 sm:flex-row ${
 				reverse ? "sm:flex-row-reverse" : ""
 			}`}
