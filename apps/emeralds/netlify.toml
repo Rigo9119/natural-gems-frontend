@@ -1,5 +1,5 @@
 [build]
-  command = "cd ../.. && bun install && cd apps/emeralds && bun --bun run build"
+  command = "curl -fsSL https://bun.sh/install | bash && export PATH=\"$HOME/.bun/bin:$PATH\" && cd ../.. && bun install && cd apps/emeralds && bun --bun run build"
   dir = "dist/client"
 [dev]
   command = "bun --bun run dev"
