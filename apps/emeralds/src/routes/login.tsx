@@ -40,7 +40,7 @@ function LoginPage() {
 			const { error } = await supabase.auth.signInWithOtp({
 				email: value.email,
 				options: {
-					emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo ?? "/admin")}`,
+					emailRedirectTo: `${import.meta.env.VITE_SITE_URL ?? window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirectTo ?? "/admin")}`,
 					shouldCreateUser: false,
 				},
 			});
