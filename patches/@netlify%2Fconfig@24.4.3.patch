@@ -7,7 +7,7 @@ index aabc07553af5ef2e1631d99039fc2e457ea780e0..2ea7bbd8d54c8ee02e66dd25f530ee42
  // Some environment variables cannot be overridden by configuration
  const cleanUserEnv = function (userEnv) {
 -    return omit.default(userEnv, READONLY_ENV);
-+    return omit(userEnv, READONLY_ENV);
++    return (omit.default ?? omit)(userEnv, READONLY_ENV);
  };
  const READONLY_ENV = [
      // Set in local builds

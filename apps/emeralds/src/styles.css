@@ -3,6 +3,8 @@
 @import "tailwindcss";
 @import "@natura-gems/ui/styles/brand.css";
 
+@source "../../../packages/ui/src";
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
