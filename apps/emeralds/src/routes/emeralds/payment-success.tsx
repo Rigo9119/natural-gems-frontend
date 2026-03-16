@@ -7,14 +7,15 @@ import { buildMeta } from "@/lib/seo"
 import { supabase } from "@/lib/supabase"
 import { useCartStore } from "@/store/cartStore"
 import type { OrderWithItems } from "@/lib/supabase-queries"
+import { OrderStatusTimeline } from "@/components/OrderStatusTimeline"
 
-export const Route = createFileRoute("/emeralds/checkout/success")({
+export const Route = createFileRoute("/emeralds/payment-success")({
 	validateSearch: z.object({ order_id: z.string() }),
 	head: () =>
 		buildMeta({
 			title: "Pago completado",
 			description: "Tu pago fue procesado exitosamente.",
-			path: "/emeralds/checkout/success",
+			path: "/emeralds/payment-success",
 			noIndex: true,
 		}),
 	component: CheckoutSuccessPage,
@@ -74,6 +75,19 @@ function CheckoutSuccessPage() {
 									{order.order_number}
 								</p>
 							</div>
+
+							<OrderStatusTimeline status={order.status} />
+
+							<p className="text-xs text-brand-primary-dark/50">
+								Guarda esta página o{" "}
+								<Link
+									to="/emeralds/mi-pedido"
+									className="underline underline-offset-2 hover:text-brand-primary-dark"
+								>
+									consulta tu pedido aquí
+								</Link>{" "}
+								con tu número de pedido y email/WhatsApp.
+							</p>
 
 							<ul className="space-y-2 text-left">
 								{order.order_items.map((item) => (
