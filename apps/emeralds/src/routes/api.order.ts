@@ -16,12 +16,14 @@ export const Route = createFileRoute("/api/order")({
 					return Response.json({ error: "Invalid request" }, { status: 400 })
 				}
 
-				const { customer_name, customer_whatsapp, customer_email, notes, subtotal, currency, items } =
+				const { customer_name, customer_whatsapp, customer_email, shipping_address, shipping_country, notes, subtotal, currency, items } =
 					body as Record<string, unknown>
 
 				if (
 					!customer_name ||
 					!customer_whatsapp ||
+					!shipping_address ||
+					!shipping_country ||
 					typeof subtotal !== "number" ||
 					Number.isNaN(subtotal) ||
 					subtotal <= 0 ||
@@ -41,6 +43,8 @@ export const Route = createFileRoute("/api/order")({
 						customer_name: customer_name as string,
 						customer_whatsapp: customer_whatsapp as string,
 						customer_email: (customer_email as string) || null,
+						shipping_address: shipping_address as string,
+						shipping_country: shipping_country as string,
 						notes: (notes as string) || null,
 						subtotal: subtotal as number,
 						currency: (currency as string) ?? "USD",

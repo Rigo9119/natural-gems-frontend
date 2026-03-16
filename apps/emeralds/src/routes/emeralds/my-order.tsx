@@ -13,7 +13,7 @@ export const Route = createFileRoute("/emeralds/my-order")({
 		buildMeta({
 			title: "Consultar pedido",
 			description: "Consulta el estado de tu pedido de Natura Gems.",
-			path: "/emeralds/mi-pedido",
+			path: "/emeralds/my-order",
 			noIndex: true,
 		}),
 	component: MiPedidoPage,

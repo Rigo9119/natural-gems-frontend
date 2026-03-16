@@ -81,7 +81,7 @@ function CheckoutSuccessPage() {
 							<p className="text-xs text-brand-primary-dark/50">
 								Guarda esta página o{" "}
 								<Link
-									to="/emeralds/mi-pedido"
+									to="/emeralds/my-order"
 									className="underline underline-offset-2 hover:text-brand-primary-dark"
 								>
 									consulta tu pedido aquí

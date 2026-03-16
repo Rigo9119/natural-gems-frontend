@@ -35,6 +35,8 @@ type CheckoutFormValues = {
 	nombre: string
 	whatsapp: string
 	email: string
+	shipping_address: string
+	shipping_country: string
 	notas: string
 }
 
@@ -105,6 +107,8 @@ function CheckoutPage() {
 					customer_name: formValue.nombre,
 					customer_whatsapp: formValue.whatsapp,
 					customer_email: formValue.email || undefined,
+					shipping_address: formValue.shipping_address,
+					shipping_country: formValue.shipping_country,
 					notes: formValue.notas || undefined,
 					subtotal: totalPrice,
 					currency: "USD",
@@ -154,6 +158,8 @@ function CheckoutPage() {
 			nombre: "",
 			whatsapp: "",
 			email: "",
+			shipping_address: "",
+			shipping_country: "",
 			notas: "",
 		} as CheckoutFormValues,
 		onSubmit: async ({ value }) => {
@@ -333,6 +339,62 @@ function CheckoutPage() {
 												id={field.name}
 												type="email"
 												placeholder="tu@email.com"
+												value={field.state.value}
+												onChange={(e) => field.handleChange(e.target.value)}
+												onBlur={field.handleBlur}
+											/>
+											{field.state.meta.errors.length > 0 && (
+												<p className="text-xs text-red-600">
+													{field.state.meta.errors[0]}
+												</p>
+											)}
+										</div>
+									)}
+								</form.Field>
+
+								<form.Field
+									name="shipping_address"
+									validators={{
+										onChange: ({ value }) =>
+											!value ? "La dirección de envío es requerida" : undefined,
+										onSubmit: ({ value }) =>
+											!value ? "La dirección de envío es requerida" : undefined,
+									}}
+								>
+									{(field) => (
+										<div className="space-y-1.5">
+											<Label htmlFor={field.name}>Dirección de envío *</Label>
+											<Input
+												id={field.name}
+												placeholder="Calle 123 #45-67, Barrio, Ciudad"
+												value={field.state.value}
+												onChange={(e) => field.handleChange(e.target.value)}
+												onBlur={field.handleBlur}
+											/>
+											{field.state.meta.errors.length > 0 && (
+												<p className="text-xs text-red-600">
+													{field.state.meta.errors[0]}
+												</p>
+											)}
+										</div>
+									)}
+								</form.Field>
+
+								<form.Field
+									name="shipping_country"
+									validators={{
+										onChange: ({ value }) =>
+											!value ? "El país de destino es requerido" : undefined,
+										onSubmit: ({ value }) =>
+											!value ? "El país de destino es requerido" : undefined,
+									}}
+								>
+									{(field) => (
+										<div className="space-y-1.5">
+											<Label htmlFor={field.name}>País de destino *</Label>
+											<Input
+												id={field.name}
+												placeholder="Colombia"
 												value={field.state.value}
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
