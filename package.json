@@ -8,7 +8,8 @@
 		"dev:landing": "bun --bun run --cwd apps/landing dev"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.4"
+		"@biomejs/biome": "2.2.4",
+		"@inlang/paraglide-js": "^2.8.0"
 	},
 	"patchedDependencies": {
 		"@netlify/config@24.4.3": "patches/@netlify%2Fconfig@24.4.3.patch"

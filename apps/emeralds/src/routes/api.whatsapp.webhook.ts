@@ -1,4 +1,4 @@
-import { createAPIFileRoute } from "@tanstack/react-start/api"
+import { createFileRoute } from "@tanstack/react-router"
 import { supabaseAdmin } from "@/lib/supabase-server"
 
 // Verifies the X-Hub-Signature-256 header sent by Meta.
@@ -34,64 +34,67 @@ async function verifyWebhookSignature(
 	return diff === 0
 }
 
-export const APIRoute = createAPIFileRoute("/api/whatsapp/webhook")({
-	GET: async ({ request }) => {
-		const url = new URL(request.url)
-		const mode = url.searchParams.get("hub.mode")
-		const token = url.searchParams.get("hub.verify_token")
-		const challenge = url.searchParams.get("hub.challenge")
+export const Route = createFileRoute("/api/whatsapp/webhook")({
+	server: {
+		handlers: {
+			GET: async ({ request }) => {
+				const url = new URL(request.url)
+				const mode = url.searchParams.get("hub.mode")
+				const token = url.searchParams.get("hub.verify_token")
+				const challenge = url.searchParams.get("hub.challenge")
 
-		if (
-			mode === "subscribe" &&
-			token === process.env.WHATSAPP_VERIFY_TOKEN
-		) {
-			return new Response(challenge, { status: 200 })
-		}
-
-		return new Response("Forbidden", { status: 403 })
-	},
-
-	POST: async ({ request }) => {
-		const rawBody = await request.text()
-		const signature = request.headers.get("x-hub-signature-256")
-
-		const valid = await verifyWebhookSignature(rawBody, signature)
-		if (!valid) {
-			return new Response("Forbidden", { status: 403 })
-		}
-
-		try {
-			const body = JSON.parse(rawBody)
-			const message =
-				body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
-
-			if (message?.type === "text") {
-				const text: string = message.text?.body ?? ""
-				const match = text.match(/\bNG-\d{8}-\d{4}\b/)
-
-				if (match) {
-					const orderNumber = match[0]
-
-					// Use admin client to bypass RLS for trusted server-side mutation
-					const { data: orders } = await supabaseAdmin
-						.from("orders")
-						.select("id, status")
-						.eq("order_number", orderNumber)
-						.maybeSingle()
-
-					if (orders && orders.status === "pending") {
-						await supabaseAdmin
-							.from("orders")
-							.update({ status: "in_progress" })
-							.eq("id", orders.id)
-					}
+				if (
+					mode === "subscribe" &&
+					token === process.env.WHATSAPP_VERIFY_TOKEN
+				) {
+					return new Response(challenge, { status: 200 })
 				}
-			}
-		} catch {
-			// Silently ignore parse errors; Meta requires 200
-		}
 
-		// Meta requires 200 for all webhook posts
-		return new Response("EVENT_RECEIVED", { status: 200 })
+				return new Response("Forbidden", { status: 403 })
+			},
+
+			POST: async ({ request }) => {
+				const rawBody = await request.text()
+				const signature = request.headers.get("x-hub-signature-256")
+
+				const valid = await verifyWebhookSignature(rawBody, signature)
+				if (!valid) {
+					return new Response("Forbidden", { status: 403 })
+				}
+
+				try {
+					const body = JSON.parse(rawBody)
+					const message =
+						body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
+
+					if (message?.type === "text") {
+						const text: string = message.text?.body ?? ""
+						const match = text.match(/\bNG-\d{8}-\d{4}\b/)
+
+						if (match) {
+							const orderNumber = match[0]
+
+							const { data: orders } = await supabaseAdmin
+								.from("orders")
+								.select("id, status")
+								.eq("order_number", orderNumber)
+								.maybeSingle()
+
+							if (orders && orders.status === "pending") {
+								await supabaseAdmin
+									.from("orders")
+									.update({ status: "in_progress" })
+									.eq("id", orders.id)
+							}
+						}
+					}
+				} catch {
+					// Silently ignore parse errors; Meta requires 200
+				}
+
+				// Meta requires 200 for all webhook posts
+				return new Response("EVENT_RECEIVED", { status: 200 })
+			},
+		},
 	},
 })

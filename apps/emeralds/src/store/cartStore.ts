@@ -20,9 +20,6 @@ interface CartState {
 	clearCart: () => void
 	// helpers
 	isInCart: (productId: string) => boolean
-	// derived
-	totalItems: number
-	totalPrice: number
 }
 
 // ── Store ─────────────────────────────────────────────────────────────────────
@@ -60,17 +57,6 @@ export const useCartStore = create<CartState>()(
 
 			isInCart: (productId) =>
 				get().items.some((i) => i.product.id === productId),
-
-			get totalItems() {
-				return get().items.reduce((sum, i) => sum + i.quantity, 0)
-			},
-
-			get totalPrice() {
-				return get().items.reduce(
-					(sum, i) => sum + i.product.price * i.quantity,
-					0,
-				)
-			},
 		}),
 		{
 			name: "natura-cart-v2",
@@ -78,3 +64,11 @@ export const useCartStore = create<CartState>()(
 		},
 	),
 )
+
+// ── Selectors (always computed fresh from items) ───────────────────────────────
+
+export const selectTotalItems = (s: CartState) =>
+	s.items.reduce((sum, i) => sum + i.quantity, 0)
+
+export const selectTotalPrice = (s: CartState) =>
+	s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)

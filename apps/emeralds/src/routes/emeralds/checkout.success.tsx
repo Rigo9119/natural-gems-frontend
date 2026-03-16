@@ -53,8 +53,8 @@ function CheckoutSuccessPage() {
 							¡Pago completado!
 						</h1>
 						<p className="mt-2 text-brand-primary-dark/60 text-sm">
-							Tu pago fue procesado exitosamente. Recibirás un correo de
-							confirmación.
+							Tu pago fue procesado exitosamente. Nos pondremos en contacto
+							contigo a la brevedad para coordinar el envío.
 						</p>
 					</div>
 

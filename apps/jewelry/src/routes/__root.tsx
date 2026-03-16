@@ -7,6 +7,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { getLocale } from "@/paraglide/runtime";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
@@ -15,6 +16,12 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+	beforeLoad: async () => {
+		if (typeof document !== "undefined") {
+			document.documentElement.setAttribute("lang", getLocale());
+		}
+	},
+
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -38,19 +45,21 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="es">
+		<html lang={getLocale()}>
 			<head>
 				<HeadContent />
 			</head>
 			<body>
 				{children}
-				<TanStackDevtools
-					config={{ position: "bottom-right" }}
-					plugins={[
-						{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> },
-						TanStackQueryDevtools,
-					]}
-				/>
+				{import.meta.env.DEV && (
+					<TanStackDevtools
+						config={{ position: "bottom-right" }}
+						plugins={[
+							{ name: "Tanstack Router", render: <TanStackRouterDevtoolsPanel /> },
+							TanStackQueryDevtools,
+						]}
+					/>
+				)}
 				<Scripts />
 			</body>
 		</html>

@@ -7,7 +7,6 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { fileURLToPath, URL } from 'url'
 
 import tailwindcss from '@tailwindcss/vite'
-import netlify from '@netlify/vite-plugin-tanstack-start'
 
 const config = defineConfig({
   resolve: {
@@ -18,21 +17,16 @@ const config = defineConfig({
   plugins: [
     devtools(),
     paraglideVitePlugin({
-      project: './project.inlang',
+      project: '../../project.inlang',
       outdir: './src/paraglide',
       strategy: ['url'],
     }),
-    netlify(),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
     tailwindcss(),
-    tanstackStart({
-      router: {
-        routeFileIgnorePattern: 'api\\.',
-      },
-    }),
+    tanstackStart(),
     viteReact(),
   ],
 })

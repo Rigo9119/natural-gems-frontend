@@ -2,6 +2,7 @@ import { SiInstagram, SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,7 +63,38 @@ const contactMethods = [
   },
 ];
 
+type FormState = { name: string; email: string; subject: string; message: string }
+type SubmitStatus = "idle" | "loading" | "success" | "error"
+
 function ContactPage() {
+  const [form, setForm] = useState<FormState>({ name: "", email: "", subject: "", message: "" })
+  const [status, setStatus] = useState<SubmitStatus>("idle")
+  const [errorMsg, setErrorMsg] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus("loading")
+    setErrorMsg("")
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setErrorMsg(data.error ?? "Error al enviar el mensaje")
+        setStatus("error")
+      } else {
+        setStatus("success")
+        setForm({ name: "", email: "", subject: "", message: "" })
+      }
+    } catch {
+      setErrorMsg("Error de conexión. Intenta de nuevo.")
+      setStatus("error")
+    }
+  }
+
   return (
     <div>
       <AppBreadcrumb
@@ -163,63 +195,84 @@ function ContactPage() {
               <p className="font-body text-brand-primary-dark/70 mb-8">
                 Completa el formulario y te responderemos lo antes posible.
               </p>
-              <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="contact-name"
-                      className="text-brand-primary-dark"
-                    >
-                      Nombre
-                    </Label>
-                    <Input id="contact-name" placeholder="Tu nombre" />
+              {status === "success" ? (
+                <div className="rounded-xl bg-brand-primary-lighter p-6 text-center">
+                  <p className="font-heading text-xl text-brand-primary-dark mb-2">¡Mensaje enviado!</p>
+                  <p className="text-sm text-brand-primary-dark/70">Te responderemos lo antes posible.</p>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="mt-4 text-sm text-brand-secondary-terra underline"
+                  >
+                    Enviar otro mensaje
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="contact-name" className="text-brand-primary-dark">
+                        Nombre
+                      </Label>
+                      <Input
+                        id="contact-name"
+                        placeholder="Tu nombre"
+                        required
+                        value={form.name}
+                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact-email" className="text-brand-primary-dark">
+                        Email
+                      </Label>
+                      <Input
+                        id="contact-email"
+                        type="email"
+                        placeholder="tu@email.com"
+                        required
+                        value={form.email}
+                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="contact-email"
-                      className="text-brand-primary-dark"
-                    >
-                      Email
+                    <Label htmlFor="contact-subject" className="text-brand-primary-dark">
+                      Asunto
                     </Label>
                     <Input
-                      id="contact-email"
-                      type="email"
-                      placeholder="tu@email.com"
+                      id="contact-subject"
+                      placeholder="¿En qué podemos ayudarte?"
+                      required
+                      value={form.subject}
+                      onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
                     />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="contact-subject"
-                    className="text-brand-primary-dark"
+                  <div className="space-y-2">
+                    <Label htmlFor="contact-message" className="text-brand-primary-dark">
+                      Mensaje
+                    </Label>
+                    <Textarea
+                      id="contact-message"
+                      placeholder="Cuéntanos más sobre lo que buscas..."
+                      className="min-h-[120px]"
+                      required
+                      value={form.message}
+                      onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                    />
+                  </div>
+                  {status === "error" && (
+                    <p className="text-sm text-red-600">{errorMsg}</p>
+                  )}
+                  <Button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="w-full sm:w-auto bg-brand-primary-dark hover:bg-brand-primary-dark/90 text-brand-primary-lighter px-8 py-3 rounded-full font-body font-semibold disabled:opacity-60"
                   >
-                    Asunto
-                  </Label>
-                  <Input
-                    id="contact-subject"
-                    placeholder="¿En qué podemos ayudarte?"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="contact-message"
-                    className="text-brand-primary-dark"
-                  >
-                    Mensaje
-                  </Label>
-                  <Textarea
-                    id="contact-message"
-                    placeholder="Cuéntanos más sobre lo que buscas..."
-                    className="min-h-[120px]"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full sm:w-auto bg-brand-primary-dark hover:bg-brand-primary-dark/90 text-brand-primary-lighter px-8 py-3 rounded-full font-body font-semibold"
-                >
-                  Enviar mensaje
-                </Button>
-              </form>
+                    {status === "loading" ? "Enviando…" : "Enviar mensaje"}
+                  </Button>
+                </form>
+              )}
             </div>
 
             {/* Location & Hours */}

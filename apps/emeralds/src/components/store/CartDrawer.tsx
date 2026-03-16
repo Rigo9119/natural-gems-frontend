@@ -7,7 +7,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore, selectTotalItems, selectTotalPrice } from "@/store/cartStore";
 
 interface CartDrawerProps {
 	open: boolean;
@@ -15,10 +15,9 @@ interface CartDrawerProps {
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
-	const { items, removeFromCart, updateQuantity, clearCart, totalPrice } =
-		useCartStore();
-
-	const totalItems = useCartStore((s) => s.totalItems);
+	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
+	const totalItems = useCartStore(selectTotalItems);
+	const totalPrice = useCartStore(selectTotalPrice);
 
 	return (
 		<Sheet open={open} onOpenChange={(v) => !v && onClose()}>

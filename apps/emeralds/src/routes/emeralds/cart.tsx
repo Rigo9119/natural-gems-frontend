@@ -8,7 +8,7 @@ import {
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore, selectTotalItems, selectTotalPrice } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/cart")({
 	head: () =>
@@ -30,14 +30,9 @@ export const Route = createFileRoute("/emeralds/cart")({
 });
 
 function CartPage() {
-	const {
-		items,
-		removeFromCart,
-		updateQuantity,
-		clearCart,
-		totalItems,
-		totalPrice,
-	} = useCartStore();
+	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
+	const totalItems = useCartStore(selectTotalItems);
+	const totalPrice = useCartStore(selectTotalPrice);
 
 	return (
 		<div className="min-h-screen bg-brand-surface">

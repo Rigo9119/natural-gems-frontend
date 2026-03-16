@@ -24,6 +24,12 @@ import { Route as EmeraldsCompareRouteImport } from './routes/emeralds/compare'
 import { Route as EmeraldsCheckoutRouteImport } from './routes/emeralds/checkout'
 import { Route as EmeraldsCartRouteImport } from './routes/emeralds/cart'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as ApiSitemapRouteImport } from './routes/api.sitemap'
+import { Route as ApiOrderRouteImport } from './routes/api.order'
+import { Route as ApiNewsletterRouteImport } from './routes/api.newsletter'
+import { Route as ApiLlmsFullRouteImport } from './routes/api.llms-full'
+import { Route as ApiLlmsRouteImport } from './routes/api.llms'
+import { Route as ApiContactRouteImport } from './routes/api.contact'
 import { Route as AdminWholesaleRouteImport } from './routes/admin/wholesale'
 import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminImportRouteImport } from './routes/admin/import'
@@ -32,6 +38,9 @@ import { Route as EmeraldsShopIndexRouteImport } from './routes/emeralds/shop/in
 import { Route as EmeraldsShopSlugRouteImport } from './routes/emeralds/shop/$slug'
 import { Route as EmeraldsCheckoutSuccessRouteImport } from './routes/emeralds/checkout.success'
 import { Route as EmeraldsCheckoutCancelRouteImport } from './routes/emeralds/checkout.cancel'
+import { Route as ApiWhatsappWebhookRouteImport } from './routes/api.whatsapp.webhook'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe.webhook'
+import { Route as ApiStripeCheckoutRouteImport } from './routes/api.stripe.checkout'
 import { Route as AdminEmeraldsNewRouteImport } from './routes/admin/emeralds.new'
 
 const LoginRoute = LoginRouteImport.update({
@@ -109,6 +118,36 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSitemapRoute = ApiSitemapRouteImport.update({
+  id: '/api/sitemap',
+  path: '/api/sitemap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOrderRoute = ApiOrderRouteImport.update({
+  id: '/api/order',
+  path: '/api/order',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiNewsletterRoute = ApiNewsletterRouteImport.update({
+  id: '/api/newsletter',
+  path: '/api/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLlmsFullRoute = ApiLlmsFullRouteImport.update({
+  id: '/api/llms-full',
+  path: '/api/llms-full',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLlmsRoute = ApiLlmsRouteImport.update({
+  id: '/api/llms',
+  path: '/api/llms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactRoute = ApiContactRouteImport.update({
+  id: '/api/contact',
+  path: '/api/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminWholesaleRoute = AdminWholesaleRouteImport.update({
   id: '/wholesale',
   path: '/wholesale',
@@ -149,6 +188,21 @@ const EmeraldsCheckoutCancelRoute = EmeraldsCheckoutCancelRouteImport.update({
   path: '/cancel',
   getParentRoute: () => EmeraldsCheckoutRoute,
 } as any)
+const ApiWhatsappWebhookRoute = ApiWhatsappWebhookRouteImport.update({
+  id: '/api/whatsapp/webhook',
+  path: '/api/whatsapp/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeCheckoutRoute = ApiStripeCheckoutRouteImport.update({
+  id: '/api/stripe/checkout',
+  path: '/api/stripe/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminEmeraldsNewRoute = AdminEmeraldsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -167,6 +221,12 @@ export interface FileRoutesByFullPath {
   '/admin/import': typeof AdminImportRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/llms': typeof ApiLlmsRoute
+  '/api/llms-full': typeof ApiLlmsFullRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/order': typeof ApiOrderRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/cart': typeof EmeraldsCartRoute
   '/emeralds/checkout': typeof EmeraldsCheckoutRouteWithChildren
@@ -176,6 +236,9 @@ export interface FileRoutesByFullPath {
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
+  '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
   '/emeralds/checkout/cancel': typeof EmeraldsCheckoutCancelRoute
   '/emeralds/checkout/success': typeof EmeraldsCheckoutSuccessRoute
   '/emeralds/shop/$slug': typeof EmeraldsShopSlugRoute
@@ -191,6 +254,12 @@ export interface FileRoutesByTo {
   '/admin/import': typeof AdminImportRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/llms': typeof ApiLlmsRoute
+  '/api/llms-full': typeof ApiLlmsFullRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/order': typeof ApiOrderRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/cart': typeof EmeraldsCartRoute
   '/emeralds/checkout': typeof EmeraldsCheckoutRouteWithChildren
@@ -200,6 +269,9 @@ export interface FileRoutesByTo {
   '/emeralds': typeof EmeraldsIndexRoute
   '/guides': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
+  '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
   '/emeralds/checkout/cancel': typeof EmeraldsCheckoutCancelRoute
   '/emeralds/checkout/success': typeof EmeraldsCheckoutSuccessRoute
   '/emeralds/shop/$slug': typeof EmeraldsShopSlugRoute
@@ -218,6 +290,12 @@ export interface FileRoutesById {
   '/admin/import': typeof AdminImportRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/wholesale': typeof AdminWholesaleRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/llms': typeof ApiLlmsRoute
+  '/api/llms-full': typeof ApiLlmsFullRoute
+  '/api/newsletter': typeof ApiNewsletterRoute
+  '/api/order': typeof ApiOrderRoute
+  '/api/sitemap': typeof ApiSitemapRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/emeralds/cart': typeof EmeraldsCartRoute
   '/emeralds/checkout': typeof EmeraldsCheckoutRouteWithChildren
@@ -227,6 +305,9 @@ export interface FileRoutesById {
   '/emeralds/': typeof EmeraldsIndexRoute
   '/guides/': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
+  '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
   '/emeralds/checkout/cancel': typeof EmeraldsCheckoutCancelRoute
   '/emeralds/checkout/success': typeof EmeraldsCheckoutSuccessRoute
   '/emeralds/shop/$slug': typeof EmeraldsShopSlugRoute
@@ -246,6 +327,12 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/api/contact'
+    | '/api/llms'
+    | '/api/llms-full'
+    | '/api/newsletter'
+    | '/api/order'
+    | '/api/sitemap'
     | '/auth/callback'
     | '/emeralds/cart'
     | '/emeralds/checkout'
@@ -255,6 +342,9 @@ export interface FileRouteTypes {
     | '/emeralds/'
     | '/guides/'
     | '/admin/emeralds/new'
+    | '/api/stripe/checkout'
+    | '/api/stripe/webhook'
+    | '/api/whatsapp/webhook'
     | '/emeralds/checkout/cancel'
     | '/emeralds/checkout/success'
     | '/emeralds/shop/$slug'
@@ -270,6 +360,12 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/api/contact'
+    | '/api/llms'
+    | '/api/llms-full'
+    | '/api/newsletter'
+    | '/api/order'
+    | '/api/sitemap'
     | '/auth/callback'
     | '/emeralds/cart'
     | '/emeralds/checkout'
@@ -279,6 +375,9 @@ export interface FileRouteTypes {
     | '/emeralds'
     | '/guides'
     | '/admin/emeralds/new'
+    | '/api/stripe/checkout'
+    | '/api/stripe/webhook'
+    | '/api/whatsapp/webhook'
     | '/emeralds/checkout/cancel'
     | '/emeralds/checkout/success'
     | '/emeralds/shop/$slug'
@@ -296,6 +395,12 @@ export interface FileRouteTypes {
     | '/admin/import'
     | '/admin/orders'
     | '/admin/wholesale'
+    | '/api/contact'
+    | '/api/llms'
+    | '/api/llms-full'
+    | '/api/newsletter'
+    | '/api/order'
+    | '/api/sitemap'
     | '/auth/callback'
     | '/emeralds/cart'
     | '/emeralds/checkout'
@@ -305,6 +410,9 @@ export interface FileRouteTypes {
     | '/emeralds/'
     | '/guides/'
     | '/admin/emeralds/new'
+    | '/api/stripe/checkout'
+    | '/api/stripe/webhook'
+    | '/api/whatsapp/webhook'
     | '/emeralds/checkout/cancel'
     | '/emeralds/checkout/success'
     | '/emeralds/shop/$slug'
@@ -319,9 +427,18 @@ export interface RootRouteChildren {
   EmeraldsRoute: typeof EmeraldsRouteWithChildren
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
+  ApiContactRoute: typeof ApiContactRoute
+  ApiLlmsRoute: typeof ApiLlmsRoute
+  ApiLlmsFullRoute: typeof ApiLlmsFullRoute
+  ApiNewsletterRoute: typeof ApiNewsletterRoute
+  ApiOrderRoute: typeof ApiOrderRoute
+  ApiSitemapRoute: typeof ApiSitemapRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  ApiStripeCheckoutRoute: typeof ApiStripeCheckoutRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
+  ApiWhatsappWebhookRoute: typeof ApiWhatsappWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -431,6 +548,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/sitemap': {
+      id: '/api/sitemap'
+      path: '/api/sitemap'
+      fullPath: '/api/sitemap'
+      preLoaderRoute: typeof ApiSitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/order': {
+      id: '/api/order'
+      path: '/api/order'
+      fullPath: '/api/order'
+      preLoaderRoute: typeof ApiOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/newsletter': {
+      id: '/api/newsletter'
+      path: '/api/newsletter'
+      fullPath: '/api/newsletter'
+      preLoaderRoute: typeof ApiNewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/llms-full': {
+      id: '/api/llms-full'
+      path: '/api/llms-full'
+      fullPath: '/api/llms-full'
+      preLoaderRoute: typeof ApiLlmsFullRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/llms': {
+      id: '/api/llms'
+      path: '/api/llms'
+      fullPath: '/api/llms'
+      preLoaderRoute: typeof ApiLlmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact': {
+      id: '/api/contact'
+      path: '/api/contact'
+      fullPath: '/api/contact'
+      preLoaderRoute: typeof ApiContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/wholesale': {
       id: '/admin/wholesale'
       path: '/wholesale'
@@ -486,6 +645,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/emeralds/checkout/cancel'
       preLoaderRoute: typeof EmeraldsCheckoutCancelRouteImport
       parentRoute: typeof EmeraldsCheckoutRoute
+    }
+    '/api/whatsapp/webhook': {
+      id: '/api/whatsapp/webhook'
+      path: '/api/whatsapp/webhook'
+      fullPath: '/api/whatsapp/webhook'
+      preLoaderRoute: typeof ApiWhatsappWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe/checkout': {
+      id: '/api/stripe/checkout'
+      path: '/api/stripe/checkout'
+      fullPath: '/api/stripe/checkout'
+      preLoaderRoute: typeof ApiStripeCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/emeralds/new': {
       id: '/admin/emeralds/new'
@@ -570,9 +750,18 @@ const rootRouteChildren: RootRouteChildren = {
   EmeraldsRoute: EmeraldsRouteWithChildren,
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
+  ApiContactRoute: ApiContactRoute,
+  ApiLlmsRoute: ApiLlmsRoute,
+  ApiLlmsFullRoute: ApiLlmsFullRoute,
+  ApiNewsletterRoute: ApiNewsletterRoute,
+  ApiOrderRoute: ApiOrderRoute,
+  ApiSitemapRoute: ApiSitemapRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  ApiStripeCheckoutRoute: ApiStripeCheckoutRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
+  ApiWhatsappWebhookRoute: ApiWhatsappWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

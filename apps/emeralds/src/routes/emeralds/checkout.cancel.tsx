@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 import { XCircle, MessageCircle, RefreshCcw } from "lucide-react"
 import { z } from "zod"
 import { buildMeta } from "@/lib/seo"
-import { useCartStore } from "@/store/cartStore"
+import { useCartStore, selectTotalPrice } from "@/store/cartStore"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import type { OrderWithItems } from "@/lib/supabase-queries"
@@ -48,7 +48,7 @@ function buildWhatsAppUrl(
 function CheckoutCancelPage() {
 	const { order_id } = Route.useSearch()
 	const cartItems = useCartStore((s) => s.items)
-	const totalPrice = useCartStore((s) => s.totalPrice)
+	const totalPrice = useCartStore(selectTotalPrice)
 
 	const { data: order } = useQuery({
 		queryKey: ["order", order_id],

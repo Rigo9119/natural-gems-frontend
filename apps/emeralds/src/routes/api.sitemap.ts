@@ -1,4 +1,4 @@
-import { createAPIFileRoute } from "@tanstack/react-start/api"
+import { createFileRoute } from "@tanstack/react-router"
 import { sanityClient } from "@/lib/sanity/sanity"
 import type { GuidePost } from "@/lib/sanity/sanity-types"
 import { supabaseAdmin } from "@/lib/supabase-server"
@@ -47,8 +47,10 @@ async function fetchGuides() {
 	}
 }
 
-export const APIRoute = createAPIFileRoute("/api/sitemap")({
-	GET: async () => {
+export const Route = createFileRoute("/api/sitemap")({
+	server: {
+		handlers: {
+			GET: async () => {
 		const today = new Date().toISOString().slice(0, 10)
 
 		const [emeralds, guides] = await Promise.all([
@@ -98,10 +100,12 @@ ${allUrls.map(urlEntry).join("\n\n")}
 </urlset>`
 
 		return new Response(xml, {
-			headers: {
-				"Content-Type": "application/xml; charset=utf-8",
-				"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-			},
-		})
+				headers: {
+					"Content-Type": "application/xml; charset=utf-8",
+					"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+				},
+			})
+		},
+		},
 	},
 })

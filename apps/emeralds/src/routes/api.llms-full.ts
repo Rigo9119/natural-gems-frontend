@@ -1,4 +1,4 @@
-import { createAPIFileRoute } from "@tanstack/react-start/api"
+import { createFileRoute } from "@tanstack/react-router"
 import { fetchSiteSettings, guidesListQueryOptions } from "@/lib/sanity/sanity-queries"
 import { sanityClient } from "@/lib/sanity/sanity"
 import type { GuidePost } from "@/lib/sanity/sanity-types"
@@ -22,8 +22,10 @@ async function fetchGuidesList(): Promise<GuidePost[]> {
 	}
 }
 
-export const APIRoute = createAPIFileRoute("/api/llms-full")({
-	GET: async () => {
+export const Route = createFileRoute("/api/llms-full")({
+	server: {
+		handlers: {
+			GET: async () => {
 		const [settings, guides] = await Promise.all([
 			fetchSiteSettings(),
 			fetchGuidesList(),
@@ -206,10 +208,12 @@ ${valuesSection}
 `
 
 		return new Response(body, {
-			headers: {
-				"Content-Type": "text/plain; charset=utf-8",
-				"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-			},
-		})
+				headers: {
+					"Content-Type": "text/plain; charset=utf-8",
+					"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+				},
+			})
+		},
+		},
 	},
 })

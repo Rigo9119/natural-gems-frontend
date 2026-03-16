@@ -58,15 +58,27 @@ export function Header({
 
 					{/* Desktop nav */}
 					<nav className="hidden md:flex items-center gap-8">
-						{navItems?.map((item, index) => (
-							<a
-								key={index}
-								href={item.href}
-								className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-sm tracking-wide transition-colors"
-							>
-								{item.label}
-							</a>
-						))}
+						{navItems?.map((item, index) =>
+							item.href.startsWith("http") ? (
+								<a
+									key={index}
+									href={item.href}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-sm tracking-wide transition-colors"
+								>
+									{item.label}
+								</a>
+							) : (
+								<Link
+									key={index}
+									to={item.href}
+									className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-sm tracking-wide transition-colors"
+								>
+									{item.label}
+								</Link>
+							),
+						)}
 
 						{localeSwitcherSlot}
 
@@ -134,16 +146,29 @@ export function Header({
 					}`}
 				>
 					<div className="flex flex-col gap-4 pt-4 border-t border-brand-primary-lighter/20">
-						{navItems?.map((item, index) => (
-							<a
-								key={index}
-								href={item.href}
-								onClick={() => setIsMobileMenuOpen(false)}
-								className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-lg transition-colors"
-							>
-								{item.label}
-							</a>
-						))}
+						{navItems?.map((item, index) =>
+							item.href.startsWith("http") ? (
+								<a
+									key={index}
+									href={item.href}
+									target="_blank"
+									rel="noopener noreferrer"
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-lg transition-colors"
+								>
+									{item.label}
+								</a>
+							) : (
+								<Link
+									key={index}
+									to={item.href}
+									onClick={() => setIsMobileMenuOpen(false)}
+									className="text-brand-primary-lighter/80 hover:text-brand-primary-lighter text-lg transition-colors"
+								>
+									{item.label}
+								</Link>
+							),
+						)}
 						{localeSwitcherSlot && (
 							<div className="py-2">{localeSwitcherSlot}</div>
 						)}

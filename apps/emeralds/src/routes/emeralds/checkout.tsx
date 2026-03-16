@@ -3,18 +3,14 @@ import { AppBreadcrumb } from "@/components/AppBreadcrumb"
 import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
 import { CheckCircle, CreditCard, MessageCircle, ShoppingBag } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { z } from "zod"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
 import { PAYMENT_ADVISOR_THRESHOLD } from "@/lib/constants"
-import {
-	createOrder,
-	generateOrderNumber,
-} from "@/lib/supabase-queries"
-import { useCartStore } from "@/store/cartStore"
+import { useCartStore, selectTotalPrice } from "@/store/cartStore"
 
 export const Route = createFileRoute("/emeralds/checkout")({
 	head: () =>
@@ -85,72 +81,70 @@ function buildWhatsAppUrl(
 
 function CheckoutPage() {
 	const navigate = useNavigate()
-	const { items, totalPrice, clearCart } = useCartStore()
+	const { items, clearCart } = useCartStore()
+	const totalPrice = useCartStore(selectTotalPrice)
 	const [successOrderNumber, setSuccessOrderNumber] = useState<string | null>(null)
 	const [waUrl, setWaUrl] = useState<string>("")
 	const [paymentMethod, setPaymentMethod] = useState<"stripe" | "whatsapp">("stripe")
 
 	const showPaymentChoice = totalPrice >= PAYMENT_ADVISOR_THRESHOLD
 
-	if (items.length === 0 && !successOrderNumber) {
-		navigate({ to: "/emeralds/cart" })
-		return null
-	}
+	useEffect(() => {
+		if (items.length === 0 && !successOrderNumber) {
+			navigate({ to: "/emeralds/cart" })
+		}
+	}, [items.length, successOrderNumber, navigate])
 
 	const mutation = useMutation({
 		mutationFn: async (formValue: CheckoutFormValues) => {
-			const orderNumber = generateOrderNumber()
-			const order = await createOrder({
-				order_number: orderNumber,
-				customer_name: formValue.nombre,
-				customer_whatsapp: formValue.whatsapp,
-				customer_email: formValue.email || undefined,
-				notes: formValue.notas || undefined,
-				subtotal: totalPrice,
-				currency: "USD",
-				items: items.map((i) => ({
-					emerald_id: i.product.id,
-					product_name: i.product.name,
-					product_slug: i.product.slug,
-					stone_count: i.product.stone_count * i.quantity,
-					unit_price: i.product.price,
-					carats: i.product.carats,
-					clarity: i.product.clarity,
-					origin: i.product.origin,
-					currency: i.product.currency,
-				})),
-			})
-
-			if (paymentMethod === "whatsapp") {
-				const url = buildWhatsAppUrl(order.order_number, items, totalPrice)
-				clearCart()
-				window.open(url, "_blank", "noopener,noreferrer")
-				return { type: "whatsapp" as const, order, url }
-			}
-
-			const res = await fetch("/api/stripe/checkout", {
+			// Create order server-side — also reserves the emeralds atomically
+			const orderRes = await fetch("/api/order", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					orderId: order.id,
-					orderNumber: order.order_number,
-					items: items.map((i) => ({
-						name: i.product.name,
-						unit_amount: Math.round(i.product.price * 100),
-						quantity: i.quantity,
-					})),
-					total: totalPrice,
+					customer_name: formValue.nombre,
+					customer_whatsapp: formValue.whatsapp,
+					customer_email: formValue.email || undefined,
+					notes: formValue.notas || undefined,
+					subtotal: totalPrice,
 					currency: "USD",
+					items: items.map((i) => ({
+						emerald_id: i.product.id,
+						product_name: i.product.name,
+						product_slug: i.product.slug,
+						stone_count: i.product.stone_count * i.quantity,
+						unit_price: i.product.price,
+						carats: i.product.carats,
+						clarity: i.product.clarity,
+						origin: i.product.origin,
+						currency: i.product.currency,
+					})),
 				}),
 			})
-			const { url } = await res.json()
+			if (!orderRes.ok) throw new Error("Failed to create order")
+			const { orderId, orderNumber } = await orderRes.json()
+
+			if (paymentMethod === "whatsapp") {
+				const url = buildWhatsAppUrl(orderNumber, items, totalPrice)
+				clearCart()
+				window.open(url, "_blank", "noopener,noreferrer")
+				return { type: "whatsapp" as const, orderNumber, url }
+			}
+
+			const stripeRes = await fetch("/api/stripe/checkout", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ orderId }),
+			})
+			if (!stripeRes.ok) throw new Error("Failed to create payment session")
+			const { url } = await stripeRes.json()
 			window.location.href = url
-			return { type: "stripe" as const, order, url }
+			return { type: "stripe" as const, orderNumber, url }
 		},
 		onSuccess: (result) => {
 			if (result.type === "whatsapp") {
 				setWaUrl(result.url)
-				setSuccessOrderNumber(result.order.order_number)
+				setSuccessOrderNumber(result.orderNumber)
 			}
 		},
 	})
@@ -166,6 +160,8 @@ function CheckoutPage() {
 			await mutation.mutateAsync(value)
 		},
 	})
+
+	if (items.length === 0 && !successOrderNumber) return null
 
 	if (successOrderNumber) {
 		return (
@@ -254,6 +250,8 @@ function CheckoutPage() {
 									validators={{
 										onChange: ({ value }) =>
 											!value ? "El nombre es requerido" : undefined,
+										onSubmit: ({ value }) =>
+											!value ? "El nombre es requerido" : undefined,
 									}}
 								>
 									{(field) => (
@@ -279,6 +277,10 @@ function CheckoutPage() {
 									name="whatsapp"
 									validators={{
 										onChange: ({ value }) =>
+											!value || value.length < 7
+												? "Ingresa un número de WhatsApp válido"
+												: undefined,
+										onSubmit: ({ value }) =>
 											!value || value.length < 7
 												? "Ingresa un número de WhatsApp válido"
 												: undefined,

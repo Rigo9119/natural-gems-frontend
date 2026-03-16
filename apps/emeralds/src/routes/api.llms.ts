@@ -1,4 +1,4 @@
-import { createAPIFileRoute } from "@tanstack/react-start/api"
+import { createFileRoute } from "@tanstack/react-router"
 import { fetchSiteSettings } from "@/lib/sanity/sanity-queries"
 import {
 	COMPANY_LOCATION,
@@ -7,8 +7,10 @@ import {
 	WHATSAPP_NUMBER,
 } from "@/lib/constants"
 
-export const APIRoute = createAPIFileRoute("/api/llms")({
-	GET: async () => {
+export const Route = createFileRoute("/api/llms")({
+	server: {
+		handlers: {
+			GET: async () => {
 		const settings = await fetchSiteSettings()
 
 		const name = settings?.companyName ?? COMPANY_NAME
@@ -82,10 +84,12 @@ ${hours}
 `
 
 		return new Response(body, {
-			headers: {
-				"Content-Type": "text/plain; charset=utf-8",
-				"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-			},
-		})
+				headers: {
+					"Content-Type": "text/plain; charset=utf-8",
+					"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+				},
+			})
+		},
+		},
 	},
 })

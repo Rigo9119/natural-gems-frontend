@@ -5,6 +5,7 @@
   --brand-primary-lighter: #F7EFDF;
   --brand-secondary-terra: #C98A53;
   --brand-secondary-golden: #F7D17E;
+  --brand-surface: #F7EFDF;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -86,6 +87,7 @@
   --color-brand-primary-lighter: var(--brand-primary-lighter);
   --color-brand-secondary-terra: var(--brand-secondary-terra);
   --color-brand-secondary-golden: var(--brand-secondary-golden);
+  --color-brand-surface: var(--brand-surface);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -4,7 +4,7 @@ import { useState } from "react";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { COMPANY_NAME } from "@/lib/constants";
-import { useCartStore } from "@/store/cartStore";
+import { useCartStore, selectTotalItems } from "@/store/cartStore";
 
 export type { NavItem };
 
@@ -15,7 +15,7 @@ export interface HeaderProps {
 
 export default function Header({ navItems, subNavItems }: HeaderProps) {
 	const [isCartOpen, setIsCartOpen] = useState(false);
-	const totalItems = useCartStore((s) => s.totalItems);
+	const totalItems = useCartStore(selectTotalItems);
 
 	return (
 		<>
