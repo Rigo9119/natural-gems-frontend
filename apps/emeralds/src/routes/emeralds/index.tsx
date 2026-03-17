@@ -224,7 +224,7 @@ function EmeraldsIndexPage() {
 					{
 						ctaText: wholesaleCtaLeft || "Ver Lotes Mayoristas",
 						ctaLink:
-							page?.wholeSaleSection?.ctaLeft?.link || "/emeralds/mayoristas",
+							page?.wholeSaleSection?.ctaLeft?.link || "/emeralds/shop?view=wholesale",
 					},
 					{
 						ctaText: wholesaleCtaRight || "Contactar",

@@ -14,9 +14,12 @@ export default function Footer() {
 			tagline="Esmeraldas colombianas de la más alta calidad, directamente desde las minas de Muzo a tus manos."
 			location={COMPANY_LOCATION}
 			exploreLinks={[
-				{ label: "Colección", href: "#collections" },
-				{ label: "Quiénes Somos", href: "#who-we-are" },
-				{ label: "Contacto", href: "#contact" },
+				{ label: "Tienda", href: "/emeralds/shop" },
+				{ label: "Mayoristas", href: "/emeralds/shop?view=wholesale" },
+				{ label: "Colección", href: "/emeralds/shop?view=collection" },
+				{ label: "Quiénes Somos", href: "/about" },
+				{ label: "Blog", href: "/guides" },
+				{ label: "Contacto", href: "/contact" },
 			]}
 			socialLinks={[
 				{
