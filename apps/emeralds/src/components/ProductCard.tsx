@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router"
 import { Checkbox } from "@/components/ui/checkbox"
 import { OptimizedImage } from "@/components/ui/optimized-image"
+import { ShoppingCart, Check } from "lucide-react"
 import type { JewelryProduct } from "@/data/demo-jewelry-products"
 import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { useCartStore } from "@/store/cartStore"
 import { useCompareStore, selectCanAddMore } from "@/store/compareStore"
 
 type AnyProduct = EmeraldWithImage | JewelryProduct
@@ -20,6 +22,9 @@ export default function ProductCard({
 	product,
 	showCompare = false,
 }: ProductCardProps) {
+	const { addToCart, isInCart } = useCartStore()
+	const inCart = isEmerald(product) && isInCart(product.id)
+
 	const { isInCompare, addToCompare, removeFromCompare } = useCompareStore()
 	const canAddMore = useCompareStore(selectCanAddMore)
 	const isSelected = isEmerald(product) && isInCompare(product.id)
@@ -119,11 +124,27 @@ export default function ProductCard({
 				<dd className="font-body font-semibold text-brand-primary-dark">
 					<data value={product.price}>${product.price.toLocaleString()}</data>
 				</dd>
-				{detailHref && (
-					<dd className="mt-3">
+				{detailHref && isEmerald(product) && (
+					<dd className="mt-3 flex gap-2">
+						<button
+							type="button"
+							onClick={() => addToCart(product)}
+							disabled={inCart}
+							className={`flex flex-1 items-center justify-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+								inCart
+									? "bg-brand-primary-dark/10 text-brand-primary-dark cursor-default"
+									: "bg-brand-primary-dark text-brand-primary-lighter hover:bg-brand-primary-dark/85"
+							}`}
+						>
+							{inCart ? (
+								<><Check className="h-3.5 w-3.5" />En carrito</>
+							) : (
+								<><ShoppingCart className="h-3.5 w-3.5" />Agregar</>
+							)}
+						</button>
 						<Link
 							to={detailHref}
-							className="inline-block rounded-full border border-brand-primary-dark px-4 py-1.5 text-xs font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
+							className="flex items-center rounded-full border border-brand-primary-dark px-4 py-1.5 text-xs font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
 						>
 							Ver detalles
 						</Link>

@@ -3,6 +3,7 @@ import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
 import { useState } from "react"
 import { Search } from "lucide-react"
+import { AppBreadcrumb } from "@/components/AppBreadcrumb"
 import { buildMeta } from "@/lib/seo"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -67,7 +68,15 @@ function MiPedidoPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-brand-surface flex items-start justify-center px-4 py-16">
+		<div className="min-h-screen bg-brand-surface">
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Esmeraldas", href: "/emeralds/shop" },
+					{ label: "Consultar pedido" },
+				]}
+			/>
+		<div className="flex items-start justify-center px-4 py-16">
 			<div className="w-full max-w-md space-y-6">
 				<div className="rounded-2xl bg-white p-8 shadow-sm space-y-6">
 					{!result ? (
@@ -221,6 +230,7 @@ function MiPedidoPage() {
 					)}
 				</div>
 			</div>
+		</div>
 		</div>
 	)
 }
