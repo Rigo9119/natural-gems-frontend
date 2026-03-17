@@ -80,6 +80,7 @@ function LandingPage() {
         colombianas certificadas. Diseños exclusivos para cada ocasión."
         href={jewelryUrl}
         linkText="Ver colección"
+        disableld
       />
     </div>
   );

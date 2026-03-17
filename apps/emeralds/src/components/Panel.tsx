@@ -7,6 +7,7 @@ export interface PanelProps {
   href: string;
   linkText: string;
   secondary?: boolean;
+  disableld?: boolean;
 }
 
 export default function Panel({
@@ -16,6 +17,7 @@ export default function Panel({
   href,
   linkText,
   secondary = false,
+  disableld,
 }: PanelProps) {
   const cmpBgClass = secondary
     ? "bg-brand-secondary-terra"
@@ -41,11 +43,12 @@ export default function Panel({
         <p className="mx-auto mb-8 max-w-xs font-body text-sm leading-relaxed text-brand-primary-lighter/60 sm:text-base md:mb-10 md:text-lg">
           {description}
         </p>
-
-        <span className="inline-flex items-center gap-2 rounded-full bg-brand-secondary-golden px-6 py-3.5 font-body text-sm font-medium tracking-wide text-brand-primary-dark transition-all duration-300 group-hover:gap-4 group-hover:bg-brand-secondary-golden/90 md:gap-3 md:px-8 md:py-4">
-          {linkText}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </span>
+        {!disableld && (
+          <span className="inline-flex items-center gap-2 rounded-full bg-brand-secondary-golden px-6 py-3.5 font-body text-sm font-medium tracking-wide text-brand-primary-dark transition-all duration-300 group-hover:gap-4 group-hover:bg-brand-secondary-golden/90 md:gap-3 md:px-8 md:py-4">
+            {linkText}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </span>
+        )}
       </div>
     </a>
   );
