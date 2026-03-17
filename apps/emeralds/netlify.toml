@@ -2,11 +2,7 @@
   command = "curl -fsSL https://bun.sh/install | bash && export PATH=\"$HOME/.bun/bin:$PATH\" && cd ../.. && bun install && cd apps/emeralds && bun --bun run build"
   publish = "dist/client"
 
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server"
-  status = 200
-  force = false
+
 [dev]
   command = "bun --bun run dev"
   targetPort = 3000
