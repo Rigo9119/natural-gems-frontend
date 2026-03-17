@@ -1,8 +1,10 @@
 import { SiInstagram, SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { useState } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,37 +65,38 @@ const contactMethods = [
   },
 ];
 
-type FormState = { name: string; email: string; subject: string; message: string }
-type SubmitStatus = "idle" | "loading" | "success" | "error"
+type ContactFormValues = {
+  name: string
+  email: string
+  subject: string
+  message: string
+}
 
 function ContactPage() {
-  const [form, setForm] = useState<FormState>({ name: "", email: "", subject: "", message: "" })
-  const [status, setStatus] = useState<SubmitStatus>("idle")
-  const [errorMsg, setErrorMsg] = useState("")
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus("loading")
-    setErrorMsg("")
-    try {
+  const mutation = useMutation({
+    mutationFn: async (values: ContactFormValues) => {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(values),
       })
       const data = await res.json()
-      if (!res.ok) {
-        setErrorMsg(data.error ?? "Error al enviar el mensaje")
-        setStatus("error")
-      } else {
-        setStatus("success")
-        setForm({ name: "", email: "", subject: "", message: "" })
-      }
-    } catch {
-      setErrorMsg("Error de conexión. Intenta de nuevo.")
-      setStatus("error")
-    }
-  }
+      if (!res.ok) throw new Error(data.error ?? "Error al enviar el mensaje")
+      return data
+    },
+  })
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    } as ContactFormValues,
+    onSubmit: async ({ value }) => {
+      await mutation.mutateAsync(value)
+    },
+  })
 
   return (
     <div>
@@ -195,81 +198,154 @@ function ContactPage() {
               <p className="font-body text-brand-primary-dark/70 mb-8">
                 Completa el formulario y te responderemos lo antes posible.
               </p>
-              {status === "success" ? (
+
+              {mutation.isSuccess ? (
                 <div className="rounded-xl bg-brand-primary-lighter p-6 text-center">
                   <p className="font-heading text-xl text-brand-primary-dark mb-2">¡Mensaje enviado!</p>
                   <p className="text-sm text-brand-primary-dark/70">Te responderemos lo antes posible.</p>
                   <button
                     type="button"
-                    onClick={() => setStatus("idle")}
+                    onClick={() => mutation.reset()}
                     className="mt-4 text-sm text-brand-secondary-terra underline"
                   >
                     Enviar otro mensaje
                   </button>
                 </div>
               ) : (
-                <form className="space-y-6" onSubmit={handleSubmit}>
+                <form
+                  className="space-y-6"
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    form.handleSubmit()
+                  }}
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="contact-name" className="text-brand-primary-dark">
-                        Nombre
-                      </Label>
-                      <Input
-                        id="contact-name"
-                        placeholder="Tu nombre"
-                        required
-                        value={form.name}
-                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="contact-email" className="text-brand-primary-dark">
-                        Email
-                      </Label>
-                      <Input
-                        id="contact-email"
-                        type="email"
-                        placeholder="tu@email.com"
-                        required
-                        value={form.email}
-                        onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      />
-                    </div>
+                    <form.Field
+                      name="name"
+                      validators={{
+                        onSubmit: ({ value }) =>
+                          !value ? "El nombre es requerido" : undefined,
+                      }}
+                    >
+                      {(field) => (
+                        <div className="space-y-2">
+                          <Label htmlFor={field.name} className="text-brand-primary-dark">
+                            Nombre
+                          </Label>
+                          <Input
+                            id={field.name}
+                            placeholder="Tu nombre"
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            onBlur={field.handleBlur}
+                          />
+                          {field.state.meta.errors.length > 0 && (
+                            <p className="text-xs text-red-600">{field.state.meta.errors[0]}</p>
+                          )}
+                        </div>
+                      )}
+                    </form.Field>
+
+                    <form.Field
+                      name="email"
+                      validators={{
+                        onChange: ({ value }) => {
+                          if (!value) return undefined
+                          return z.string().email().safeParse(value).success
+                            ? undefined
+                            : "Email inválido"
+                        },
+                        onSubmit: ({ value }) =>
+                          !value ? "El email es requerido" : undefined,
+                      }}
+                    >
+                      {(field) => (
+                        <div className="space-y-2">
+                          <Label htmlFor={field.name} className="text-brand-primary-dark">
+                            Email
+                          </Label>
+                          <Input
+                            id={field.name}
+                            type="email"
+                            placeholder="tu@email.com"
+                            value={field.state.value}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            onBlur={field.handleBlur}
+                          />
+                          {field.state.meta.errors.length > 0 && (
+                            <p className="text-xs text-red-600">{field.state.meta.errors[0]}</p>
+                          )}
+                        </div>
+                      )}
+                    </form.Field>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="contact-subject" className="text-brand-primary-dark">
-                      Asunto
-                    </Label>
-                    <Input
-                      id="contact-subject"
-                      placeholder="¿En qué podemos ayudarte?"
-                      required
-                      value={form.subject}
-                      onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="contact-message" className="text-brand-primary-dark">
-                      Mensaje
-                    </Label>
-                    <Textarea
-                      id="contact-message"
-                      placeholder="Cuéntanos más sobre lo que buscas..."
-                      className="min-h-[120px]"
-                      required
-                      value={form.message}
-                      onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                    />
-                  </div>
-                  {status === "error" && (
-                    <p className="text-sm text-red-600">{errorMsg}</p>
+
+                  <form.Field
+                    name="subject"
+                    validators={{
+                      onSubmit: ({ value }) =>
+                        !value ? "El asunto es requerido" : undefined,
+                    }}
+                  >
+                    {(field) => (
+                      <div className="space-y-2">
+                        <Label htmlFor={field.name} className="text-brand-primary-dark">
+                          Asunto
+                        </Label>
+                        <Input
+                          id={field.name}
+                          placeholder="¿En qué podemos ayudarte?"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          onBlur={field.handleBlur}
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <p className="text-xs text-red-600">{field.state.meta.errors[0]}</p>
+                        )}
+                      </div>
+                    )}
+                  </form.Field>
+
+                  <form.Field
+                    name="message"
+                    validators={{
+                      onSubmit: ({ value }) =>
+                        !value ? "El mensaje es requerido" : undefined,
+                    }}
+                  >
+                    {(field) => (
+                      <div className="space-y-2">
+                        <Label htmlFor={field.name} className="text-brand-primary-dark">
+                          Mensaje
+                        </Label>
+                        <Textarea
+                          id={field.name}
+                          placeholder="Cuéntanos más sobre lo que buscas..."
+                          className="min-h-[120px]"
+                          value={field.state.value}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          onBlur={field.handleBlur}
+                        />
+                        {field.state.meta.errors.length > 0 && (
+                          <p className="text-xs text-red-600">{field.state.meta.errors[0]}</p>
+                        )}
+                      </div>
+                    )}
+                  </form.Field>
+
+                  {mutation.isError && (
+                    <p className="text-sm text-red-600">
+                      {mutation.error?.message ?? "Error al enviar el mensaje"}
+                    </p>
                   )}
+
                   <Button
                     type="submit"
-                    disabled={status === "loading"}
+                    disabled={mutation.isPending}
                     className="w-full sm:w-auto bg-brand-primary-dark hover:bg-brand-primary-dark/90 text-brand-primary-lighter px-8 py-3 rounded-full font-body font-semibold disabled:opacity-60"
                   >
-                    {status === "loading" ? "Enviando…" : "Enviar mensaje"}
+                    {mutation.isPending ? "Enviando…" : "Enviar mensaje"}
                   </Button>
                 </form>
               )}
@@ -335,7 +411,6 @@ function ContactPage() {
           </div>
         </div>
       </section>
-
     </div>
   );
 }

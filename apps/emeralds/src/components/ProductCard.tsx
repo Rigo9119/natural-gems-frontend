@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { OptimizedImage } from "@/components/ui/optimized-image"
 import type { JewelryProduct } from "@/data/demo-jewelry-products"
 import type { EmeraldWithImage } from "@/lib/supabase-queries"
-import { useCompareStore } from "@/store/compareStore"
+import { useCompareStore, selectCanAddMore } from "@/store/compareStore"
 
 type AnyProduct = EmeraldWithImage | JewelryProduct
 
@@ -20,8 +20,8 @@ export default function ProductCard({
 	product,
 	showCompare = false,
 }: ProductCardProps) {
-	const { isInCompare, addToCompare, removeFromCompare, canAddMore } =
-		useCompareStore()
+	const { isInCompare, addToCompare, removeFromCompare } = useCompareStore()
+	const canAddMore = useCompareStore(selectCanAddMore)
 	const isSelected = isEmerald(product) && isInCompare(product.id)
 
 	const handleCompareToggle = () => {

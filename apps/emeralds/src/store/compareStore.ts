@@ -14,7 +14,6 @@ interface CompareState {
 	clearCompare: () => void
 	// helpers
 	isInCompare: (productId: string) => boolean
-	canAddMore: boolean
 }
 
 // ── Store ─────────────────────────────────────────────────────────────────────
@@ -41,10 +40,6 @@ export const useCompareStore = create<CompareState>()(
 
 			isInCompare: (productId) =>
 				get().compareItems.some((p) => p.id === productId),
-
-			get canAddMore() {
-				return get().compareItems.length < MAX_COMPARE_ITEMS
-			},
 		}),
 		{
 			name: "natura-compare-v2",
@@ -52,3 +47,8 @@ export const useCompareStore = create<CompareState>()(
 		},
 	),
 )
+
+// ── Selectors ─────────────────────────────────────────────────────────────────
+
+export const selectCanAddMore = (s: CompareState) =>
+	s.compareItems.length < MAX_COMPARE_ITEMS

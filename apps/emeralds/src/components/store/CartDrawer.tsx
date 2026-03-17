@@ -7,7 +7,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { useCartStore, selectTotalItems, selectTotalPrice } from "@/store/cartStore";
+import { useCartStore, selectTotalPrice } from "@/store/cartStore";
 
 interface CartDrawerProps {
 	open: boolean;
@@ -16,13 +16,13 @@ interface CartDrawerProps {
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
 	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
-	const totalItems = useCartStore(selectTotalItems);
 	const totalPrice = useCartStore(selectTotalPrice);
 
 	return (
 		<Sheet open={open} onOpenChange={(v) => !v && onClose()}>
 			<SheetContent
 				side="right"
+				showCloseButton={false}
 				className="flex w-full flex-col p-0 sm:max-w-md bg-white"
 			>
 				{/* Header */}
@@ -30,11 +30,6 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 					<SheetTitle className="flex items-center gap-2 font-heading text-xl text-brand-primary-dark">
 						<ShoppingCart className="h-5 w-5" aria-hidden="true" />
 						Tu Carrito
-						{totalItems > 0 && (
-							<span className="ml-1 rounded-full bg-brand-primary-dark px-2 py-0.5 text-xs font-medium text-brand-primary-lighter">
-								{totalItems}
-							</span>
-						)}
 					</SheetTitle>
 					<button
 						type="button"
