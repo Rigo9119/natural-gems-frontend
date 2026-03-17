@@ -5,6 +5,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { fileURLToPath, URL } from 'url'
+import netlify from '@netlify/vite-plugin-tanstack-start'
 
 import tailwindcss from '@tailwindcss/vite'
 
@@ -26,12 +27,9 @@ const config = defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tailwindcss(),
-    tanstackStart({
-      server: {
-        preset: 'netlify',
-      },
-    }),
+    tanstackStart(),
     viteReact(),
+    netlify(),
   ],
 })
 
