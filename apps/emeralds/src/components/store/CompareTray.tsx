@@ -13,8 +13,8 @@ export function CompareTray() {
 
 	return (
 		<div className="fixed bottom-0 left-0 right-0 z-50 border-t border-brand-primary-dark/10 bg-white shadow-lg animate-in slide-in-from-bottom duration-300 pb-[env(safe-area-inset-bottom)]">
-			<div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-6 lg:px-8">
-				<div className="flex items-center gap-3 overflow-x-auto">
+			<div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-6 lg:px-8">
+				<div className="flex items-center gap-3 overflow-x-auto pt-2 pb-1 -mt-1">
 					{compareItems.map((product) => (
 						<div
 							key={product.id}
