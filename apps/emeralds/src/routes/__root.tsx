@@ -95,14 +95,14 @@ function RootComponent() {
   }
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Header navItems={appNavItems} />
-      <main id="main-content" className="pt-20">
+      <main id="main-content" className="flex flex-1 flex-col pt-20">
         <Outlet />
       </main>
       <Footer />
       <WhatsAppFloatingButton />
-    </>
+    </div>
   );
 }
 

@@ -68,7 +68,7 @@ function MiPedidoPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-brand-surface">
+		<div className="flex flex-1 flex-col bg-brand-surface">
 			<AppBreadcrumb
 				items={[
 					{ label: "Inicio", href: "/" },
@@ -76,7 +76,7 @@ function MiPedidoPage() {
 					{ label: "Consultar pedido" },
 				]}
 			/>
-		<div className="flex items-start justify-center px-4 py-16">
+		<div className="flex flex-1 items-center justify-center px-4 py-16">
 			<div className="w-full max-w-md space-y-6">
 				<div className="rounded-2xl bg-white p-8 shadow-sm space-y-6">
 					{!result ? (
