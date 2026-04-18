@@ -1,6 +1,6 @@
 [build]
-command = "bun --bun run build"
-  dir = "dist/client"
+  command = "curl -fsSL https://bun.sh/install | bash && export PATH=\"$HOME/.bun/bin:$PATH\" && cd ../.. && bun install && cd apps/jewelry && bun --bun run build"
+  publish = "dist/client"
 [dev]
   command = "bun --bun run dev"
   targetPort = 3001

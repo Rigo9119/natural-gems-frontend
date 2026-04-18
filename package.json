@@ -3,9 +3,9 @@
 	"private": true,
 	"workspaces": ["apps/*", "packages/*"],
 	"scripts": {
+		"dev": "bun run dev:emeralds & bun run dev:jewelry",
 		"dev:emeralds": "bun --bun run --cwd apps/emeralds dev",
-		"dev:jewelry": "bun --bun run --cwd apps/jewelry dev",
-		"dev:landing": "bun --bun run --cwd apps/landing dev"
+		"dev:jewelry": "bun --bun run --cwd apps/jewelry dev"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
