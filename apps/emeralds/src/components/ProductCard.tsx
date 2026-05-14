@@ -77,6 +77,9 @@ export default function ProductCard({
 						Más Vendido
 					</span>
 				)}
+				{isSelected && (
+					<div className="pointer-events-none absolute inset-0 rounded-lg bg-brand-secondary-terra/45 ring-4 ring-inset ring-brand-secondary-terra" />
+				)}
 				{showCompare && isEmerald(product) && (
 					<div className="absolute right-2 top-2 z-10">
 						<button
@@ -92,9 +95,9 @@ export default function ProductCard({
 							<Checkbox
 								checked={isSelected}
 								tabIndex={-1}
-								className="pointer-events-none border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary"
+								className="pointer-events-none border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary-dark"
 							/>
-							<span className="text-xs font-medium">Comparar</span>
+							<span className="text-xs font-medium">{isSelected ? "Remover" : "Comparar"}</span>
 						</button>
 					</div>
 				)}
