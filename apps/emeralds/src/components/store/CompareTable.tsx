@@ -6,10 +6,11 @@ import {
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, X } from "lucide-react"
+import { ArrowUpDown, Check, ShoppingCart, X } from "lucide-react"
 import { useMemo, useState } from "react"
 import { OptimizedImage } from "@/components/ui/optimized-image"
 import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { useCartStore } from "@/store/cartStore"
 import { useCompareStore } from "@/store/compareStore"
 
 type AttributeKey = "price" | "carats" | "origin" | "clarity" | "cut"
@@ -37,6 +38,7 @@ const attributeLabels: Record<AttributeKey, string> = {
 
 export function CompareTable() {
 	const { compareItems, removeFromCompare } = useCompareStore()
+	const { addToCart, isInCart } = useCartStore()
 	const [sorting, setSorting] = useState<SortingState>([])
 
 	const columnHelper = createColumnHelper<CompareRow>()
@@ -210,13 +212,34 @@ export function CompareTable() {
 								),
 							)}
 						</dl>
+						{(() => {
+							const inCart = isInCart(product.id)
+							return (
+								<button
+									type="button"
+									onClick={() => addToCart(product)}
+									disabled={inCart}
+									className={`mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-full px-4 py-2 text-xs font-medium transition-colors ${
+										inCart
+											? "cursor-default bg-brand-primary-dark/10 text-brand-primary-dark"
+											: "bg-brand-primary-dark text-brand-primary-lighter hover:bg-brand-primary-dark/85"
+									}`}
+								>
+									{inCart ? (
+										<><Check className="h-3.5 w-3.5" />En carrito</>
+									) : (
+										<><ShoppingCart className="h-3.5 w-3.5" />Añadir al carrito</>
+									)}
+								</button>
+							)
+						})()}
 					</div>
 				))}
 			</div>
 
 			{/* Desktop: table layout */}
 			<div className="hidden overflow-x-auto rounded-2xl border border-brand-primary-dark/10 shadow-sm md:block">
-				<table className="w-full">
+				<table className="min-w-full">
 					<thead>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<tr
@@ -268,6 +291,39 @@ export function CompareTable() {
 							</tr>
 						))}
 					</tbody>
+					<tfoot>
+						<tr className="border-t-2 border-brand-primary-dark/20 bg-white">
+							<td className="px-4 py-4 text-left text-sm font-medium text-brand-primary-dark/60">
+								Carrito
+							</td>
+							{compareItems.map((product) => {
+								const inCart = isInCart(product.id)
+								return (
+									<td key={product.id} className="px-4 py-4 text-center">
+										<button
+											type="button"
+											onClick={() => addToCart(product)}
+											disabled={inCart}
+											className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+												inCart
+													? "cursor-default bg-brand-primary-dark/10 text-brand-primary-dark"
+													: "bg-brand-primary-dark text-brand-primary-lighter hover:bg-brand-primary-dark/85"
+											}`}
+										>
+											{inCart ? (
+												<><Check className="h-3 w-3" />En carrito</>
+											) : (
+												<><ShoppingCart className="h-3 w-3" />Añadir al carrito</>
+											)}
+										</button>
+									</td>
+								)
+							})}
+							{Array.from({ length: 4 - compareItems.length }).map((_, i) => (
+								<td key={`empty_cart_${i}`} />
+							))}
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</>

@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShoppingBag } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ShoppingBag, X } from "lucide-react";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { CompareTable } from "@/components/store/CompareTable";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,13 @@ export const Route = createFileRoute("/emeralds/compare")({
 });
 
 function ComparePage() {
-  const { compareItems } = useCompareStore();
+  const { compareItems, clearCompare } = useCompareStore();
+  const navigate = useNavigate();
+
+  const handleLimpiar = () => {
+    clearCompare();
+    navigate({ to: "/emeralds/shop" });
+  };
 
   return (
     <div className="min-h-screen bg-brand-surface">
@@ -67,6 +73,15 @@ function ComparePage() {
           </div>
         ) : (
           <div>
+            <div className="flex justify-end mb-3">
+              <Button
+                onClick={handleLimpiar}
+                className="gap-2 bg-brand-secondary-terra hover:bg-brand-secondary-terra/90 text-white"
+              >
+                <X className="h-4 w-4" />
+                Limpiar
+              </Button>
+            </div>
             <CompareTable />
           </div>
         )}
