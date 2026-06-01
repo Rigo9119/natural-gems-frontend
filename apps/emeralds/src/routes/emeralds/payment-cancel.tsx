@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { XCircle, MessageCircle, RefreshCcw } from "lucide-react"
 import { z } from "zod"
 import { buildMeta } from "@/lib/seo"
 import { useCartStore, selectTotalPrice } from "@/store/cartStore"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
 import type { OrderWithItems } from "@/lib/supabase-queries"
 
@@ -49,6 +49,19 @@ function CheckoutCancelPage() {
 	const { order_id } = Route.useSearch()
 	const cartItems = useCartStore((s) => s.items)
 	const totalPrice = useCartStore(selectTotalPrice)
+
+	const retryMutation = useMutation({
+		mutationFn: async () => {
+			const res = await fetch("/api/stripe/checkout", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ orderId: order_id }),
+			})
+			if (!res.ok) throw new Error("Failed to create payment session")
+			const { url } = await res.json()
+			window.location.href = url
+		},
+	})
 
 	const { data: order } = useQuery({
 		queryKey: ["order", order_id],
@@ -99,13 +112,21 @@ function CheckoutCancelPage() {
 					</p>
 				</div>
 
-				<Link
-					to="/emeralds/checkout"
-					className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
+				<button
+					type="button"
+					onClick={() => retryMutation.mutate()}
+					disabled={retryMutation.isPending}
+					className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85 disabled:opacity-60 disabled:cursor-not-allowed"
 				>
 					<RefreshCcw className="h-4 w-4" />
-					Intentar de nuevo
-				</Link>
+					{retryMutation.isPending ? "Redirigiendo…" : "Intentar de nuevo"}
+				</button>
+
+				{retryMutation.isError && (
+					<p className="text-sm text-red-600">
+						No se pudo reintentar el pago. Por favor intenta de nuevo.
+					</p>
+				)}
 
 				<a
 					href={waUrl}

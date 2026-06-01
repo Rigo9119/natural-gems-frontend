@@ -1,11 +1,11 @@
 :root {
   /* Brand colors */
-  --brand-primary-dark: #3B5B46;
-  --brand-primary-light: #90AD81;
-  --brand-primary-lighter: #F7EFDF;
-  --brand-secondary-terra: #C98A53;
-  --brand-secondary-golden: #F7D17E;
-  --brand-surface: #F7EFDF;
+  --brand-primary-dark: #3b5b46;
+  --brand-primary-light: #90ad81;
+  --brand-primary-lighter: #f7efdf;
+  --brand-secondary-terra: #c98a53;
+  --brand-secondary-golden: #f7d17e;
+  --brand-surface: #f7efdf;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);

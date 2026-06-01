@@ -82,11 +82,14 @@ export default function ProductCard({
 				)}
 				{showCompare && isEmerald(product) && (
 					<div className="absolute right-2 top-2 z-10">
-						<button
-							type="button"
+						<div
+							role="button"
+							tabIndex={!isSelected && !canAddMore ? -1 : 0}
 							onClick={handleCompareToggle}
-							disabled={!isSelected && !canAddMore}
-							className={`flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors disabled:opacity-50 ${
+							onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleCompareToggle() }}
+							aria-pressed={isSelected}
+							aria-disabled={!isSelected && !canAddMore}
+							className={`flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 transition-colors ${!isSelected && !canAddMore ? "opacity-50 pointer-events-none" : ""} ${
 								isSelected
 									? "bg-brand-primary text-white"
 									: "bg-brand-primary-dark text-white hover:bg-brand-primary-dark/90"
@@ -98,7 +101,7 @@ export default function ProductCard({
 								className="pointer-events-none border-white data-[state=checked]:bg-white data-[state=checked]:text-brand-primary-dark"
 							/>
 							<span className="text-xs font-medium">{isSelected ? "Remover" : "Comparar"}</span>
-						</button>
+						</div>
 					</div>
 				)}
 			</figure>

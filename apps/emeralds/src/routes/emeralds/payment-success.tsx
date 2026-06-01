@@ -29,7 +29,7 @@ function CheckoutSuccessPage() {
 		clearCart()
 	}, [clearCart])
 
-	const { data: order, isLoading } = useQuery({
+	const { data: order, isLoading, isError } = useQuery({
 		queryKey: ["order", order_id],
 		queryFn: async () => {
 			const { data, error } = await supabase
@@ -62,6 +62,12 @@ function CheckoutSuccessPage() {
 					{isLoading && (
 						<p className="text-sm text-brand-primary-dark/40">
 							Cargando detalles del pedido…
+						</p>
+					)}
+
+					{isError && (
+						<p className="text-sm text-brand-primary-dark/40">
+							No se pudieron cargar los detalles del pedido.
 						</p>
 					)}
 

@@ -24,9 +24,12 @@ export const Route = createFileRoute("/api/stripe/checkout")({
 					return new Response("Order not found", { status: 404 })
 				}
 
-				// Guard against duplicate payment sessions for an already-paid order
+				// Guard against duplicate payment sessions for an already-paid or cancelled order
 				if (order.payment_status === "paid") {
 					return new Response("Order already paid", { status: 409 })
+				}
+				if (order.status === "cancelled") {
+					return new Response("Order is cancelled", { status: 409 })
 				}
 
 				// Use configured public URL, not the request Origin header
