@@ -48,7 +48,7 @@ import {
 	type OrderWithItems,
 } from "@/lib/supabase-queries";
 
-export const Route = createFileRoute("/admin/orders")({
+export const Route = createFileRoute("/_auth/orders")({
 	loader: async ({ context }) => {
 		await context.queryClient.ensureQueryData(ordersQueryOptions())
 	},

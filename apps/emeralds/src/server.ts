@@ -1,3 +1,4 @@
+import { wrapFetchWithSentry } from "@sentry/tanstackstart-react";
 import handler from "@tanstack/react-start/server-entry";
 import { paraglideMiddleware } from "./paraglide/server";
 
@@ -5,8 +6,8 @@ import { paraglideMiddleware } from "./paraglide/server";
 // TanStack Router handles URL delocalization itself via rewrite.input/output,
 // so we pass the original `req` — not the middleware-delocalized `request` —
 // to avoid TanStack Router issuing self-referential 307 redirects on /en/* routes.
-export default {
+export default wrapFetchWithSentry({
 	fetch(req: Request): Promise<Response> {
 		return paraglideMiddleware(req, () => handler.fetch(req));
 	},
-};
+});

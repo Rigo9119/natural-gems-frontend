@@ -4,7 +4,6 @@ import { CheckCircle } from "lucide-react"
 import { useEffect } from "react"
 import { z } from "zod"
 import { buildMeta } from "@/lib/seo"
-import { supabase } from "@/lib/supabase"
 import { useCartStore } from "@/store/cartStore"
 import type { OrderWithItems } from "@/lib/supabase-queries"
 import { OrderStatusTimeline } from "@/components/OrderStatusTimeline"
@@ -32,13 +31,9 @@ function CheckoutSuccessPage() {
 	const { data: order, isLoading, isError } = useQuery({
 		queryKey: ["order", order_id],
 		queryFn: async () => {
-			const { data, error } = await supabase
-				.from("orders")
-				.select("*, order_items(*)")
-				.eq("id", order_id)
-				.single()
-			if (error) throw error
-			return data as OrderWithItems
+			const res = await fetch(`/api/orders/${order_id}`)
+			if (!res.ok) throw new Error("Order not found")
+			return res.json() as Promise<OrderWithItems>
 		},
 	})
 

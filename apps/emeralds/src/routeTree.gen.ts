@@ -42,6 +42,7 @@ import { Route as EmeraldsShopSlugRouteImport } from './routes/emeralds/shop/$sl
 import { Route as ApiWhatsappWebhookRouteImport } from './routes/api.whatsapp.webhook'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe.webhook'
 import { Route as ApiStripeCheckoutRouteImport } from './routes/api.stripe.checkout'
+import { Route as ApiOrdersOrderIdRouteImport } from './routes/api.orders.$orderId'
 import { Route as ApiOrderLookupRouteImport } from './routes/api.order.lookup'
 import { Route as AdminEmeraldsNewRouteImport } from './routes/admin/emeralds.new'
 
@@ -210,6 +211,11 @@ const ApiStripeCheckoutRoute = ApiStripeCheckoutRouteImport.update({
   path: '/api/stripe/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiOrdersOrderIdRoute = ApiOrdersOrderIdRouteImport.update({
+  id: '/api/orders/$orderId',
+  path: '/api/orders/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiOrderLookupRoute = ApiOrderLookupRouteImport.update({
   id: '/lookup',
   path: '/lookup',
@@ -252,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/guides/': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
+  '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -287,6 +294,7 @@ export interface FileRoutesByTo {
   '/guides': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
+  '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -325,6 +333,7 @@ export interface FileRoutesById {
   '/guides/': typeof GuidesIndexRoute
   '/admin/emeralds/new': typeof AdminEmeraldsNewRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
+  '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -364,6 +373,7 @@ export interface FileRouteTypes {
     | '/guides/'
     | '/admin/emeralds/new'
     | '/api/order/lookup'
+    | '/api/orders/$orderId'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -399,6 +409,7 @@ export interface FileRouteTypes {
     | '/guides'
     | '/admin/emeralds/new'
     | '/api/order/lookup'
+    | '/api/orders/$orderId'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -436,6 +447,7 @@ export interface FileRouteTypes {
     | '/guides/'
     | '/admin/emeralds/new'
     | '/api/order/lookup'
+    | '/api/orders/$orderId'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -460,6 +472,7 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
+  ApiOrdersOrderIdRoute: typeof ApiOrdersOrderIdRoute
   ApiStripeCheckoutRoute: typeof ApiStripeCheckoutRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ApiWhatsappWebhookRoute: typeof ApiWhatsappWebhookRoute
@@ -698,6 +711,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStripeCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/orders/$orderId': {
+      id: '/api/orders/$orderId'
+      path: '/api/orders/$orderId'
+      fullPath: '/api/orders/$orderId'
+      preLoaderRoute: typeof ApiOrdersOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/order/lookup': {
       id: '/api/order/lookup'
       path: '/lookup'
@@ -802,6 +822,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
+  ApiOrdersOrderIdRoute: ApiOrdersOrderIdRoute,
   ApiStripeCheckoutRoute: ApiStripeCheckoutRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ApiWhatsappWebhookRoute: ApiWhatsappWebhookRoute,

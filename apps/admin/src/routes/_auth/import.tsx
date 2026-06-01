@@ -22,7 +22,7 @@ import {
 	parseSpreadsheetFile,
 } from "@/lib/import-emeralds"
 
-export const Route = createFileRoute("/admin/import")({
+export const Route = createFileRoute("/_auth/import")({
 	component: ImportPage,
 })
 
@@ -486,7 +486,7 @@ function DoneStep({
 							asChild
 							className="bg-brand-primary-dark font-body text-sm text-brand-primary-lighter hover:bg-brand-primary-dark/90"
 						>
-							<Link to="/admin/emeralds">Ver inventario</Link>
+							<Link to="/emeralds">Ver inventario</Link>
 						</Button>
 					</div>
 				</CardContent>

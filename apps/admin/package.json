@@ -1,0 +1,42 @@
+{
+	"name": "@natura-gems/admin",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev --port 3001",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "biome check"
+	},
+	"dependencies": {
+		"@natura-gems/ui": "workspace:*",
+		"@supabase/supabase-js": "^2.95.2",
+		"@tailwindcss/vite": "^4.0.6",
+		"@tanstack/react-form": "^1.0.0",
+		"@tanstack/react-query": "^5.66.5",
+		"@tanstack/react-router": "^1.132.0",
+		"@tanstack/react-start": "^1.132.0",
+		"@tanstack/react-table": "^8.21.3",
+		"@tanstack/router-plugin": "^1.132.0",
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"lucide-react": "^0.561.0",
+		"radix-ui": "^1.4.3",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"tailwind-merge": "^3.0.2",
+		"tailwindcss": "^4.0.6",
+		"tw-animate-css": "^1.3.6",
+		"vite-tsconfig-paths": "^6.0.2",
+		"xlsx": "^0.18.5",
+		"zod": "^4.1.11"
+	},
+	"devDependencies": {
+		"@types/node": "^22.10.2",
+		"@types/react": "^19.2.0",
+		"@types/react-dom": "^19.2.0",
+		"@vitejs/plugin-react": "^5.0.4",
+		"typescript": "^5.7.2",
+		"vite": "^7.1.7"
+	}
+}

@@ -78,9 +78,6 @@ function RootComponent() {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
 
-  const isAdminPage = pathname.startsWith("/admin");
-  const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/auth");
   const isLandingPage = pathname === "/" || pathname === "/en";
 
   // SSR-safe Zustand hydration — runs once on client mount
@@ -89,8 +86,7 @@ function RootComponent() {
     useCartStore.persist.rehydrate();
   }, []);
 
-  // Admin, auth and landing routes have their own layout — skip site chrome
-  if (isAdminPage || isAuthPage || isLandingPage) {
+  if (isLandingPage) {
     return <Outlet />;
   }
 

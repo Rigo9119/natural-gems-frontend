@@ -16,7 +16,7 @@ import {
 	wholesaleEmeraldsQueryOptions,
 } from "@/lib/supabase-queries"
 
-export const Route = createFileRoute("/admin/")({
+export const Route = createFileRoute("/_auth/")({
 	loader: async ({ context }) => {
 		await Promise.all([
 			context.queryClient.ensureQueryData(retailEmeraldsQueryOptions()),
@@ -71,7 +71,7 @@ function AdminDashboard() {
 			value: availableEmeralds,
 			suffix: "piedras",
 			icon: Gem,
-			href: "/admin/emeralds",
+			href: "/emeralds",
 			color: "text-brand-primary-dark",
 			bg: "bg-brand-primary-dark/5",
 		},
@@ -80,7 +80,7 @@ function AdminDashboard() {
 			value: availableLots,
 			suffix: "lotes",
 			icon: Package,
-			href: "/admin/wholesale",
+			href: "/wholesale",
 			color: "text-brand-secondary-terra",
 			bg: "bg-brand-secondary-terra/10",
 		},
@@ -89,7 +89,7 @@ function AdminDashboard() {
 			value: `$${totalRevenue.toLocaleString()}`,
 			suffix: "USD",
 			icon: TrendingUp,
-			href: "/admin/emeralds",
+			href: "/emeralds",
 			color: "text-brand-secondary-golden",
 			bg: "bg-brand-secondary-golden/10",
 		},
@@ -98,7 +98,7 @@ function AdminDashboard() {
 			value: pendingOrders,
 			suffix: "pendientes",
 			icon: ShoppingBag,
-			href: "/admin/orders",
+			href: "/orders",
 			color: "text-brand-primary-dark",
 			bg: "bg-brand-primary-dark/5",
 		},
@@ -155,7 +155,7 @@ function AdminDashboard() {
 						</h2>
 					</div>
 					<Link
-						to={"/admin/orders" as any}
+						to={"/orders" as any}
 						className="inline-flex items-center gap-1.5 rounded-full border border-brand-primary-dark px-4 py-1.5 font-body text-sm text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
 					>
 						Ver todas
@@ -246,19 +246,19 @@ function AdminDashboard() {
 			<div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				{[
 					{
-						href: "/admin/emeralds",
+						href: "/emeralds",
 						label: "Gestionar Esmeraldas",
 						sub: `${availableEmeralds} piedras en inventario`,
 						icon: Gem,
 					},
 					{
-						href: "/admin/wholesale",
+						href: "/wholesale",
 						label: "Gestionar Lotes",
 						sub: `${availableLots} lotes disponibles`,
 						icon: Package,
 					},
 					{
-						href: "/admin/orders",
+						href: "/orders",
 						label: "Ver Órdenes",
 						sub: `${pendingOrders} pendiente${pendingOrders !== 1 ? "s" : ""}`,
 						icon: ShoppingBag,

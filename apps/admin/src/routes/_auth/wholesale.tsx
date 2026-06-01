@@ -1,8 +1,7 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router"
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import { createFileRoute } from "@tanstack/react-router"
+import { useSuspenseQuery } from "@tanstack/react-query"
 import {
 	type ColumnDef,
-	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -11,17 +10,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table"
-import {
-	ArrowUpDown,
-	ChevronDown,
-	ExternalLink,
-	FileSpreadsheet,
-	Gem,
-	MoreHorizontal,
-	Plus,
-	Search,
-	Trash2,
-} from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, Package, Search } from "lucide-react"
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -30,14 +19,11 @@ import {
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
-	DialogFooter,
 } from "@/components/ui/dialog"
 import {
 	DropdownMenu,
-	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -62,52 +48,42 @@ import {
 	type Cut,
 	type EmeraldWithImage,
 	type Origin,
-	adminEmeraldsQueryOptions,
 	clarities,
 	cuts,
-	deleteEmerald,
 	origins,
-	updateEmeraldStatus,
+	wholesaleEmeraldsQueryOptions,
 } from "@/lib/supabase-queries"
 
-export const Route = createFileRoute("/admin/emeralds")({
+export const Route = createFileRoute("/_auth/wholesale")({
 	loader: async ({ context }) => {
-		await context.queryClient.ensureQueryData(adminEmeraldsQueryOptions())
+		await context.queryClient.ensureQueryData(wholesaleEmeraldsQueryOptions())
 	},
-	component: AdminEmeraldsLayout,
+	component: AdminWholesale,
 })
-
-function AdminEmeraldsLayout() {
-	const pathname = useRouterState({ select: (s) => s.location.pathname })
-	if (pathname !== "/admin/emeralds" && pathname !== "/admin/emeralds/") {
-		return <Outlet />
-	}
-	return <AdminEmeralds />
-}
 
 // ── Status ────────────────────────────────────────────────────────────────────
 
-type EmeraldStatus = "available" | "reserved" | "sold"
+type LotStatus = "available" | "reserved" | "sold"
 
-type EmeraldRow = EmeraldWithImage
+type LotRow = EmeraldWithImage
 
-const statusConfig: Record<EmeraldStatus, { label: string; style: string }> = {
+const statusConfig: Record<LotStatus, { label: string; style: string }> = {
 	available: {
 		label: "Disponible",
 		style: "bg-green-50 text-green-700 border-green-200",
 	},
 	reserved: {
-		label: "Reservada",
+		label: "Reservado",
 		style:
 			"bg-brand-secondary-golden/20 text-brand-secondary-terra border-brand-secondary-golden/30",
 	},
 	sold: {
-		label: "Vendida",
+		label: "Vendido",
 		style: "bg-gray-100 text-gray-500 border-gray-200",
 	},
 }
 
-function StatusBadge({ status }: { status: EmeraldStatus }) {
+function StatusBadge({ status }: { status: LotStatus }) {
 	const cfg = statusConfig[status] ?? statusConfig.available
 	return (
 		<span
@@ -118,55 +94,78 @@ function StatusBadge({ status }: { status: EmeraldStatus }) {
 	)
 }
 
-// ── Delete confirmation dialog ─────────────────────────────────────────────────
+// ── Detail dialog ─────────────────────────────────────────────────────────────
 
-function DeleteConfirmDialog({
-	emerald,
+function LotDetailDialog({
+	lot,
 	open,
 	onClose,
-	onConfirm,
-	isPending,
 }: {
-	emerald: EmeraldRow | null
+	lot: LotRow | null
 	open: boolean
 	onClose: () => void
-	onConfirm: () => void
-	isPending: boolean
 }) {
-	if (!emerald) return null
+	if (!lot) return null
 	return (
 		<Dialog open={open} onOpenChange={onClose}>
-			<DialogContent className="max-w-sm">
+			<DialogContent className="max-w-lg">
 				<DialogHeader>
-					<DialogTitle className="font-heading text-lg text-brand-primary-dark">
-						Eliminar esmeralda
+					<DialogTitle className="font-heading text-xl text-brand-primary-dark">
+						{lot.name}
 					</DialogTitle>
 				</DialogHeader>
-				<p className="font-body text-sm text-gray-600">
-					¿Estás seguro de que deseas eliminar{" "}
-					<span className="font-medium text-brand-primary-dark">
-						{emerald.name}
-					</span>
-					? Esta acción no se puede deshacer.
-				</p>
-				<DialogFooter className="gap-2">
-					<Button
-						variant="outline"
-						onClick={onClose}
-						disabled={isPending}
-						className="font-body text-sm"
-					>
-						Cancelar
-					</Button>
-					<Button
-						onClick={onConfirm}
-						disabled={isPending}
-						className="bg-red-600 font-body text-sm text-white hover:bg-red-700"
-					>
-						<Trash2 className="mr-2 h-4 w-4" />
-						{isPending ? "Eliminando..." : "Eliminar"}
-					</Button>
-				</DialogFooter>
+				<div className="space-y-5">
+					<div className="flex items-center gap-3">
+						<StatusBadge status={(lot.status ?? "available") as LotStatus} />
+						<span className="font-body text-xs text-gray-400">
+							ID: {lot.id}
+						</span>
+					</div>
+					<div className="aspect-video w-full overflow-hidden rounded-lg bg-brand-primary-lighter">
+						<img
+							src={lot.image_url ?? ""}
+							alt={lot.name}
+							className="h-full w-full object-cover"
+						/>
+					</div>
+					<p className="font-body text-sm leading-relaxed text-gray-600">
+						{lot.description}
+					</p>
+					<div className="grid grid-cols-2 gap-3">
+						{[
+							{ label: "Origen", value: lot.origin },
+							{ label: "Claridad", value: lot.clarity },
+							{ label: "Corte", value: lot.cut },
+							{ label: "Piedras", value: `${lot.stone_count} unidades` },
+							{ label: "Total quilates", value: `${lot.carats} ct` },
+							{
+								label: "Precio total",
+								value: `$${lot.price.toLocaleString()} USD`,
+							},
+						].map((spec) => (
+							<div
+								key={spec.label}
+								className="rounded-lg border border-gray-100 bg-gray-50 px-4 py-3"
+							>
+								<p className="font-body text-xs text-gray-400">{spec.label}</p>
+								<p className="font-body text-sm font-medium text-brand-primary-dark">
+									{spec.value}
+								</p>
+							</div>
+						))}
+					</div>
+					<div className="rounded-lg border border-brand-secondary-golden/30 bg-brand-secondary-golden/10 px-4 py-3">
+						<p className="font-body text-xs text-brand-secondary-terra">
+							Precio por quilate
+						</p>
+						<p className="font-heading text-2xl text-brand-primary-dark">
+							${(lot.price / lot.carats).toFixed(0)}{" "}
+							<span className="font-body text-sm font-normal text-gray-400">
+								USD/ct
+							</span>
+						</p>
+					</div>
+				</div>
 			</DialogContent>
 		</Dialog>
 	)
@@ -174,10 +173,7 @@ function DeleteConfirmDialog({
 
 // ── Column definitions ────────────────────────────────────────────────────────
 
-function buildColumns(
-	onStatusChange: (id: string, status: string) => void,
-	onDelete: (row: EmeraldRow) => void,
-): ColumnDef<EmeraldRow>[] {
+function buildColumns(onOpen: (lot: LotRow) => void): ColumnDef<LotRow>[] {
 	return [
 		{
 			accessorKey: "name",
@@ -188,8 +184,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Nombre
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Lote <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -197,7 +192,9 @@ function buildColumns(
 					<p className="font-body font-medium text-brand-primary-dark">
 						{row.original.name}
 					</p>
-					<p className="font-body text-xs text-gray-400">{row.original.slug}</p>
+					<p className="max-w-xs truncate font-body text-xs text-gray-400">
+						{row.original.description}
+					</p>
 				</div>
 			),
 		},
@@ -210,8 +207,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Origen
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Origen <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -229,8 +225,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Claridad
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Claridad <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -248,8 +243,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Corte
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Corte <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -267,8 +261,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Piedras
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Piedras <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -286,8 +279,7 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Quilates
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Total ct <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
@@ -305,13 +297,12 @@ function buildColumns(
 					className="-ml-3 font-body text-xs uppercase tracking-wider text-brand-secondary-golden hover:text-brand-primary-lighter"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Precio
-					<ArrowUpDown className="ml-1.5 h-3 w-3" />
+					Precio lote <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
 				<span className="font-body font-medium text-brand-primary-dark">
-					${row.original.price.toLocaleString()} {row.original.currency}
+					${row.original.price.toLocaleString()}
 				</span>
 			),
 		},
@@ -323,10 +314,8 @@ function buildColumns(
 				</span>
 			),
 			cell: ({ row }) => (
-				<StatusBadge status={(row.original.status ?? "available") as EmeraldStatus} />
+				<StatusBadge status={(row.original.status ?? "available") as LotStatus} />
 			),
-			filterFn: (row, _id, value) =>
-				value === "all" || row.original.status === value,
 		},
 		{
 			id: "actions",
@@ -337,53 +326,20 @@ function buildColumns(
 							variant="ghost"
 							size="icon"
 							className="h-8 w-8 text-gray-400 hover:text-brand-primary-dark"
+							onClick={(e) => e.stopPropagation()}
 						>
 							<MoreHorizontal className="h-4 w-4" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="font-body text-sm">
-						<DropdownMenuLabel className="font-body text-xs text-gray-400">
-							Acciones
-						</DropdownMenuLabel>
-						<DropdownMenuItem asChild>
-							<a
-								href={`/emeralds/shop/${row.original.slug}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex items-center gap-2"
-							>
-								<ExternalLink className="h-3.5 w-3.5" />
-								Ver en tienda
-							</a>
+						<DropdownMenuItem onClick={() => onOpen(row.original)}>
+							Ver detalle
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						{row.original.status !== "available" && (
-							<DropdownMenuItem
-								onClick={() => onStatusChange(row.original.id, "available")}
-							>
-								Marcar como disponible
-							</DropdownMenuItem>
-						)}
-						{row.original.status !== "reserved" && (
-							<DropdownMenuItem
-								onClick={() => onStatusChange(row.original.id, "reserved")}
-							>
-								Marcar como reservada
-							</DropdownMenuItem>
-						)}
-						{row.original.status !== "sold" && (
-							<DropdownMenuItem
-								onClick={() => onStatusChange(row.original.id, "sold")}
-							>
-								Marcar como vendida
-							</DropdownMenuItem>
-						)}
+						<DropdownMenuItem>Marcar como reservado</DropdownMenuItem>
+						<DropdownMenuItem>Marcar como vendido</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							className="text-red-600 focus:bg-red-50 focus:text-red-600"
-							onClick={() => onDelete(row.original)}
-						>
-							<Trash2 className="mr-2 h-3.5 w-3.5" />
+						<DropdownMenuItem className="text-red-600">
 							Eliminar
 						</DropdownMenuItem>
 					</DropdownMenuContent>
@@ -395,57 +351,37 @@ function buildColumns(
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-function AdminEmeralds() {
-	const queryClient = useQueryClient()
-	const { data } = useSuspenseQuery(adminEmeraldsQueryOptions())
+function AdminWholesale() {
+	const { data } = useSuspenseQuery(wholesaleEmeraldsQueryOptions())
 	const [sorting, setSorting] = useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 	const [globalFilter, setGlobalFilter] = useState("")
 	const [originFilter, setOriginFilter] = useState("all")
 	const [clarityFilter, setClarityFilter] = useState("all")
 	const [cutFilter, setCutFilter] = useState("all")
 	const [statusFilter, setStatusFilter] = useState("all")
-	const [pendingDelete, setPendingDelete] = useState<EmeraldRow | null>(null)
-
-	const statusMutation = useMutation({
-		mutationFn: ({ id, status }: { id: string; status: string }) =>
-			updateEmeraldStatus(id, status),
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: ["emeralds"] }),
-	})
-
-	const deleteMutation = useMutation({
-		mutationFn: (id: string) => deleteEmerald(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["emeralds"] })
-			setPendingDelete(null)
-		},
-	})
+	const [selectedLot, setSelectedLot] = useState<LotRow | null>(null)
 
 	const filteredData = useMemo(
 		() =>
 			data.filter(
-				(p) =>
-					(originFilter === "all" || p.origin === (originFilter as Origin)) &&
+				(l) =>
+					(originFilter === "all" || l.origin === (originFilter as Origin)) &&
 					(clarityFilter === "all" ||
-						p.clarity === (clarityFilter as Clarity)) &&
-					(cutFilter === "all" || p.cut === (cutFilter as Cut)) &&
-					(statusFilter === "all" || p.status === statusFilter),
+						l.clarity === (clarityFilter as Clarity)) &&
+					(cutFilter === "all" || l.cut === (cutFilter as Cut)) &&
+					(statusFilter === "all" || l.status === statusFilter),
 			),
 		[data, originFilter, clarityFilter, cutFilter, statusFilter],
 	)
 
-	const columns = buildColumns(
-		(id, status) => statusMutation.mutate({ id, status }),
-		(row) => setPendingDelete(row),
-	)
+	const columns = buildColumns(setSelectedLot)
 
 	const table = useReactTable({
 		data: filteredData,
 		columns,
-		state: { sorting, columnFilters, columnVisibility, globalFilter },
+		state: { sorting, columnVisibility, globalFilter },
 		onSortingChange: setSorting,
-		onColumnFiltersChange: setColumnFilters,
 		onColumnVisibilityChange: setColumnVisibility,
 		onGlobalFilterChange: setGlobalFilter,
 		getCoreRowModel: getCoreRowModel(),
@@ -453,8 +389,9 @@ function AdminEmeralds() {
 		getFilteredRowModel: getFilteredRowModel(),
 	})
 
-	const totalValue = filteredData.reduce((sum, p) => sum + p.price, 0)
-	const available = data.filter((p) => p.status === "available").length
+	const totalValue = filteredData.reduce((s, l) => s + l.price, 0)
+	const totalCarats = filteredData.reduce((s, l) => s + l.carats, 0)
+	const available = data.filter((l) => l.status === "available").length
 
 	const clearFilters = () => {
 		setGlobalFilter("")
@@ -473,40 +410,20 @@ function AdminEmeralds() {
 
 	return (
 		<div className="space-y-6">
-			{/* Action buttons */}
-			<div className="flex justify-end gap-3">
-				<Button
-					asChild
-					variant="outline"
-					size="sm"
-					className="border-brand-primary-dark/20 font-body text-sm text-brand-primary-dark"
-				>
-					<Link to="/admin/import">
-						<FileSpreadsheet className="mr-2 h-4 w-4" />
-						Importar desde Excel
-					</Link>
-				</Button>
-				<Button
-					asChild
-					size="sm"
-					className="bg-brand-primary-dark font-body text-sm text-brand-primary-lighter hover:bg-brand-primary-dark/90"
-				>
-					<Link to="/admin/emeralds/new">
-						<Plus className="mr-2 h-4 w-4" />
-						Nueva esmeralda
-					</Link>
-				</Button>
-			</div>
-
 			{/* Summary strip */}
 			<div className="flex flex-wrap gap-4">
 				{[
-					{ label: "Total", value: data.length, suffix: "piedras" },
-					{ label: "Disponibles", value: available, suffix: "piedras" },
+					{ label: "Lotes", value: data.length, suffix: "total" },
+					{ label: "Disponibles", value: available, suffix: "lotes" },
 					{
 						label: "Valor filtrado",
 						value: `$${totalValue.toLocaleString()}`,
 						suffix: "USD",
+					},
+					{
+						label: "Quilates filtrados",
+						value: totalCarats.toFixed(1),
+						suffix: "ct",
 					},
 				].map((s) => (
 					<div
@@ -529,10 +446,10 @@ function AdminEmeralds() {
 				<div className="relative">
 					<Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
 					<Input
-						placeholder="Buscar por nombre o slug..."
+						placeholder="Buscar por nombre..."
 						value={globalFilter}
 						onChange={(e) => setGlobalFilter(e.target.value)}
-						className="w-64 border-gray-200 pl-8 font-body text-sm"
+						className="w-60 border-gray-200 pl-8 font-body text-sm"
 					/>
 				</div>
 
@@ -584,7 +501,7 @@ function AdminEmeralds() {
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="all">Todos los estados</SelectItem>
-						{(Object.keys(statusConfig) as EmeraldStatus[]).map((s) => (
+						{(Object.keys(statusConfig) as LotStatus[]).map((s) => (
 							<SelectItem key={s} value={s}>
 								{statusConfig[s].label}
 							</SelectItem>
@@ -603,36 +520,8 @@ function AdminEmeralds() {
 					</Button>
 				)}
 
-				{/* Column visibility toggle */}
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button
-							variant="outline"
-							size="sm"
-							className="ml-auto border-gray-200 font-body text-sm text-gray-500"
-						>
-							Columnas <ChevronDown className="ml-1.5 h-3.5 w-3.5" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" className="font-body text-sm">
-						{table
-							.getAllColumns()
-							.filter((col) => col.getCanHide())
-							.map((col) => (
-								<DropdownMenuCheckboxItem
-									key={col.id}
-									checked={col.getIsVisible()}
-									onCheckedChange={(v) => col.toggleVisibility(v)}
-									className="capitalize"
-								>
-									{col.id}
-								</DropdownMenuCheckboxItem>
-							))}
-					</DropdownMenuContent>
-				</DropdownMenu>
-
-				<span className="font-body text-sm text-gray-400">
-					{table.getRowModel().rows.length} resultado
+				<span className="ml-auto font-body text-sm text-gray-400">
+					{table.getRowModel().rows.length} lote
 					{table.getRowModel().rows.length !== 1 ? "s" : ""}
 				</span>
 			</div>
@@ -643,10 +532,10 @@ function AdminEmeralds() {
 					{table.getRowModel().rows.length === 0 ? (
 						<div className="flex flex-col items-center justify-center py-20 text-center">
 							<span className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary-dark/5">
-								<Gem className="h-6 w-6 text-brand-primary-dark/30" />
+								<Package className="h-6 w-6 text-brand-primary-dark/30" />
 							</span>
 							<p className="font-body text-sm text-gray-400">
-								No se encontraron esmeraldas con los filtros aplicados
+								No se encontraron lotes con los filtros aplicados
 							</p>
 						</div>
 					) : (
@@ -676,9 +565,10 @@ function AdminEmeralds() {
 										key={row.id}
 										className={
 											row.index % 2 === 0
-												? "bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20"
-												: "bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"
+												? "cursor-pointer bg-white border-brand-primary-dark/5 hover:bg-brand-primary-lighter/20"
+												: "cursor-pointer bg-brand-primary-lighter/40 border-brand-primary-dark/5 hover:bg-brand-primary-lighter/60"
 										}
+										onClick={() => setSelectedLot(row.original)}
 									>
 										{row.getVisibleCells().map((cell) => (
 											<TableCell key={cell.id}>
@@ -696,12 +586,10 @@ function AdminEmeralds() {
 				</CardContent>
 			</Card>
 
-			<DeleteConfirmDialog
-				emerald={pendingDelete}
-				open={!!pendingDelete}
-				onClose={() => setPendingDelete(null)}
-				onConfirm={() => pendingDelete && deleteMutation.mutate(pendingDelete.id)}
-				isPending={deleteMutation.isPending}
+			<LotDetailDialog
+				lot={selectedLot}
+				open={!!selectedLot}
+				onClose={() => setSelectedLot(null)}
 			/>
 		</div>
 	)

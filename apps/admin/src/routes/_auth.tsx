@@ -18,7 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/lib/supabase";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/_auth")({
 	beforeLoad: async ({ location }) => {
 		const {
 			data: { session },
@@ -29,37 +29,27 @@ export const Route = createFileRoute("/admin")({
 				search: { redirect: location.href },
 			});
 		}
+		const role = session.user.app_metadata?.role;
+		if (role !== "admin") {
+			await supabase.auth.signOut();
+			throw redirect({
+				to: "/login",
+				search: { redirect: location.href },
+			});
+		}
 	},
 	component: AdminLayout,
 });
 
 const navItems = [
-	{
-		label: "Dashboard",
-		href: "/admin",
-		icon: LayoutDashboard,
-	},
-	{
-		label: "Órdenes",
-		href: "/admin/orders",
-		icon: ShoppingBag,
-	},
-	{
-		label: "Esmeraldas",
-		href: "/admin/emeralds",
-		icon: Gem,
-	},
-	{
-		label: "Lotes Mayoristas",
-		href: "/admin/wholesale",
-		icon: Package,
-	},
-	{
-		label: "Importar",
-		href: "/admin/import",
-		icon: Upload,
-	},
+	{ label: "Dashboard", href: "/", icon: LayoutDashboard, exact: true },
+	{ label: "Órdenes", href: "/orders", icon: ShoppingBag },
+	{ label: "Esmeraldas", href: "/emeralds", icon: Gem },
+	{ label: "Lotes Mayoristas", href: "/wholesale", icon: Package },
+	{ label: "Importar", href: "/import", icon: Upload },
 ];
+
+const storeUrl = import.meta.env.VITE_STORE_URL ?? "https://naturagems.com";
 
 function AdminLayout() {
 	const routerState = useRouterState();
@@ -73,9 +63,7 @@ function AdminLayout() {
 
 	return (
 		<div className="flex min-h-screen bg-[#F4F6F8]">
-			{/* ── Sidebar ── */}
 			<aside className="flex w-64 shrink-0 flex-col bg-brand-primary-dark">
-				{/* Logo */}
 				<div className="flex h-16 items-center gap-3 px-6">
 					<span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-secondary-golden/20">
 						<Gem className="h-4 w-4 text-brand-secondary-golden" />
@@ -92,20 +80,17 @@ function AdminLayout() {
 
 				<Separator className="bg-brand-primary-lighter/10" />
 
-				{/* Nav */}
 				<nav className="flex-1 px-3 py-4">
 					<ul className="space-y-1">
 						{navItems.map((item) => {
-							const isActive =
-								item.href === "/admin"
-									? pathname === "/admin" || pathname === "/admin/"
-									: pathname.startsWith(item.href);
+							const isActive = item.exact
+								? pathname === "/" || pathname === ""
+								: pathname.startsWith(item.href);
 							const Icon = item.icon;
-
 							return (
 								<li key={item.href}>
 									<Link
-										to={item.href as any}
+										to={item.href as "/"}
 										className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150 ${
 											isActive
 												? "bg-brand-primary-lighter/10 text-brand-primary-lighter"
@@ -128,16 +113,16 @@ function AdminLayout() {
 
 				<Separator className="bg-brand-primary-lighter/10" />
 
-				{/* Footer */}
 				<div className="space-y-1 p-3">
-					<Link
-						to="/"
-						reloadDocument
+					<a
+						href={storeUrl}
+						target="_blank"
+						rel="noopener noreferrer"
 						className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-brand-primary-lighter/40 transition-all hover:bg-brand-primary-lighter/5 hover:text-brand-primary-lighter/70"
 					>
 						<ArrowLeft className="h-4 w-4" />
-						Volver al sitio
-					</Link>
+						Ir a la tienda
+					</a>
 					<button
 						type="button"
 						onClick={handleSignOut}
@@ -149,14 +134,12 @@ function AdminLayout() {
 				</div>
 			</aside>
 
-			{/* ── Main content ── */}
 			<div className="flex flex-1 flex-col overflow-hidden">
-				{/* Top bar */}
 				<header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-8">
 					<h1 className="font-heading text-xl text-brand-primary-dark">
 						{navItems.find((i) =>
-							i.href === "/admin"
-								? pathname === "/admin" || pathname === "/admin/"
+							i.exact
+								? pathname === "/" || pathname === ""
 								: pathname.startsWith(i.href),
 						)?.label ?? "Admin"}
 					</h1>
@@ -167,7 +150,6 @@ function AdminLayout() {
 					</div>
 				</header>
 
-				{/* Page content */}
 				<main className="flex-1 overflow-y-auto p-8">
 					<Outlet />
 				</main>

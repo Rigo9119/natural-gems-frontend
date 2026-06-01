@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "bun run dev:emeralds & bun run dev:jewelry",
 		"dev:emeralds": "bun --bun run --cwd apps/emeralds dev",
-		"dev:jewelry": "bun --bun run --cwd apps/jewelry dev"
+		"dev:jewelry": "bun --bun run --cwd apps/jewelry dev",
+		"dev:admin": "bun --bun run --cwd apps/admin dev"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
@@ -13,5 +14,8 @@
 	},
 	"patchedDependencies": {
 		"@netlify/config@24.4.3": "patches/@netlify%2Fconfig@24.4.3.patch"
+	},
+	"dependencies": {
+		"@sentry/tanstackstart-react": "^10.55.0"
 	}
 }

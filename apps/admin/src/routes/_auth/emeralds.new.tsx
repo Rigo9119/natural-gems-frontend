@@ -18,7 +18,7 @@ import { supabase } from "@/lib/supabase"
 import { generateSlug } from "@/lib/import-emeralds"
 import { clarities, cuts, origins } from "@/lib/supabase-queries"
 
-export const Route = createFileRoute("/admin/emeralds/new")({
+export const Route = createFileRoute("/_auth/emeralds/new")({
 	component: NewEmeraldPage,
 })
 
@@ -91,7 +91,7 @@ function NewEmeraldPage() {
 			}
 
 			setSuccess(true)
-			setTimeout(() => navigate({ to: "/admin/emeralds" }), 1500)
+			setTimeout(() => navigate({ to: "/emeralds" }), 1500)
 		},
 	})
 
@@ -101,7 +101,7 @@ function NewEmeraldPage() {
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-4">
 					<Link
-						to="/admin/emeralds"
+						to="/emeralds"
 						className="flex items-center gap-1.5 font-body text-sm text-gray-400 hover:text-brand-primary-dark transition-colors"
 					>
 						<ArrowLeft className="h-4 w-4" />
@@ -571,7 +571,7 @@ function NewEmeraldPage() {
 						className="border-gray-200 font-body text-sm text-gray-600"
 						asChild
 					>
-						<Link to="/admin/emeralds">Cancelar</Link>
+						<Link to="/emeralds">Cancelar</Link>
 					</Button>
 					<form.Subscribe selector={(state) => state.isSubmitting}>
 						{(isSubmitting) => (
