@@ -86,10 +86,16 @@ export const Route = createFileRoute("/api/order")({
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				const emeraldIds = (items as any[]).map((i) => i.emerald_id).filter(Boolean)
 				if (emeraldIds.length > 0) {
-					await supabaseAdmin
+					const { error: reserveError } = await supabaseAdmin
 						.from("emeralds")
 						.update({ status: "reserved" })
 						.in("id", emeraldIds)
+
+					if (reserveError) {
+						console.error("Emerald reservation error:", reserveError)
+						await supabaseAdmin.from("orders").delete().eq("id", order.id)
+						return Response.json({ error: "Failed to reserve emeralds" }, { status: 500 })
+					}
 				}
 
 				return Response.json({ orderId: order.id, orderNumber: order.order_number })

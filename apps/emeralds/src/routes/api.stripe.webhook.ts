@@ -34,8 +34,7 @@ export const Route = createFileRoute("/api/stripe/webhook")({
 					const session = event.data.object
 					const orderId = session.metadata?.order_id
 					if (orderId) {
-						// Confirm the order
-						await supabaseAdmin
+						const { error: orderError } = await supabaseAdmin
 							.from("orders")
 							.update({
 								status: "confirmed",
@@ -44,13 +43,22 @@ export const Route = createFileRoute("/api/stripe/webhook")({
 							})
 							.eq("id", orderId)
 
-						// Mark emeralds as sold — they're no longer available
+						if (orderError) {
+							console.error("Failed to confirm order:", orderError)
+							return new Response("Internal Server Error", { status: 500 })
+						}
+
 						const emeraldIds = await getEmeraldIdsForOrder(orderId)
 						if (emeraldIds.length > 0) {
-							await supabaseAdmin
+							const { error: emeraldError } = await supabaseAdmin
 								.from("emeralds")
 								.update({ status: "sold" })
 								.in("id", emeraldIds)
+
+							if (emeraldError) {
+								console.error("Failed to mark emeralds sold:", emeraldError)
+								return new Response("Internal Server Error", { status: 500 })
+							}
 						}
 					}
 				}
@@ -61,19 +69,27 @@ export const Route = createFileRoute("/api/stripe/webhook")({
 					const session = event.data.object
 					const orderId = session.metadata?.order_id
 					if (orderId) {
-						// Cancel the order
-						await supabaseAdmin
+						const { error: orderError } = await supabaseAdmin
 							.from("orders")
 							.update({ status: "cancelled" })
 							.eq("id", orderId)
 
-						// Release the emeralds back to the catalog
+						if (orderError) {
+							console.error("Failed to cancel order:", orderError)
+							return new Response("Internal Server Error", { status: 500 })
+						}
+
 						const emeraldIds = await getEmeraldIdsForOrder(orderId)
 						if (emeraldIds.length > 0) {
-							await supabaseAdmin
+							const { error: emeraldError } = await supabaseAdmin
 								.from("emeralds")
 								.update({ status: "available" })
 								.in("id", emeraldIds)
+
+							if (emeraldError) {
+								console.error("Failed to release emeralds:", emeraldError)
+								return new Response("Internal Server Error", { status: 500 })
+							}
 						}
 					}
 				}

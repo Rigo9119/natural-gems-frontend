@@ -16,12 +16,24 @@ export const Route = createFileRoute("/api/order/lookup")({
 					return Response.json({ error: "order_number y contact son requeridos" }, { status: 422 })
 				}
 
-				const { data: order, error } = await supabaseAdmin
+				const trimmedContact = contact.trim()
+				const orderNum = order_number.trim().toUpperCase()
+
+				const { data: byEmail } = await supabaseAdmin
 					.from("orders")
 					.select("*, order_items(*)")
-					.eq("order_number", order_number.trim().toUpperCase())
-					.or(`customer_email.eq.${contact.trim()},customer_whatsapp.eq.${contact.trim()}`)
-					.single()
+					.eq("order_number", orderNum)
+					.eq("customer_email", trimmedContact)
+					.maybeSingle()
+
+				const { data: order, error } = byEmail
+					? { data: byEmail, error: null }
+					: await supabaseAdmin
+							.from("orders")
+							.select("*, order_items(*)")
+							.eq("order_number", orderNum)
+							.eq("customer_whatsapp", trimmedContact)
+							.maybeSingle()
 
 				if (error || !order) {
 					return Response.json({ error: "Pedido no encontrado" }, { status: 404 })

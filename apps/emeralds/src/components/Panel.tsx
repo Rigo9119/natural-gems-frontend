@@ -7,7 +7,7 @@ export interface PanelProps {
   href: string;
   linkText: string;
   secondary?: boolean;
-  disableld?: boolean;
+  disabled?: boolean;
 }
 
 export default function Panel({
@@ -17,7 +17,7 @@ export default function Panel({
   href,
   linkText,
   secondary = false,
-  disableld,
+  disabled,
 }: PanelProps) {
   const cmpBgClass = secondary
     ? "bg-brand-secondary-terra"
@@ -25,7 +25,7 @@ export default function Panel({
 
   const baseClass = `group relative flex flex-1 flex-col items-center justify-center overflow-hidden ${cmpBgClass} px-6 pt-24 pb-12 transition-all duration-500 md:min-h-screen md:px-8 md:py-0`;
 
-  if (disableld) {
+  if (disabled) {
     return (
       <div className={`${baseClass} cursor-default`}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom-left,rgba(247,209,126,0.08)_0%,transparent_60%)]" />
