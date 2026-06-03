@@ -33,10 +33,12 @@ export const Route = createFileRoute("/api/stripe/checkout")({
 				}
 
 				// Use configured public URL, not the request Origin header
-				const origin =
-					process.env.PUBLIC_URL ??
-					process.env.VITE_PUBLIC_URL ??
-					"http://localhost:3000"
+				const origin = process.env.PUBLIC_URL ?? process.env.VITE_PUBLIC_URL
+				if (!origin) {
+					return new Response("PUBLIC_URL environment variable is not configured", {
+						status: 500,
+					})
+				}
 
 				const session = await stripe.checkout.sessions.create({
 					mode: "payment",

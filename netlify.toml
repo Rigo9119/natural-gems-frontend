@@ -14,6 +14,8 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: cdn.sanity.io *.sanity.io; connect-src 'self' *.supabase.co wss://*.supabase.co *.api.sanity.io *.apicdn.sanity.io *.sentry.io *.ingest.us.sentry.io; font-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'"
 
 # Immutable cache for hashed JS/CSS bundles (Vite appends content hash)
 [[headers]]
