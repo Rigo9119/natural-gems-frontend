@@ -34,6 +34,7 @@ import { Route as EmeraldsShopSlugRouteImport } from './routes/emeralds/shop/$sl
 import { Route as ApiWhatsappWebhookRouteImport } from './routes/api.whatsapp.webhook'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe.webhook'
 import { Route as ApiStripeCheckoutRouteImport } from './routes/api.stripe.checkout'
+import { Route as ApiPromoValidateRouteImport } from './routes/api.promo.validate'
 import { Route as ApiOrdersOrderIdRouteImport } from './routes/api.orders.$orderId'
 import { Route as ApiOrderLookupRouteImport } from './routes/api.order.lookup'
 
@@ -162,6 +163,11 @@ const ApiStripeCheckoutRoute = ApiStripeCheckoutRouteImport.update({
   path: '/api/stripe/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPromoValidateRoute = ApiPromoValidateRouteImport.update({
+  id: '/api/promo/validate',
+  path: '/api/promo/validate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiOrdersOrderIdRoute = ApiOrdersOrderIdRouteImport.update({
   id: '/api/orders/$orderId',
   path: '/api/orders/$orderId',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/guides/': typeof GuidesIndexRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
   '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
+  '/api/promo/validate': typeof ApiPromoValidateRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/guides': typeof GuidesIndexRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
   '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
+  '/api/promo/validate': typeof ApiPromoValidateRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -254,6 +262,7 @@ export interface FileRoutesById {
   '/guides/': typeof GuidesIndexRoute
   '/api/order/lookup': typeof ApiOrderLookupRoute
   '/api/orders/$orderId': typeof ApiOrdersOrderIdRoute
+  '/api/promo/validate': typeof ApiPromoValidateRoute
   '/api/stripe/checkout': typeof ApiStripeCheckoutRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/whatsapp/webhook': typeof ApiWhatsappWebhookRoute
@@ -285,6 +294,7 @@ export interface FileRouteTypes {
     | '/guides/'
     | '/api/order/lookup'
     | '/api/orders/$orderId'
+    | '/api/promo/validate'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/guides'
     | '/api/order/lookup'
     | '/api/orders/$orderId'
+    | '/api/promo/validate'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/guides/'
     | '/api/order/lookup'
     | '/api/orders/$orderId'
+    | '/api/promo/validate'
     | '/api/stripe/checkout'
     | '/api/stripe/webhook'
     | '/api/whatsapp/webhook'
@@ -364,6 +376,7 @@ export interface RootRouteChildren {
   GuidesSlugRoute: typeof GuidesSlugRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   ApiOrdersOrderIdRoute: typeof ApiOrdersOrderIdRoute
+  ApiPromoValidateRoute: typeof ApiPromoValidateRoute
   ApiStripeCheckoutRoute: typeof ApiStripeCheckoutRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ApiWhatsappWebhookRoute: typeof ApiWhatsappWebhookRoute
@@ -546,6 +559,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStripeCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/promo/validate': {
+      id: '/api/promo/validate'
+      path: '/api/promo/validate'
+      fullPath: '/api/promo/validate'
+      preLoaderRoute: typeof ApiPromoValidateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/orders/$orderId': {
       id: '/api/orders/$orderId'
       path: '/api/orders/$orderId'
@@ -618,6 +638,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesSlugRoute: GuidesSlugRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   ApiOrdersOrderIdRoute: ApiOrdersOrderIdRoute,
+  ApiPromoValidateRoute: ApiPromoValidateRoute,
   ApiStripeCheckoutRoute: ApiStripeCheckoutRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ApiWhatsappWebhookRoute: ApiWhatsappWebhookRoute,

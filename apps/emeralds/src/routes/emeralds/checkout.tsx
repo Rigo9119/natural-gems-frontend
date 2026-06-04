@@ -1,16 +1,15 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { AppBreadcrumb } from "@/components/AppBreadcrumb"
 import { useForm } from "@tanstack/react-form"
 import { useMutation } from "@tanstack/react-query"
-import { CheckCircle, CreditCard, MessageCircle, ShoppingBag } from "lucide-react"
-import { useEffect, useState } from "react"
+import { CreditCard, ShoppingBag } from "lucide-react"
+import { useEffect } from "react"
 import { z } from "zod"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
-import { PAYMENT_ADVISOR_THRESHOLD } from "@/lib/constants"
-import { useCartStore, selectTotalPrice } from "@/store/cartStore"
+import { useCartStore, selectTotalPrice, selectFinalPrice, selectDiscountAmount } from "@/store/cartStore"
 
 export const Route = createFileRoute("/emeralds/checkout")({
 	head: () =>
@@ -40,62 +39,18 @@ type CheckoutFormValues = {
 	notas: string
 }
 
-function buildWhatsAppUrl(
-	orderNumber: string,
-	items: {
-		product: {
-			name: string
-			carats: number
-			stone_count: number
-			price: number
-			currency: string
-		}
-		quantity: number
-	}[],
-	total: number,
-) {
-	const lines = items
-		.map((i) => {
-			const isLot = i.product.stone_count > 1
-			const desc = isLot
-				? `${i.product.name} · ${i.product.carats}ct (${i.product.stone_count} piedras)`
-				: `${i.product.name} · ${i.product.carats}ct`
-			return `• ${desc} — $${(i.product.price * i.quantity).toLocaleString()} ${i.product.currency}`
-		})
-		.join("\n")
-
-	const message = [
-		"Hola, Natura Gems! 🌿",
-		"",
-		`Mi pedido es *#${orderNumber}*`,
-		"",
-		"📋 Detalle:",
-		lines,
-		"",
-		`💰 Total: $${total.toLocaleString()} USD`,
-		"",
-		"Quedo a la espera de su confirmación. ✅",
-	].join("\n")
-
-	const number = import.meta.env.VITE_WHATSAPP_NUMBER ?? "573001234567"
-	return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
-}
-
 function CheckoutPage() {
 	const navigate = useNavigate()
-	const { items, clearCart } = useCartStore()
+	const { items, clearCart, appliedPromo } = useCartStore()
 	const totalPrice = useCartStore(selectTotalPrice)
-	const [successOrderNumber, setSuccessOrderNumber] = useState<string | null>(null)
-	const [waUrl, setWaUrl] = useState<string>("")
-	const [paymentMethod, setPaymentMethod] = useState<"stripe" | "whatsapp">("stripe")
-
-	const showPaymentChoice = totalPrice >= PAYMENT_ADVISOR_THRESHOLD
+	const finalPrice = useCartStore(selectFinalPrice)
+	const discountAmount = useCartStore(selectDiscountAmount)
 
 	useEffect(() => {
-		if (items.length === 0 && !successOrderNumber) {
+		if (items.length === 0) {
 			navigate({ to: "/emeralds/cart" })
 		}
-	}, [items.length, successOrderNumber, navigate])
+	}, [items.length, navigate])
 
 	const mutation = useMutation({
 		mutationFn: async (formValue: CheckoutFormValues) => {
@@ -112,6 +67,9 @@ function CheckoutPage() {
 					notes: formValue.notas || undefined,
 					subtotal: totalPrice,
 					currency: "USD",
+					promo_code_id: appliedPromo?.id ?? undefined,
+					discount_amount: discountAmount,
+					discount_type: appliedPromo?.type ?? undefined,
 					items: items.map((i) => ({
 						emerald_id: i.product.id,
 						product_name: i.product.name,
@@ -125,15 +83,11 @@ function CheckoutPage() {
 					})),
 				}),
 			})
-			if (!orderRes.ok) throw new Error("Failed to create order")
-			const { orderId, orderNumber } = await orderRes.json()
-
-			if (paymentMethod === "whatsapp") {
-				const url = buildWhatsAppUrl(orderNumber, items, totalPrice)
-				clearCart()
-				window.open(url, "_blank", "noopener,noreferrer")
-				return { type: "whatsapp" as const, orderNumber, url }
+			if (!orderRes.ok) {
+				const err = await orderRes.json().catch(() => ({}))
+				throw new Error(err.error ?? "Failed to create order")
 			}
+			const { orderId } = await orderRes.json()
 
 			const stripeRes = await fetch("/api/stripe/checkout", {
 				method: "POST",
@@ -142,14 +96,8 @@ function CheckoutPage() {
 			})
 			if (!stripeRes.ok) throw new Error("Failed to create payment session")
 			const { url } = await stripeRes.json()
+			clearCart()
 			window.location.href = url
-			return { type: "stripe" as const, orderNumber, url }
-		},
-		onSuccess: (result) => {
-			if (result.type === "whatsapp") {
-				setWaUrl(result.url)
-				setSuccessOrderNumber(result.orderNumber)
-			}
 		},
 	})
 
@@ -167,54 +115,7 @@ function CheckoutPage() {
 		},
 	})
 
-	if (items.length === 0 && !successOrderNumber) return null
-
-	if (successOrderNumber) {
-		return (
-			<div className="min-h-screen bg-brand-surface flex items-center justify-center px-4">
-				<div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm text-center space-y-5">
-					<div className="flex justify-center">
-						<CheckCircle className="h-16 w-16 text-brand-primary-dark" />
-					</div>
-					<div>
-						<h1 className="font-heading text-2xl text-brand-primary-dark">
-							¡Pedido registrado!
-						</h1>
-						<p className="mt-2 text-brand-primary-dark/60 text-sm">
-							Tu pedido fue guardado correctamente.
-						</p>
-					</div>
-					<div className="rounded-xl bg-brand-primary-lighter/60 px-6 py-4">
-						<p className="text-xs text-brand-primary-dark/50 uppercase tracking-wider">
-							Número de pedido
-						</p>
-						<p className="font-heading text-2xl text-brand-primary-dark mt-1">
-							{successOrderNumber}
-						</p>
-					</div>
-					<p className="text-sm text-brand-primary-dark/60">
-						Se abrió WhatsApp con los detalles de tu pedido. Si no se abrió
-						automáticamente, usa el botón de abajo.
-					</p>
-					<a
-						href={waUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"
-					>
-						<MessageCircle className="h-4 w-4" />
-						Abrir WhatsApp
-					</a>
-					<Link
-						to="/emeralds/shop"
-						className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-dark transition-colors hover:bg-brand-primary-dark hover:text-brand-primary-lighter"
-					>
-						Seguir comprando
-					</Link>
-				</div>
-			</div>
-		)
-	}
+	if (items.length === 0) return null
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
@@ -429,56 +330,11 @@ function CheckoutPage() {
 								</form.Field>
 							</div>
 
-							{showPaymentChoice && (
-								<div className="rounded-2xl bg-white p-6 shadow-sm space-y-3">
-									<h2 className="font-heading text-lg text-brand-primary-dark">
-										¿Cómo deseas pagar?
-									</h2>
-									<button
-										type="button"
-										onClick={() => setPaymentMethod("stripe")}
-										className={`flex w-full items-start gap-4 rounded-xl border-2 p-4 text-left transition-colors ${
-											paymentMethod === "stripe"
-												? "border-brand-primary-dark bg-brand-primary-lighter/40"
-												: "border-brand-primary-dark/15 hover:border-brand-primary-dark/30"
-										}`}
-									>
-										<CreditCard className="h-5 w-5 text-brand-primary-dark mt-0.5 shrink-0" />
-										<div>
-											<p className="font-medium text-brand-primary-dark text-sm">
-												Pagar en línea
-											</p>
-											<p className="text-xs text-brand-primary-dark/55 mt-0.5">
-												Tarjeta de crédito / débito — seguro y rápido
-											</p>
-										</div>
-									</button>
-									<button
-										type="button"
-										onClick={() => setPaymentMethod("whatsapp")}
-										className={`flex w-full items-start gap-4 rounded-xl border-2 p-4 text-left transition-colors ${
-											paymentMethod === "whatsapp"
-												? "border-brand-primary-dark bg-brand-primary-lighter/40"
-												: "border-brand-primary-dark/15 hover:border-brand-primary-dark/30"
-										}`}
-									>
-										<MessageCircle className="h-5 w-5 text-brand-primary-dark mt-0.5 shrink-0" />
-										<div>
-											<p className="font-medium text-brand-primary-dark text-sm">
-												Pagar con asesor (WhatsApp)
-											</p>
-											<p className="text-xs text-brand-primary-dark/55 mt-0.5">
-												Un asesor te guiará personalmente
-											</p>
-										</div>
-									</button>
-								</div>
-							)}
-
 							{mutation.isError && (
 								<p className="rounded-xl bg-red-50 p-4 text-sm text-red-600">
-									Ocurrió un error al guardar el pedido. Por favor intenta de
-									nuevo.
+									{(mutation.error as Error)?.message === "Este código ya fue usado con este correo"
+										? "El código de descuento ya fue usado con este correo electrónico."
+										: "Ocurrió un error al guardar el pedido. Por favor intenta de nuevo."}
 								</p>
 							)}
 
@@ -487,16 +343,8 @@ function CheckoutPage() {
 								disabled={mutation.isPending}
 								className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3.5 font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85 disabled:opacity-60 disabled:cursor-not-allowed"
 							>
-								{paymentMethod === "stripe" || !showPaymentChoice ? (
-									<CreditCard className="h-5 w-5" />
-								) : (
-									<MessageCircle className="h-5 w-5" />
-								)}
-								{mutation.isPending
-									? "Procesando..."
-									: paymentMethod === "whatsapp" && showPaymentChoice
-										? "Confirmar y contactar asesor"
-										: "Pagar en línea"}
+								<CreditCard className="h-5 w-5" />
+								{mutation.isPending ? "Procesando..." : "Pagar en línea"}
 							</button>
 						</form>
 					</div>
@@ -531,12 +379,26 @@ function CheckoutPage() {
 
 							<hr className="border-brand-primary-dark/10" />
 
+							{appliedPromo && (
+								<div className="space-y-2">
+									<div className="flex justify-between text-sm">
+										<span className="text-brand-primary-dark/60">Subtotal</span>
+										<span className="text-brand-primary-dark">${totalPrice.toLocaleString()}</span>
+									</div>
+									<div className="flex justify-between text-sm text-green-600">
+										<span>Descuento ({appliedPromo.code})</span>
+										<span>−${discountAmount.toLocaleString()}</span>
+									</div>
+									<hr className="border-brand-primary-dark/10" />
+								</div>
+							)}
+
 							<div className="flex justify-between">
 								<span className="font-medium text-brand-primary-dark">
 									Total
 								</span>
 								<span className="font-heading text-xl text-brand-primary-dark">
-									${totalPrice.toLocaleString()}{" "}
+									${finalPrice.toLocaleString()}{" "}
 									<span className="text-xs font-body font-normal text-brand-primary-dark/40">
 										USD
 									</span>
@@ -552,9 +414,7 @@ function CheckoutPage() {
 							<div className="flex items-start gap-3 rounded-xl bg-brand-secondary-golden/10 p-4">
 								<ShoppingBag className="h-5 w-5 text-brand-secondary-terra mt-0.5 shrink-0" />
 								<p className="text-xs text-brand-primary-dark/70">
-									{showPaymentChoice
-										? "Elige tu método de pago preferido. Para pedidos de alto valor, un asesor puede acompañarte personalmente."
-										: "Al confirmar, te redirigiremos a nuestra pasarela de pago segura."}
+									Al confirmar, te redirigiremos a nuestra pasarela de pago segura.
 								</p>
 							</div>
 						</div>

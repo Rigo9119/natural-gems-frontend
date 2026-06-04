@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthWholesaleRouteImport } from './routes/_auth/wholesale'
+import { Route as AuthPromotionsRouteImport } from './routes/_auth/promotions'
 import { Route as AuthOrdersRouteImport } from './routes/_auth/orders'
 import { Route as AuthImportRouteImport } from './routes/_auth/import'
 import { Route as AuthEmeraldsRouteImport } from './routes/_auth/emeralds'
@@ -35,6 +36,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
 const AuthWholesaleRoute = AuthWholesaleRouteImport.update({
   id: '/wholesale',
   path: '/wholesale',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthPromotionsRoute = AuthPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthOrdersRoute = AuthOrdersRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/emeralds': typeof AuthEmeraldsRouteWithChildren
   '/import': typeof AuthImportRoute
   '/orders': typeof AuthOrdersRoute
+  '/promotions': typeof AuthPromotionsRoute
   '/wholesale': typeof AuthWholesaleRoute
   '/emeralds/new': typeof AuthEmeraldsNewRoute
 }
@@ -72,6 +79,7 @@ export interface FileRoutesByTo {
   '/emeralds': typeof AuthEmeraldsRouteWithChildren
   '/import': typeof AuthImportRoute
   '/orders': typeof AuthOrdersRoute
+  '/promotions': typeof AuthPromotionsRoute
   '/wholesale': typeof AuthWholesaleRoute
   '/': typeof AuthIndexRoute
   '/emeralds/new': typeof AuthEmeraldsNewRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/_auth/emeralds': typeof AuthEmeraldsRouteWithChildren
   '/_auth/import': typeof AuthImportRoute
   '/_auth/orders': typeof AuthOrdersRoute
+  '/_auth/promotions': typeof AuthPromotionsRoute
   '/_auth/wholesale': typeof AuthWholesaleRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/emeralds/new': typeof AuthEmeraldsNewRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/emeralds'
     | '/import'
     | '/orders'
+    | '/promotions'
     | '/wholesale'
     | '/emeralds/new'
   fileRoutesByTo: FileRoutesByTo
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/emeralds'
     | '/import'
     | '/orders'
+    | '/promotions'
     | '/wholesale'
     | '/'
     | '/emeralds/new'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '/_auth/emeralds'
     | '/_auth/import'
     | '/_auth/orders'
+    | '/_auth/promotions'
     | '/_auth/wholesale'
     | '/_auth/'
     | '/_auth/emeralds/new'
@@ -151,6 +163,13 @@ declare module '@tanstack/react-router' {
       path: '/wholesale'
       fullPath: '/wholesale'
       preLoaderRoute: typeof AuthWholesaleRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/promotions': {
+      id: '/_auth/promotions'
+      path: '/promotions'
+      fullPath: '/promotions'
+      preLoaderRoute: typeof AuthPromotionsRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/orders': {
@@ -200,6 +219,7 @@ interface AuthRouteChildren {
   AuthEmeraldsRoute: typeof AuthEmeraldsRouteWithChildren
   AuthImportRoute: typeof AuthImportRoute
   AuthOrdersRoute: typeof AuthOrdersRoute
+  AuthPromotionsRoute: typeof AuthPromotionsRoute
   AuthWholesaleRoute: typeof AuthWholesaleRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -208,6 +228,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthEmeraldsRoute: AuthEmeraldsRouteWithChildren,
   AuthImportRoute: AuthImportRoute,
   AuthOrdersRoute: AuthOrdersRoute,
+  AuthPromotionsRoute: AuthPromotionsRoute,
   AuthWholesaleRoute: AuthWholesaleRoute,
   AuthIndexRoute: AuthIndexRoute,
 }

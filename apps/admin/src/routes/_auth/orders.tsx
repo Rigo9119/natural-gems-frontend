@@ -233,11 +233,32 @@ function OrderDetailDialog({
 							))}
 						</div>
 					</div>
-					<div className="flex justify-between border-t border-gray-100 pt-3">
-						<p className="font-body font-medium text-gray-500">Total</p>
-						<p className="font-heading text-lg text-brand-primary-dark">
-							${order.subtotal.toLocaleString()} {order.currency}
-						</p>
+					<div className="space-y-2 border-t border-gray-100 pt-3">
+						{(order.discount_amount ?? 0) > 0 && (
+							<>
+								<div className="flex justify-between">
+									<p className="font-body text-sm text-gray-500">Subtotal</p>
+									<p className="font-body text-sm text-brand-primary-dark">
+										${order.subtotal.toLocaleString()} {order.currency}
+									</p>
+								</div>
+								<div className="flex justify-between">
+									<p className="font-body text-sm text-green-600">
+										Descuento
+										{order.discount_type === "percentage" ? ` (%)` : ""}
+									</p>
+									<p className="font-body text-sm text-green-600">
+										−${(order.discount_amount ?? 0).toLocaleString()}
+									</p>
+								</div>
+							</>
+						)}
+						<div className="flex justify-between">
+							<p className="font-body font-medium text-gray-500">Total</p>
+							<p className="font-heading text-lg text-brand-primary-dark">
+								${(order.subtotal - (order.discount_amount ?? 0)).toLocaleString()} {order.currency}
+							</p>
+						</div>
 					</div>
 					{order.notes && (
 						<div className="rounded-lg bg-brand-secondary-golden/10 p-3">
@@ -329,11 +350,22 @@ function buildColumns(
 					Total <ArrowUpDown className="ml-1.5 h-3 w-3" />
 				</Button>
 			),
-			cell: ({ row }) => (
-				<span className="font-body font-medium text-brand-primary-dark">
-					${row.original.subtotal.toLocaleString()} {row.original.currency}
-				</span>
-			),
+			cell: ({ row }) => {
+				const discount = row.original.discount_amount ?? 0
+				const final = row.original.subtotal - discount
+				return (
+					<div>
+						<span className="font-body font-medium text-brand-primary-dark">
+							${final.toLocaleString()} {row.original.currency}
+						</span>
+						{discount > 0 && (
+							<p className="font-body text-xs text-green-600">
+								−${discount.toLocaleString()} dcto.
+							</p>
+						)}
+					</div>
+				)
+			},
 		},
 		{
 			accessorKey: "status",

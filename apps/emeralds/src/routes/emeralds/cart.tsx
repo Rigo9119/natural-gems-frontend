@@ -3,12 +3,15 @@ import {
 	Minus,
 	Plus,
 	ShoppingBag,
+	Tag,
 	Trash2,
+	X,
 } from "lucide-react";
+import { useRef, useState } from "react";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
-import { useCartStore, selectTotalItems, selectTotalPrice } from "@/store/cartStore";
+import { useCartStore, selectTotalItems, selectTotalPrice, selectDiscountAmount, selectFinalPrice } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/cart")({
 	head: () =>
@@ -30,9 +33,41 @@ export const Route = createFileRoute("/emeralds/cart")({
 });
 
 function CartPage() {
-	const { items, removeFromCart, updateQuantity, clearCart } = useCartStore();
+	const { items, removeFromCart, updateQuantity, clearCart, appliedPromo, applyPromo, removePromo } = useCartStore();
 	const totalItems = useCartStore(selectTotalItems);
 	const totalPrice = useCartStore(selectTotalPrice);
+	const discountAmount = useCartStore(selectDiscountAmount);
+	const finalPrice = useCartStore(selectFinalPrice);
+
+	const [promoCode, setPromoCode] = useState("");
+	const [promoError, setPromoError] = useState<string | null>(null);
+	const [promoLoading, setPromoLoading] = useState(false);
+	const promoInputRef = useRef<HTMLInputElement>(null);
+
+	async function handleApplyPromo() {
+		const code = promoCode.trim();
+		if (!code) return;
+		setPromoError(null);
+		setPromoLoading(true);
+		try {
+			const res = await fetch("/api/promo/validate", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ code, subtotal: totalPrice }),
+			});
+			const data = await res.json();
+			if (data.valid) {
+				applyPromo(data);
+				setPromoCode("");
+			} else {
+				setPromoError(data.error ?? "Código inválido");
+			}
+		} catch {
+			setPromoError("No se pudo validar el código");
+		} finally {
+			setPromoLoading(false);
+		}
+	}
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
@@ -210,12 +245,80 @@ function CartPage() {
 
 								<hr className="border-brand-primary-dark/10" />
 
+								{/* Promo code */}
+								{appliedPromo ? (
+									<div className="flex items-center justify-between rounded-xl bg-brand-primary-dark/5 px-4 py-3">
+										<div className="flex items-center gap-2 text-sm">
+											<Tag className="h-4 w-4 text-brand-primary-dark/60" />
+											<span className="font-medium text-brand-primary-dark">
+												{appliedPromo.code}
+											</span>
+											<span className="text-brand-primary-dark/50">
+												{appliedPromo.type === "percentage"
+													? `−${appliedPromo.value}%`
+													: `−$${appliedPromo.value}`}
+											</span>
+										</div>
+										<button
+											type="button"
+											onClick={removePromo}
+											aria-label="Eliminar código"
+											className="text-brand-primary-dark/40 hover:text-red-500 transition-colors"
+										>
+											<X className="h-4 w-4" />
+										</button>
+									</div>
+								) : (
+									<div className="space-y-2">
+										<div className="flex gap-2">
+											<input
+												ref={promoInputRef}
+												type="text"
+												placeholder="Código de descuento"
+												value={promoCode}
+												onChange={(e) => {
+													setPromoCode(e.target.value.toUpperCase());
+													setPromoError(null);
+												}}
+												onKeyDown={(e) => e.key === "Enter" && handleApplyPromo()}
+												className="flex-1 rounded-xl border border-brand-primary-dark/20 bg-transparent px-3 py-2 text-sm text-brand-primary-dark placeholder:text-brand-primary-dark/30 focus:border-brand-primary-dark/50 focus:outline-none"
+											/>
+											<button
+												type="button"
+												onClick={handleApplyPromo}
+												disabled={promoLoading || !promoCode.trim()}
+												className="rounded-xl bg-brand-primary-dark px-4 py-2 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85 disabled:opacity-50"
+											>
+												{promoLoading ? "…" : "Aplicar"}
+											</button>
+										</div>
+										{promoError && (
+											<p className="text-xs text-red-500">{promoError}</p>
+										)}
+									</div>
+								)}
+
+								{/* Subtotal + discount rows */}
+								{appliedPromo && (
+									<div className="space-y-2">
+										<div className="flex justify-between text-sm">
+											<span className="text-brand-primary-dark/60">Subtotal</span>
+											<span className="text-brand-primary-dark">${totalPrice.toLocaleString()}</span>
+										</div>
+										<div className="flex justify-between text-sm text-green-600">
+											<span>Descuento ({appliedPromo.code})</span>
+											<span>−${discountAmount.toLocaleString()}</span>
+										</div>
+										<hr className="border-brand-primary-dark/10" />
+									</div>
+								)}
+
 								<div className="flex justify-between">
 									<span className="font-medium text-brand-primary-dark">
 										Total
 									</span>
 									<span className="font-heading text-xl text-brand-primary-dark">
-										${totalPrice.toLocaleString()}{" "}
+										${finalPrice.toLocaleString()}{" "}
 										<span className="text-xs font-body font-normal text-brand-primary-dark/40">
 											USD
 										</span>

@@ -9,15 +9,26 @@ export interface CartItem {
 	quantity: number
 }
 
+export interface AppliedPromo {
+	id: string
+	code: string
+	type: "percentage" | "fixed"
+	value: number
+	discountAmount: number
+}
+
 // ── Store shape ───────────────────────────────────────────────────────────────
 
 interface CartState {
 	items: CartItem[]
+	appliedPromo: AppliedPromo | null
 	// actions
 	addToCart: (product: EmeraldWithImage) => void
 	removeFromCart: (productId: string) => void
 	updateQuantity: (productId: string, quantity: number) => void
 	clearCart: () => void
+	applyPromo: (promo: AppliedPromo) => void
+	removePromo: () => void
 	// helpers
 	isInCart: (productId: string) => boolean
 }
@@ -28,6 +39,7 @@ export const useCartStore = create<CartState>()(
 	persist(
 		(set, get) => ({
 			items: [],
+			appliedPromo: null,
 
 			addToCart: (product) => {
 				const { items } = get()
@@ -53,7 +65,11 @@ export const useCartStore = create<CartState>()(
 				}))
 			},
 
-			clearCart: () => set({ items: [] }),
+			clearCart: () => set({ items: [], appliedPromo: null }),
+
+			applyPromo: (promo) => set({ appliedPromo: promo }),
+
+			removePromo: () => set({ appliedPromo: null }),
 
 			isInCart: (productId) =>
 				get().items.some((i) => i.product.id === productId),
@@ -72,3 +88,9 @@ export const selectTotalItems = (s: CartState) =>
 
 export const selectTotalPrice = (s: CartState) =>
 	s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+
+export const selectDiscountAmount = (s: CartState) =>
+	s.appliedPromo?.discountAmount ?? 0
+
+export const selectFinalPrice = (s: CartState) =>
+	Math.max(0, selectTotalPrice(s) - selectDiscountAmount(s))

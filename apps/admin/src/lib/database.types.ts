@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      promo_codes: {
+        Row: {
+          id: string
+          code: string
+          type: "percentage" | "fixed"
+          value: number
+          currency: string
+          description: string | null
+          valid_until: string | null
+          active: boolean
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          code: string
+          type: "percentage" | "fixed"
+          value: number
+          currency?: string
+          description?: string | null
+          valid_until?: string | null
+          active?: boolean
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          code?: string
+          type?: "percentage" | "fixed"
+          value?: number
+          currency?: string
+          description?: string | null
+          valid_until?: string | null
+          active?: boolean
+          created_at?: string | null
+        }
+        Relationships: []
+      }
+      promo_uses: {
+        Row: {
+          id: string
+          promo_code_id: string
+          customer_email: string
+          order_id: string
+          used_at: string | null
+        }
+        Insert: {
+          id?: string
+          promo_code_id: string
+          customer_email: string
+          order_id: string
+          used_at?: string | null
+        }
+        Update: {
+          id?: string
+          promo_code_id?: string
+          customer_email?: string
+          order_id?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_uses_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promo_uses_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emerald_images: {
         Row: {
           emerald_id: string
@@ -173,11 +248,14 @@ export type Database = {
           customer_email: string | null
           customer_name: string
           customer_whatsapp: string | null
+          discount_amount: number
+          discount_type: string | null
           id: string
           notes: string | null
           order_number: string
           payment_method: string | null
           payment_status: string
+          promo_code_id: string | null
           shipping_address: string | null
           shipping_country: string | null
           status: string
@@ -191,11 +269,14 @@ export type Database = {
           customer_email?: string | null
           customer_name: string
           customer_whatsapp?: string | null
+          discount_amount?: number
+          discount_type?: string | null
           id?: string
           notes?: string | null
           order_number?: string
           payment_method?: string | null
           payment_status?: string
+          promo_code_id?: string | null
           shipping_address?: string | null
           shipping_country?: string | null
           status?: string
@@ -209,11 +290,14 @@ export type Database = {
           customer_email?: string | null
           customer_name?: string
           customer_whatsapp?: string | null
+          discount_amount?: number
+          discount_type?: string | null
           id?: string
           notes?: string | null
           order_number?: string
           payment_method?: string | null
           payment_status?: string
+          promo_code_id?: string | null
           shipping_address?: string | null
           shipping_country?: string | null
           status?: string
@@ -221,7 +305,15 @@ export type Database = {
           tracking_number?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -222,3 +222,49 @@ export function generateOrderNumber(): string {
 	const rand = String(Math.floor(Math.random() * 9000) + 1000)
 	return `NG-${date}-${rand}`
 }
+
+// ── Promo codes ───────────────────────────────────────────────────────────────
+
+export type PromoCode = Database["public"]["Tables"]["promo_codes"]["Row"]
+export type PromoCodeInsert = Database["public"]["Tables"]["promo_codes"]["Insert"]
+export type PromoCodeUpdate = Database["public"]["Tables"]["promo_codes"]["Update"]
+
+export function promoCodesQueryOptions() {
+	return queryOptions({
+		queryKey: ["promo_codes"],
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from("promo_codes")
+				.select("*")
+				.order("created_at", { ascending: false })
+			if (error) throw error
+			return data as PromoCode[]
+		},
+	})
+}
+
+export async function createPromoCode(input: PromoCodeInsert): Promise<PromoCode> {
+	const { data, error } = await supabase
+		.from("promo_codes")
+		.insert(input)
+		.select()
+		.single()
+	if (error) throw error
+	return data as PromoCode
+}
+
+export async function updatePromoCode(id: string, input: PromoCodeUpdate): Promise<void> {
+	const { error } = await supabase
+		.from("promo_codes")
+		.update(input)
+		.eq("id", id)
+	if (error) throw error
+}
+
+export async function deletePromoCode(id: string): Promise<void> {
+	const { error } = await supabase
+		.from("promo_codes")
+		.delete()
+		.eq("id", id)
+	if (error) throw error
+}

@@ -13,6 +13,7 @@ import {
 	LogOut,
 	Package,
 	ShoppingBag,
+	Tag,
 	Upload,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -46,6 +47,7 @@ const navItems = [
 	{ label: "Órdenes", href: "/orders", icon: ShoppingBag },
 	{ label: "Esmeraldas", href: "/emeralds", icon: Gem },
 	{ label: "Lotes Mayoristas", href: "/wholesale", icon: Package },
+	{ label: "Promociones", href: "/promotions", icon: Tag },
 	{ label: "Importar", href: "/import", icon: Upload },
 ];
 
