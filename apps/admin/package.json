@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev --port 3001",
+		"dev": "NODE_OPTIONS='--import ./instrument.server.mjs' vite dev --port 3001",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "biome check"
@@ -33,6 +33,8 @@
 		"zod": "^4.1.11"
 	},
 	"devDependencies": {
+		"@netlify/vite-plugin-tanstack-start": "^1.3.0",
+		"@tanstack/devtools-vite": "^0.3.11",
 		"@types/node": "^22.10.2",
 		"@types/react": "^19.2.0",
 		"@types/react-dom": "^19.2.0",

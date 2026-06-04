@@ -8,6 +8,7 @@ import { fileURLToPath, URL } from "url";
 
 import tailwindcss from "@tailwindcss/vite";
 import netlify from "@netlify/vite-plugin-tanstack-start";
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 
 const config = defineConfig({
 	resolve: {
@@ -33,6 +34,13 @@ const config = defineConfig({
 			},
 		}),
 		viteReact(),
+		// must be last — uploads source maps and wraps the build
+		sentryTanstackStart({
+			org: process.env.SENTRY_ORG,
+			project: process.env.SENTRY_PROJECT,
+			authToken: process.env.SENTRY_AUTH_TOKEN,
+			silent: !process.env.SENTRY_AUTH_TOKEN,
+		}),
 	],
 });
 
