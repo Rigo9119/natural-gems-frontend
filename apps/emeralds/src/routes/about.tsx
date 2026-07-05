@@ -11,10 +11,12 @@ import {
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { aboutPageQueryOptions } from "@/lib/sanity/sanity-queries";
+import type { SeoMetadata } from "@/lib/sanity/sanity-types";
 import { breadcrumbJsonLd, buildMeta, resolveSanityMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
-	head: ({ loaderData }) => {
+	head: ({ loaderData: _ld }) => {
+		const loaderData = _ld as { seo: SeoMetadata | null } | undefined;
 		return buildMeta(
 			resolveSanityMeta(loaderData?.seo, {
 				title: "Quiénes Somos",
@@ -30,7 +32,8 @@ export const Route = createFileRoute("/about")({
 			}),
 		);
 	},
-	loader: async ({ context }) => {
+	// @ts-expect-error — TanStack Start v1 circular SSR type inference; loader is correct at runtime
+	loader: async ({ context }): Promise<{ seo: SeoMetadata | null }> => {
 		const page = await context.queryClient.ensureQueryData(
 			aboutPageQueryOptions(),
 		);
@@ -38,33 +41,6 @@ export const Route = createFileRoute("/about")({
 	},
 	component: AboutPageComponent,
 });
-
-const _milestones = [
-	{
-		year: "1985",
-		title: "Los Inicios",
-		description:
-			"Nuestra familia comienza a trabajar en las minas de Muzo, aprendiendo el oficio de generación en generación.",
-	},
-	{
-		year: "1998",
-		title: "Primera Exportación",
-		description:
-			"Realizamos nuestra primera exportación internacional, llevando esmeraldas colombianas a Europa y Asia.",
-	},
-	{
-		year: "2010",
-		title: "Certificación Internacional",
-		description:
-			"Obtenemos certificaciones internacionales de calidad y autenticidad para todas nuestras piedras.",
-	},
-	{
-		year: "2020",
-		title: "Era Digital",
-		description:
-			"Lanzamos nuestra plataforma digital para acercar las esmeraldas colombianas al mundo entero.",
-	},
-];
 
 const processSteps = [
 	{

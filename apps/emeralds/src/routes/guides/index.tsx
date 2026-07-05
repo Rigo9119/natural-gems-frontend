@@ -97,7 +97,12 @@ function GuidesIndexPage() {
 							const coverUrl = guide.coverImage?.asset?.url
 								? guide.coverImage.asset.url
 								: guide.coverImage
-									? urlFor(guide.coverImage).width(600).height(400).url()
+									? urlFor(guide.coverImage)
+											.width(600)
+											.height(400)
+											.auto("format")
+											.quality(80)
+											.url()
 									: null;
 
 							return (

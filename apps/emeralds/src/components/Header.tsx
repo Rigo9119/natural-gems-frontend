@@ -1,10 +1,10 @@
-import { Header as SharedHeader } from "@natura-gems/ui";
 import type { NavItem } from "@natura-gems/ui";
+import { Header as SharedHeader } from "@natura-gems/ui";
 import { useState } from "react";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { COMPANY_NAME } from "@/lib/constants";
-import { useCartStore, selectTotalItems } from "@/store/cartStore";
+import { selectTotalItems, useCartStore } from "@/store/cartStore";
 
 export type { NavItem };
 

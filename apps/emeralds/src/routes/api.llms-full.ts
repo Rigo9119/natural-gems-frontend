@@ -1,13 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { fetchSiteSettings, guidesListQueryOptions } from "@/lib/sanity/sanity-queries"
-import { sanityClient } from "@/lib/sanity/sanity"
-import type { GuidePost } from "@/lib/sanity/sanity-types"
-import {
-	COMPANY_LOCATION,
-	COMPANY_NAME,
-	INSTAGRAM_URL,
-	WHATSAPP_NUMBER,
-} from "@/lib/constants"
+import { createFileRoute } from "@tanstack/react-router";
+import { COMPANY_NAME, WHATSAPP_NUMBER } from "@/lib/constants";
+import { sanityClient } from "@/lib/sanity/sanity";
+import { fetchSiteSettings } from "@/lib/sanity/sanity-queries";
+import type { GuidePost } from "@/lib/sanity/sanity-types";
 
 async function fetchGuidesList(): Promise<GuidePost[]> {
 	try {
@@ -15,10 +10,10 @@ async function fetchGuidesList(): Promise<GuidePost[]> {
 			`*[_type == "guide"] | order(publishedAt desc) {
 				_id, title, slug, category, publishedAt, author, metaDescription
 			}`,
-		)
-		return data ?? []
+		);
+		return data ?? [];
 	} catch {
-		return []
+		return [];
 	}
 }
 
@@ -26,64 +21,64 @@ export const Route = createFileRoute("/api/llms-full")({
 	server: {
 		handlers: {
 			GET: async () => {
-		const [settings, guides] = await Promise.all([
-			fetchSiteSettings(),
-			fetchGuidesList(),
-		])
+				const [settings, guides] = await Promise.all([
+					fetchSiteSettings(),
+					fetchGuidesList(),
+				]);
 
-		const name = settings?.companyName ?? COMPANY_NAME
-		const tagline =
-			settings?.tagline ??
-			"Colombian emerald dealer and artisan jewelry brand based in Bogota, Colombia. Family-owned with 3+ generations of experience in the emerald trade, sourcing directly from the mines of Muzo, Boyacá."
-		const about =
-			settings?.about ??
-			`${name} is a family-owned business with 3+ generations of experience sourcing and selling Colombian emeralds.`
-		const whatsapp = settings?.whatsapp ?? `+${WHATSAPP_NUMBER}`
-		const phone = settings?.phone ?? whatsapp
-		const email = settings?.email ?? "info@naturagems.co"
-		const street =
-			settings?.address?.street ?? "Centro Internacional de Esmeraldas, Oficina 301"
-		const city = settings?.address?.city ?? "Bogota"
-		const country = settings?.address?.country ?? "Colombia"
-		const location = `${city}, ${country}`
-		const instagram =
-			settings?.socialInstagram
-				? `@${settings.socialInstagram.replace(/^@/, "")} (https://instagram.com/${settings.socialInstagram.replace(/^@/, "")})`
-				: `@naturagems (https://instagram.com/naturagems)`
+				const name = settings?.companyName ?? COMPANY_NAME;
+				const tagline =
+					settings?.tagline ??
+					"Colombian emerald dealer and artisan jewelry brand based in Bogota, Colombia. Family-owned with 3+ generations of experience in the emerald trade, sourcing directly from the mines of Muzo, Boyacá.";
+				const about =
+					settings?.about ??
+					`${name} is a family-owned business with 3+ generations of experience sourcing and selling Colombian emeralds.`;
+				const whatsapp = settings?.whatsapp ?? `+${WHATSAPP_NUMBER}`;
+				const phone = settings?.phone ?? whatsapp;
+				const email = settings?.email ?? "info@naturagems.co";
+				const street =
+					settings?.address?.street ??
+					"Centro Internacional de Esmeraldas, Oficina 301";
+				const city = settings?.address?.city ?? "Bogota";
+				const country = settings?.address?.country ?? "Colombia";
+				const location = `${city}, ${country}`;
+				const instagram = settings?.socialInstagram
+					? `@${settings.socialInstagram.replace(/^@/, "")} (https://instagram.com/${settings.socialInstagram.replace(/^@/, "")})`
+					: `@naturagems (https://instagram.com/naturagems)`;
 
-		const hours =
-			settings?.businessHours && settings.businessHours.length > 0
-				? settings.businessHours
-						.map((h) => `- ${h.days}: ${h.hours}`)
-						.join("\n")
-				: "- Monday to Friday: 9:00 AM – 6:00 PM (Colombia Time, UTC-5)\n- Saturday: 10:00 AM – 2:00 PM\n- Sunday: Closed"
+				const hours =
+					settings?.businessHours && settings.businessHours.length > 0
+						? settings.businessHours
+								.map((h) => `- ${h.days}: ${h.hours}`)
+								.join("\n")
+						: "- Monday to Friday: 9:00 AM – 6:00 PM (Colombia Time, UTC-5)\n- Saturday: 10:00 AM – 2:00 PM\n- Sunday: Closed";
 
-		const valuesSection =
-			settings?.values && settings.values.length > 0
-				? settings.values
-						.map((v) => `- **${v.title}**: ${v.description}`)
-						.join("\n")
-				: `- **Authenticity**: Every emerald comes with verified certificate and origin documentation
+				const valuesSection =
+					settings?.values && settings.values.length > 0
+						? settings.values
+								.map((v) => `- **${v.title}**: ${v.description}`)
+								.join("\n")
+						: `- **Authenticity**: Every emerald comes with verified certificate and origin documentation
 - **Excellence**: Only stones meeting highest international quality standards are selected
 - **Tradition**: Three generations of knowledge and passion for emeralds back every piece
-- **Transparency**: All treatments disclosed; no hidden information`
+- **Transparency**: All treatments disclosed; no hidden information`;
 
-		// Editorial section: published guides from Sanity
-		const guidesSection =
-			guides.length > 0
-				? `\n---\n\n## Expert Guides & Resources\n\n${guides
-						.map((g) => {
-							const date = g.publishedAt
-								? new Date(g.publishedAt).toISOString().slice(0, 10)
-								: ""
-							return `### ${g.title}${date ? ` (${date})` : ""}
+				// Editorial section: published guides from Sanity
+				const guidesSection =
+					guides.length > 0
+						? `\n---\n\n## Expert Guides & Resources\n\n${guides
+								.map((g) => {
+									const date = g.publishedAt
+										? new Date(g.publishedAt).toISOString().slice(0, 10)
+										: "";
+									return `### ${g.title}${date ? ` (${date})` : ""}
 ${g.metaDescription ?? ""}
-URL: https://naturagems.co/guides/${g.slug.current}`
-						})
-						.join("\n\n")}\n`
-				: ""
+URL: https://naturagems.co/guides/${g.slug.current}`;
+								})
+								.join("\n\n")}\n`
+						: "";
 
-		const body = `# ${name} — Complete Business & Expert Reference
+				const body = `# ${name} — Complete Business & Expert Reference
 
 > ${tagline}
 
@@ -205,15 +200,16 @@ ${hours}
 
 ## Values
 ${valuesSection}
-`
+`;
 
-		return new Response(body, {
-				headers: {
-					"Content-Type": "text/plain; charset=utf-8",
-					"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-				},
-			})
-		},
+				return new Response(body, {
+					headers: {
+						"Content-Type": "text/plain; charset=utf-8",
+						"Cache-Control":
+							"public, max-age=3600, stale-while-revalidate=86400",
+					},
+				});
+			},
 		},
 	},
-})
+});

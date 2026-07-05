@@ -1,6 +1,6 @@
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
@@ -10,7 +10,17 @@ import { guideBySlugQueryOptions } from "@/lib/sanity/sanity-queries";
 import { articleJsonLd, breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
-	head: ({ loaderData }) => {
+	head: ({ loaderData: _ld }) => {
+		const loaderData = _ld as
+			| {
+					slug: string;
+					title: string;
+					metaDescription: string | undefined;
+					publishedAt: string | undefined;
+					author: string | undefined;
+					coverImageUrl: string | undefined;
+			  }
+			| undefined;
 		return buildMeta({
 			title: loaderData?.title,
 			description: loaderData?.metaDescription,
@@ -36,7 +46,18 @@ export const Route = createFileRoute("/guides/$slug")({
 				: [],
 		});
 	},
-	loader: async ({ context, params }) => {
+	// @ts-expect-error — TanStack Start v1 circular SSR type inference; loader is correct at runtime
+	loader: async ({
+		context,
+		params,
+	}): Promise<{
+		slug: string;
+		title: string;
+		metaDescription: string | undefined;
+		publishedAt: string | undefined;
+		author: string | undefined;
+		coverImageUrl: string | undefined;
+	}> => {
 		const guide = await context.queryClient.ensureQueryData(
 			guideBySlugQueryOptions(params.slug),
 		);
@@ -133,7 +154,7 @@ const portableTextComponents: PortableTextComponents = {
 			const src = value?.asset?.url
 				? value.asset.url
 				: value?.asset
-					? urlFor(value.asset).width(800).url()
+					? urlFor(value.asset).width(800).auto("format").quality(80).url()
 					: null;
 
 			if (!src) return null;
@@ -177,7 +198,7 @@ function GuideDetailPage() {
 	const coverUrl = guide.coverImage?.asset?.url
 		? guide.coverImage.asset.url
 		: guide.coverImage
-			? urlFor(guide.coverImage).width(1200).height(630).url()
+			? urlFor(guide.coverImage).width(1200).height(630).auto("format").url()
 			: null;
 
 	return (

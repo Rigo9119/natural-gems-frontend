@@ -5,28 +5,28 @@ import {
 	getSortedRowModel,
 	type SortingState,
 	useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, Check, ShoppingCart, X } from "lucide-react"
-import { useMemo, useState } from "react"
-import { OptimizedImage } from "@/components/ui/optimized-image"
-import type { EmeraldWithImage } from "@/lib/supabase-queries"
-import { useCartStore } from "@/store/cartStore"
-import { useCompareStore } from "@/store/compareStore"
+} from "@tanstack/react-table";
+import { ArrowUpDown, Check, ShoppingCart, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import type { EmeraldWithImage } from "@/lib/supabase-queries";
+import { useCartStore } from "@/store/cartStore";
+import { useCompareStore } from "@/store/compareStore";
 
-type AttributeKey = "price" | "carats" | "origin" | "clarity" | "cut"
+type AttributeKey = "price" | "carats" | "origin" | "clarity" | "cut";
 
 interface CompareRow {
-	attribute: string
-	attributeKey: AttributeKey
-	[productId: string]: string | number | AttributeKey
+	attribute: string;
+	attributeKey: AttributeKey;
+	[productId: string]: string | number | AttributeKey;
 }
 
 const formatValue = (key: AttributeKey, value: unknown): string => {
-	if (value === undefined || value === null) return "—"
-	if (key === "price") return `$${(value as number).toLocaleString()}`
-	if (key === "carats") return `${value} ct`
-	return String(value)
-}
+	if (value === undefined || value === null) return "—";
+	if (key === "price") return `$${(value as number).toLocaleString()}`;
+	if (key === "carats") return `${value} ct`;
+	return String(value);
+};
 
 const attributeLabels: Record<AttributeKey, string> = {
 	price: "Precio",
@@ -34,14 +34,14 @@ const attributeLabels: Record<AttributeKey, string> = {
 	origin: "Origen",
 	clarity: "Claridad",
 	cut: "Corte",
-}
+};
 
 export function CompareTable() {
-	const { compareItems, removeFromCompare } = useCompareStore()
-	const { addToCart, isInCart } = useCartStore()
-	const [sorting, setSorting] = useState<SortingState>([])
+	const { compareItems, removeFromCompare } = useCompareStore();
+	const { addToCart, isInCart } = useCartStore();
+	const [sorting, setSorting] = useState<SortingState>([]);
 
-	const columnHelper = createColumnHelper<CompareRow>()
+	const columnHelper = createColumnHelper<CompareRow>();
 
 	const columns = useMemo(() => {
 		const cols = [
@@ -62,7 +62,7 @@ export function CompareTable() {
 					</span>
 				),
 			}),
-		]
+		];
 
 		compareItems.forEach((product) => {
 			cols.push(
@@ -98,13 +98,14 @@ export function CompareTable() {
 						</span>
 					),
 				}),
-			)
-		})
+			);
+		});
 
 		// Add empty columns for remaining slots
-		const emptySlots = 4 - compareItems.length
+		const emptySlots = 4 - compareItems.length;
 		for (let i = 0; i < emptySlots; i++) {
 			cols.push(
+				// @ts-expect-error — DisplayColumnDef<unknown> is not assignable to inferred AccessorKeyColumnDef<string> but correct at runtime
 				columnHelper.display({
 					id: `empty_${i}`,
 					header: () => (
@@ -120,11 +121,11 @@ export function CompareTable() {
 						</span>
 					),
 				}),
-			)
+			);
 		}
 
-		return cols
-	}, [compareItems, columnHelper, removeFromCompare])
+		return cols;
+	}, [compareItems, columnHelper, removeFromCompare]);
 
 	const data = useMemo<CompareRow[]>(() => {
 		const attributes: AttributeKey[] = [
@@ -133,24 +134,24 @@ export function CompareTable() {
 			"origin",
 			"clarity",
 			"cut",
-		]
+		];
 
 		return attributes.map((attr) => {
 			const row: CompareRow = {
 				attribute: attributeLabels[attr],
 				attributeKey: attr,
-			}
+			};
 
 			compareItems.forEach((product) => {
 				row[`product_${product.id}`] = formatValue(
 					attr,
 					product[attr as keyof EmeraldWithImage],
-				)
-			})
+				);
+			});
 
-			return row
-		})
-	}, [compareItems])
+			return row;
+		});
+	}, [compareItems]);
 
 	const table = useReactTable({
 		data,
@@ -159,7 +160,7 @@ export function CompareTable() {
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-	})
+	});
 
 	return (
 		<>
@@ -193,27 +194,30 @@ export function CompareTable() {
 							</div>
 						</div>
 						<dl className="space-y-2">
-							{(["price", "carats", "origin", "clarity", "cut"] as AttributeKey[]).map(
-								(attr) => (
-									<div
-										key={attr}
-										className="flex items-center justify-between border-b border-brand-primary-dark/5 py-1.5 last:border-0"
-									>
-										<dt className="text-xs text-brand-primary-dark/50">
-											{attributeLabels[attr]}
-										</dt>
-										<dd className="text-sm font-medium text-brand-primary-dark">
-											{formatValue(
-												attr,
-												product[attr as keyof EmeraldWithImage],
-											)}
-										</dd>
-									</div>
-								),
-							)}
+							{(
+								[
+									"price",
+									"carats",
+									"origin",
+									"clarity",
+									"cut",
+								] as AttributeKey[]
+							).map((attr) => (
+								<div
+									key={attr}
+									className="flex items-center justify-between border-b border-brand-primary-dark/5 py-1.5 last:border-0"
+								>
+									<dt className="text-xs text-brand-primary-dark/50">
+										{attributeLabels[attr]}
+									</dt>
+									<dd className="text-sm font-medium text-brand-primary-dark">
+										{formatValue(attr, product[attr as keyof EmeraldWithImage])}
+									</dd>
+								</div>
+							))}
 						</dl>
 						{(() => {
-							const inCart = isInCart(product.id)
+							const inCart = isInCart(product.id);
 							return (
 								<button
 									type="button"
@@ -226,12 +230,18 @@ export function CompareTable() {
 									}`}
 								>
 									{inCart ? (
-										<><Check className="h-3.5 w-3.5" />En carrito</>
+										<>
+											<Check className="h-3.5 w-3.5" />
+											En carrito
+										</>
 									) : (
-										<><ShoppingCart className="h-3.5 w-3.5" />Añadir al carrito</>
+										<>
+											<ShoppingCart className="h-3.5 w-3.5" />
+											Añadir al carrito
+										</>
 									)}
 								</button>
-							)
+							);
 						})()}
 					</div>
 				))}
@@ -280,9 +290,7 @@ export function CompareTable() {
 									<td
 										key={cell.id}
 										className={
-											j === 0
-												? "px-4 py-3 text-left"
-												: "px-4 py-3 text-center"
+											j === 0 ? "px-4 py-3 text-left" : "px-4 py-3 text-center"
 										}
 									>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -297,7 +305,7 @@ export function CompareTable() {
 								Carrito
 							</td>
 							{compareItems.map((product) => {
-								const inCart = isInCart(product.id)
+								const inCart = isInCart(product.id);
 								return (
 									<td key={product.id} className="px-4 py-4 text-center">
 										<button
@@ -311,15 +319,22 @@ export function CompareTable() {
 											}`}
 										>
 											{inCart ? (
-												<><Check className="h-3 w-3" />En carrito</>
+												<>
+													<Check className="h-3 w-3" />
+													En carrito
+												</>
 											) : (
-												<><ShoppingCart className="h-3 w-3" />Añadir al carrito</>
+												<>
+													<ShoppingCart className="h-3 w-3" />
+													Añadir al carrito
+												</>
 											)}
 										</button>
 									</td>
-								)
+								);
 							})}
 							{Array.from({ length: 4 - compareItems.length }).map((_, i) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: empty placeholder cells have no stable identity; index is the correct key
 								<td key={`empty_cart_${i}`} />
 							))}
 						</tr>
@@ -327,5 +342,5 @@ export function CompareTable() {
 				</table>
 			</div>
 		</>
-	)
+	);
 }

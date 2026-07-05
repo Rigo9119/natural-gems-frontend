@@ -7,7 +7,7 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { useCartStore, selectTotalPrice } from "@/store/cartStore";
+import { selectTotalPrice, useCartStore } from "@/store/cartStore";
 
 interface CartDrawerProps {
 	open: boolean;
@@ -144,7 +144,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 							</div>
 
 							{/* CTAs */}
-											<Link
+							<Link
 								to="/emeralds/checkout"
 								onClick={onClose}
 								className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-primary-dark px-6 py-3 text-sm font-medium text-brand-primary-lighter transition-colors hover:bg-brand-primary-dark/85"

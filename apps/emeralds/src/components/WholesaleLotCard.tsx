@@ -1,15 +1,15 @@
-import { ShoppingCart } from "lucide-react"
-import { OptimizedImage } from "@/components/ui/optimized-image"
-import type { EmeraldWithImage } from "@/lib/supabase-queries"
-import { useCartStore } from "@/store/cartStore"
+import { ShoppingCart } from "lucide-react";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import type { EmeraldWithImage } from "@/lib/supabase-queries";
+import { useCartStore } from "@/store/cartStore";
 
 interface WholesaleLotCardProps {
-	lot: EmeraldWithImage
+	lot: EmeraldWithImage;
 }
 
 export function WholesaleLotCard({ lot }: WholesaleLotCardProps) {
-	const { addToCart, isInCart } = useCartStore()
-	const inCart = isInCart(lot.id)
+	const { addToCart, isInCart } = useCartStore();
+	const inCart = isInCart(lot.id);
 
 	return (
 		<article className="group cursor-pointer">
@@ -38,7 +38,9 @@ export function WholesaleLotCard({ lot }: WholesaleLotCardProps) {
 				</dd>
 				<div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1">
 					<dt className="sr-only">Quilates totales</dt>
-					<dd className="text-sm text-brand-primary-dark/70">{lot.carats} ct</dd>
+					<dd className="text-sm text-brand-primary-dark/70">
+						{lot.carats} ct
+					</dd>
 					<dt className="sr-only">Origen</dt>
 					<dd className="text-sm text-brand-primary-dark/70">{lot.origin}</dd>
 					<dt className="sr-only">Claridad</dt>
@@ -63,5 +65,5 @@ export function WholesaleLotCard({ lot }: WholesaleLotCardProps) {
 				{inCart ? "En el carrito" : "Añadir al pedido"}
 			</button>
 		</article>
-	)
+	);
 }

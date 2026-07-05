@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface FeatureGridProps {
 	subTitle: string;
@@ -16,7 +16,9 @@ export default function FeatureGrid({
 	children,
 }: FeatureGridProps) {
 	return (
-		<section className={`${backgroundColor ?? "bg-brand-primary-lighter"} py-16 sm:py-24`}>
+		<section
+			className={`${backgroundColor ?? "bg-brand-primary-lighter"} py-16 sm:py-24`}
+		>
 			<div className="mx-auto max-w-7xl px-6 sm:px-8">
 				<div className="mb-12 text-center">
 					<p className="mb-3 font-body text-xs tracking-[0.2em] uppercase text-brand-primary-dark/60 sm:text-sm">

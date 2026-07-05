@@ -1,12 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { useQuery } from "@tanstack/react-query"
-import { CheckCircle } from "lucide-react"
-import { useEffect } from "react"
-import { z } from "zod"
-import { buildMeta } from "@/lib/seo"
-import { useCartStore } from "@/store/cartStore"
-import type { OrderWithItems } from "@/lib/supabase-queries"
-import { OrderStatusTimeline } from "@/components/OrderStatusTimeline"
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { CheckCircle } from "lucide-react";
+import { useEffect } from "react";
+import { z } from "zod";
+import { OrderStatusTimeline } from "@/components/OrderStatusTimeline";
+import { buildMeta } from "@/lib/seo";
+import type { OrderWithItems } from "@/lib/supabase-queries";
+import { useCartStore } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/payment-success")({
 	validateSearch: z.object({ order_id: z.string() }),
@@ -18,24 +18,28 @@ export const Route = createFileRoute("/emeralds/payment-success")({
 			noIndex: true,
 		}),
 	component: CheckoutSuccessPage,
-})
+});
 
 function CheckoutSuccessPage() {
-	const { order_id } = Route.useSearch()
-	const clearCart = useCartStore((s) => s.clearCart)
+	const { order_id } = Route.useSearch();
+	const clearCart = useCartStore((s) => s.clearCart);
 
 	useEffect(() => {
-		clearCart()
-	}, [clearCart])
+		clearCart();
+	}, [clearCart]);
 
-	const { data: order, isLoading, isError } = useQuery({
+	const {
+		data: order,
+		isLoading,
+		isError,
+	} = useQuery({
 		queryKey: ["order", order_id],
 		queryFn: async () => {
-			const res = await fetch(`/api/orders/${order_id}`)
-			if (!res.ok) throw new Error("Order not found")
-			return res.json() as Promise<OrderWithItems>
+			const res = await fetch(`/api/orders/${order_id}`);
+			if (!res.ok) throw new Error("Order not found");
+			return res.json() as Promise<OrderWithItems>;
 		},
-	})
+	});
 
 	return (
 		<div className="min-h-screen bg-brand-surface flex items-center justify-center px-4 py-16">
@@ -126,5 +130,5 @@ function CheckoutSuccessPage() {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

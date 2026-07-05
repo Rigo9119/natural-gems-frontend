@@ -1,18 +1,18 @@
-import { CheckCircle, Circle, XCircle } from "lucide-react"
+import { CheckCircle, Circle, XCircle } from "lucide-react";
 
-type Props = { status: string }
+type Props = { status: string };
 
 type Step = {
-	key: string
-	label: string
-}
+	key: string;
+	label: string;
+};
 
 const STEPS: Step[] = [
 	{ key: "confirmed", label: "Confirmado" },
 	{ key: "in_progress", label: "Preparando envío" },
 	{ key: "shipped", label: "Enviado" },
 	{ key: "delivered", label: "Entregado" },
-]
+];
 
 const STATUS_ORDER: Record<string, number> = {
 	pending: -1,
@@ -20,7 +20,7 @@ const STATUS_ORDER: Record<string, number> = {
 	in_progress: 1,
 	shipped: 2,
 	delivered: 3,
-}
+};
 
 export function OrderStatusTimeline({ status }: Props) {
 	if (status === "cancelled") {
@@ -29,21 +29,24 @@ export function OrderStatusTimeline({ status }: Props) {
 				<XCircle className="h-5 w-5 text-red-500 shrink-0" />
 				<p className="text-sm font-medium text-red-700">Pedido cancelado</p>
 			</div>
-		)
+		);
 	}
 
-	const currentIndex = STATUS_ORDER[status] ?? 0
+	const currentIndex = STATUS_ORDER[status] ?? 0;
 
 	return (
 		<div className="w-full">
 			<ol className="flex items-start justify-between gap-1">
 				{STEPS.map((step, idx) => {
-					const isCompleted = idx < currentIndex
-					const isCurrent = idx === currentIndex
-					const isFuture = idx > currentIndex
+					const isCompleted = idx < currentIndex;
+					const isCurrent = idx === currentIndex;
+					const isFuture = idx > currentIndex;
 
 					return (
-						<li key={step.key} className="flex flex-1 flex-col items-center gap-1.5">
+						<li
+							key={step.key}
+							className="flex flex-1 flex-col items-center gap-1.5"
+						>
 							{/* connector + icon row */}
 							<div className="relative flex w-full items-center">
 								{/* left connector */}
@@ -86,9 +89,9 @@ export function OrderStatusTimeline({ status }: Props) {
 								{step.label}
 							</span>
 						</li>
-					)
+					);
 				})}
 			</ol>
 		</div>
-	)
+	);
 }

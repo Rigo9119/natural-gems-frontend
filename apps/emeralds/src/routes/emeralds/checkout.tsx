@@ -295,7 +295,10 @@ function CheckoutPage() {
 							</div>
 
 							{mutation.isError && (
-								<p className="rounded-xl bg-red-50 p-4 text-sm text-red-600">
+								<p
+									role="alert"
+									className="rounded-xl bg-red-50 p-4 text-sm text-red-600"
+								>
 									{mutation.error instanceof Error &&
 									mutation.error.message ===
 										"Este código ya fue usado con este correo"

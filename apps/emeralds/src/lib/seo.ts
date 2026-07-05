@@ -1,10 +1,4 @@
-import {
-	COMPANY_LOCATION,
-	COMPANY_NAME,
-	INSTAGRAM_URL,
-	WHATSAPP_NUMBER,
-	WHATSAPP_URL,
-} from "./constants";
+import { COMPANY_NAME, INSTAGRAM_URL, WHATSAPP_NUMBER } from "./constants";
 
 export const SITE_URL = "https://naturagems.co";
 export const SITE_NAME = COMPANY_NAME;
@@ -111,39 +105,39 @@ export function resolveSanityMeta(
 // When it doesn't, hardcoded constants serve as fallback.
 
 export interface SiteSettingsOverride {
-	companyName?: string
-	whatsapp?: string
-	phone?: string
-	email?: string
-	about?: string
+	companyName?: string;
+	whatsapp?: string;
+	phone?: string;
+	email?: string;
+	about?: string;
 	address?: {
-		street?: string
-		city?: string
-		region?: string
-		country?: string
-		postalCode?: string
-	}
+		street?: string;
+		city?: string;
+		region?: string;
+		country?: string;
+		postalCode?: string;
+	};
 	businessHours?: {
-		dayOfWeek?: string[]
-		opens?: string
-		closes?: string
-	}[]
-	socialInstagram?: string
-	socialFacebook?: string
-	socialLinkedin?: string
-	defaultOgImage?: { asset?: { url?: string } }
-	priceRange?: string
+		dayOfWeek?: string[];
+		opens?: string;
+		closes?: string;
+	}[];
+	socialInstagram?: string;
+	socialFacebook?: string;
+	socialLinkedin?: string;
+	defaultOgImage?: { asset?: { url?: string } };
+	priceRange?: string;
 }
 
 export function organizationJsonLd(s?: SiteSettingsOverride) {
-	const name = s?.companyName ?? SITE_NAME
-	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`
+	const name = s?.companyName ?? SITE_NAME;
+	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`;
 	const instagram = s?.socialInstagram
 		? `https://instagram.com/${s.socialInstagram.replace(/^@/, "")}`
-		: INSTAGRAM_URL
-	const sameAs = [instagram, `https://wa.me/${telephone.replace(/\D/g, "")}`]
-	if (s?.socialFacebook) sameAs.push(s.socialFacebook)
-	if (s?.socialLinkedin) sameAs.push(s.socialLinkedin)
+		: INSTAGRAM_URL;
+	const sameAs = [instagram, `https://wa.me/${telephone.replace(/\D/g, "")}`];
+	if (s?.socialFacebook) sameAs.push(s.socialFacebook);
+	if (s?.socialLinkedin) sameAs.push(s.socialLinkedin);
 
 	return {
 		"@context": "https://schema.org",
@@ -153,7 +147,9 @@ export function organizationJsonLd(s?: SiteSettingsOverride) {
 		logo: `${SITE_URL}/logo512.png`,
 		foundingDate: "1985",
 		foundingLocation: { "@type": "Place", name: "Muzo, Boyaca, Colombia" },
-		description: s?.about ?? "Familia colombiana con tres generaciones de experiencia en el comercio de esmeraldas, directamente desde las minas de Muzo, Chivor y Coscuez.",
+		description:
+			s?.about ??
+			"Familia colombiana con tres generaciones de experiencia en el comercio de esmeraldas, directamente desde las minas de Muzo, Chivor y Coscuez.",
 		sameAs,
 		contactPoint: {
 			"@type": "ContactPoint",
@@ -176,17 +172,18 @@ export function organizationJsonLd(s?: SiteSettingsOverride) {
 }
 
 export function localBusinessJsonLd(s?: SiteSettingsOverride) {
-	const name = s?.companyName ?? SITE_NAME
-	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`
-	const email = s?.email ?? "info@naturagems.co"
-	const street = s?.address?.street ?? "Centro Internacional de Esmeraldas, Oficina 301"
-	const city = s?.address?.city ?? "Bogota"
-	const region = s?.address?.region ?? "Cundinamarca"
-	const country = s?.address?.country ?? "Colombia"
-	const postalCode = s?.address?.postalCode
-	const priceRange = s?.priceRange ?? "$$$"
-	const ogImage = s?.defaultOgImage?.asset?.url ?? `${SITE_URL}/og-image.jpg`
-	const mapQuery = `${street}, ${city}, ${country}`
+	const name = s?.companyName ?? SITE_NAME;
+	const telephone = s?.whatsapp ?? `+${WHATSAPP_NUMBER}`;
+	const email = s?.email ?? "info@naturagems.co";
+	const street =
+		s?.address?.street ?? "Centro Internacional de Esmeraldas, Oficina 301";
+	const city = s?.address?.city ?? "Bogota";
+	const region = s?.address?.region ?? "Cundinamarca";
+	const country = s?.address?.country ?? "Colombia";
+	const postalCode = s?.address?.postalCode;
+	const priceRange = s?.priceRange ?? "$$$";
+	const ogImage = s?.defaultOgImage?.asset?.url ?? `${SITE_URL}/og-image.jpg`;
+	const mapQuery = `${street}, ${city}, ${country}`;
 
 	const openingHours =
 		s?.businessHours && s.businessHours.length > 0
@@ -211,7 +208,7 @@ export function localBusinessJsonLd(s?: SiteSettingsOverride) {
 						opens: "10:00",
 						closes: "14:00",
 					},
-				]
+				];
 
 	return {
 		"@context": "https://schema.org",
@@ -287,6 +284,37 @@ export function howToJsonLd(opts: {
 			name: s.name,
 			text: s.text,
 		})),
+	};
+}
+
+// ── Product JSON-LD ───────────────────────────────────────────────────────────
+
+export function productJsonLd(p: {
+	name: string;
+	description?: string;
+	image?: string;
+	price: number;
+	currency: string;
+	availability: "InStock" | "OutOfStock";
+	sku: string;
+	url: string;
+}) {
+	return {
+		"@context": "https://schema.org",
+		"@type": "Product",
+		name: p.name,
+		description: p.description ?? "",
+		image: p.image ?? DEFAULT_OG_IMAGE,
+		sku: p.sku,
+		brand: { "@type": "Brand", name: SITE_NAME },
+		offers: {
+			"@type": "Offer",
+			price: p.price,
+			priceCurrency: p.currency,
+			availability: `https://schema.org/${p.availability}`,
+			url: p.url,
+			seller: { "@type": "Organization", name: SITE_NAME },
+		},
 	};
 }
 

@@ -1,5 +1,5 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
 	Award,
 	Check,
@@ -10,27 +10,43 @@ import {
 	ShoppingCart,
 	Sparkles,
 	Truck,
-} from "lucide-react"
-import { AppBreadcrumb } from "@/components/AppBreadcrumb"
-import ProductCard from "@/components/ProductCard"
-import { OptimizedImage } from "@/components/ui/optimized-image"
-import { WHATSAPP_NUMBER } from "@/lib/constants"
+} from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
+import ProductCard from "@/components/ProductCard";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { WHATSAPP_NUMBER } from "@/lib/constants";
+import {
+	breadcrumbJsonLd,
+	buildMeta,
+	productJsonLd,
+	SITE_URL,
+} from "@/lib/seo";
 import {
 	emeraldBySlugQueryOptions,
 	retailEmeraldsQueryOptions,
-} from "@/lib/supabase-queries"
-import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
-import { useCartStore } from "@/store/cartStore"
+} from "@/lib/supabase-queries";
+import { useCartStore } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/shop/$slug")({
-	head: ({ loaderData }) => {
-		const p = loaderData as
-			| { name?: string; description?: string; slug?: string }
-			| undefined
+	head: ({ loaderData: _ld }) => {
+		const p = _ld as
+			| {
+					name: string;
+					description: string | null;
+					slug: string;
+					price: number;
+					currency: string;
+					status: string;
+					image_url: string | null;
+					id: string;
+			  }
+			| undefined;
+		const path = `/emeralds/shop/${p?.slug ?? ""}`;
 		return buildMeta({
 			title: p?.name,
 			description: p?.description ?? undefined,
-			path: `/emeralds/shop/${p?.slug ?? ""}`,
+			path,
+			ogImage: p?.image_url ?? undefined,
 			ogType: "website",
 			jsonLd: p?.name
 				? [
@@ -38,28 +54,56 @@ export const Route = createFileRoute("/emeralds/shop/$slug")({
 							{ name: "Inicio", path: "/" },
 							{ name: "Esmeraldas", path: "/emeralds" },
 							{ name: "Tienda", path: "/emeralds/shop" },
-							{ name: p.name, path: `/emeralds/shop/${p.slug}` },
+							{ name: p.name, path },
 						]),
+						productJsonLd({
+							name: p.name,
+							description: p.description ?? undefined,
+							image: p.image_url ?? undefined,
+							price: p.price,
+							currency: p.currency,
+							availability: p.status === "available" ? "InStock" : "OutOfStock",
+							sku: p.id,
+							url: `${SITE_URL}${path}`,
+						}),
 					]
 				: [],
-		})
+		});
 	},
-	loader: async ({ context, params }) => {
+	// @ts-expect-error — TanStack Start v1 circular SSR type inference; loader is correct at runtime
+	loader: async ({
+		context,
+		params,
+	}): Promise<{
+		name: string;
+		description: string | null;
+		slug: string;
+		price: number;
+		currency: string;
+		status: string;
+		image_url: string | null;
+		id: string;
+	}> => {
 		const [product] = await Promise.all([
 			context.queryClient.ensureQueryData(
 				emeraldBySlugQueryOptions(params.slug),
 			),
 			context.queryClient.ensureQueryData(retailEmeraldsQueryOptions()),
-		])
-		if (!product) throw notFound()
+		]);
+		if (!product) throw notFound();
 		return {
 			name: product.name,
 			description: product.description,
 			slug: product.slug,
-		}
+			price: product.price,
+			currency: product.currency,
+			status: product.status,
+			image_url: product.image_url,
+			id: product.id,
+		};
 	},
 	component: EmeraldDetailPage,
-})
+});
 
 // ── Clarity descriptions ──────────────────────────────────────────────────────
 
@@ -68,14 +112,14 @@ const clarityMeaning: Record<string, string> = {
 	AA: "Claridad excepcional — inclusiones mínimas bajo lupa",
 	A: "Claridad muy buena — inclusiones leves no visibles a simple vista",
 	B: "Claridad estándar — inclusiones características del origen",
-}
+};
 
 const cutMeaning: Record<string, string> = {
 	Emerald: "Corte esmeralda — rectángulo escalonado, resalta el color profundo",
 	Oval: "Corte oval — equilibrio entre brillo y tamaño aparente",
 	Pear: "Corte pera — elegante, ideal para colgantes y aretes",
 	Round: "Corte redondo — máxima simetría y luminosidad",
-}
+};
 
 const originDetail: Record<string, { region: string; characteristic: string }> =
 	{
@@ -95,39 +139,39 @@ const originDetail: Record<string, { region: string; characteristic: string }> =
 			region: "Cundinamarca, Colombia",
 			characteristic: "Verde oscuro excepcional, producción muy limitada",
 		},
-	}
+	};
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 function EmeraldDetailPage() {
-	const { slug } = Route.useParams()
-	const { data: product } = useSuspenseQuery(emeraldBySlugQueryOptions(slug))
-	const { data: allRetail } = useSuspenseQuery(retailEmeraldsQueryOptions())
-	const { addToCart, removeFromCart, isInCart } = useCartStore()
+	const { slug } = Route.useParams();
+	const { data: product } = useSuspenseQuery(emeraldBySlugQueryOptions(slug));
+	const { data: allRetail } = useSuspenseQuery(retailEmeraldsQueryOptions());
+	const { addToCart, removeFromCart, isInCart } = useCartStore();
 
-	if (!product) return null
+	if (!product) return null;
 
-	const inCart = isInCart(product.id)
+	const inCart = isInCart(product.id);
 
-	const origin = originDetail[product.origin]
+	const origin = originDetail[product.origin];
 	const related = allRetail
 		.filter((p) => p.id !== product.id && p.origin === product.origin)
-		.slice(0, 4)
+		.slice(0, 4);
 
 	const waMessage = encodeURIComponent(
 		`Hola, me interesa la ${product.name} (${product.carats} ct, ${product.clarity}) que vi en su tienda. ¿Podría darme más información?`,
-	)
-	const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`
+	);
+	const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`;
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
-		<AppBreadcrumb
-			items={[
-				{ label: "Inicio", href: "/" },
-				{ label: "Tienda", href: "/emeralds/shop" },
-				{ label: product.name },
-			]}
-		/>
+			<AppBreadcrumb
+				items={[
+					{ label: "Inicio", href: "/" },
+					{ label: "Tienda", href: "/emeralds/shop" },
+					{ label: product.name },
+				]}
+			/>
 
 			{/* ── Main grid: image + info ── */}
 			<section className="mx-auto max-w-7xl px-4 py-10 md:px-6 lg:px-8">
@@ -375,5 +419,5 @@ function EmeraldDetailPage() {
 				</section>
 			)}
 		</div>
-	)
+	);
 }

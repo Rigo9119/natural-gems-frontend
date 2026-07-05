@@ -121,34 +121,34 @@ export function guidesListQueryOptions() {
 // ── Site settings (global brand/contact info for JSON-LD, llms.txt, etc.) ─────
 
 export interface SiteSettingsHours {
-	days?: string
-	hours?: string
-	dayOfWeek?: string[]
-	opens?: string
-	closes?: string
+	days?: string;
+	hours?: string;
+	dayOfWeek?: string[];
+	opens?: string;
+	closes?: string;
 }
 
 export interface SiteSettings {
-	companyName?: string
-	tagline?: string
-	about?: string
-	whatsapp?: string
-	phone?: string
-	email?: string
+	companyName?: string;
+	tagline?: string;
+	about?: string;
+	whatsapp?: string;
+	phone?: string;
+	email?: string;
 	address?: {
-		street?: string
-		city?: string
-		region?: string
-		country?: string
-		postalCode?: string
-	}
-	businessHours?: SiteSettingsHours[]
-	values?: { title?: string; description?: string }[]
-	socialInstagram?: string
-	socialFacebook?: string
-	socialLinkedin?: string
-	defaultOgImage?: { asset?: { url?: string } }
-	priceRange?: string
+		street?: string;
+		city?: string;
+		region?: string;
+		country?: string;
+		postalCode?: string;
+	};
+	businessHours?: SiteSettingsHours[];
+	values?: { title?: string; description?: string }[];
+	socialInstagram?: string;
+	socialFacebook?: string;
+	socialLinkedin?: string;
+	defaultOgImage?: { asset?: { url?: string } };
+	priceRange?: string;
 }
 
 export async function fetchSiteSettings(): Promise<SiteSettings | null> {
@@ -170,10 +170,10 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
 				defaultOgImage { asset->{ url } },
 				priceRange
 			}`,
-		)
-		return data
+		);
+		return data;
 	} catch {
-		return null
+		return null;
 	}
 }
 

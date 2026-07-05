@@ -1,11 +1,11 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
-  createRootRouteWithContext,
-  HeadContent,
-  Outlet,
-  Scripts,
-  useRouterState,
+	createRootRouteWithContext,
+	HeadContent,
+	Outlet,
+	Scripts,
+	useRouterState,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { useEffect } from "react";
@@ -20,112 +20,126 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
-  queryClient: QueryClient;
+	queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  beforeLoad: async () => {
-    // Other redirect strategies are possible; see
-    // https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#offline-redirect
-    if (typeof document !== "undefined") {
-      document.documentElement.setAttribute("lang", getLocale());
-    }
-  },
+	beforeLoad: async () => {
+		// Other redirect strategies are possible; see
+		// https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#offline-redirect
+		if (typeof document !== "undefined") {
+			document.documentElement.setAttribute("lang", getLocale());
+		}
+	},
 
-  head: () => {
-    const seo = buildMeta({ jsonLd: [organizationJsonLd()] });
-    return {
-      meta: [
-        { charSet: "utf-8" },
-        {
-          name: "viewport",
-          content: "width=device-width, initial-scale=1",
-        },
-        { name: "theme-color", content: "#3B5B46" },
-        ...seo.meta,
-      ],
-      links: [
-        { rel: "stylesheet", href: appCss },
-        { rel: "icon", href: "/favicon.ico" },
-        { rel: "apple-touch-icon", href: "/logo192.png" },
-        { rel: "manifest", href: "/manifest.json" },
-        ...seo.links,
-      ],
-      scripts: seo.scripts,
-    };
-  },
+	head: () => {
+		const seo = buildMeta({ jsonLd: [organizationJsonLd()] });
+		return {
+			meta: [
+				{ charSet: "utf-8" },
+				{
+					name: "viewport",
+					content: "width=device-width, initial-scale=1",
+				},
+				{ name: "theme-color", content: "#3B5B46" },
+				...seo.meta,
+			],
+			links: [
+				{ rel: "stylesheet", href: appCss },
+				{ rel: "icon", href: "/favicon.ico" },
+				{ rel: "apple-touch-icon", href: "/logo192.png" },
+				{ rel: "manifest", href: "/manifest.json" },
+				{ rel: "preconnect", href: "https://cdn.sanity.io" },
+				{ rel: "preconnect", href: "https://fonts.googleapis.com" },
+				{
+					rel: "preconnect",
+					href: "https://fonts.gstatic.com",
+					crossOrigin: "anonymous",
+				},
+				...seo.links,
+			],
+			scripts: seo.scripts,
+		};
+	},
 
-  component: RootComponent,
-  shellComponent: RootDocument,
+	component: RootComponent,
+	shellComponent: RootDocument,
 });
 
 const jewelryUrl =
-  import.meta.env.VITE_JEWELRY_URL ?? "https://joyeria.naturagems.com";
+	import.meta.env.VITE_JEWELRY_URL ?? "https://joyeria.naturagems.com";
 
 const appNavItems = [
-  { label: "Esmeraldas", href: "/emeralds/shop" },
-  { label: "Blog", href: "/guides" },
-  { label: "Nosotros", href: "/about" },
-  { label: "Contacto", href: "/contact" },
-  {
-    label: "Mi pedido",
-    href: "/emeralds/my-order",
-  },
-  { label: "Joyería", href: jewelryUrl },
+	{ label: "Esmeraldas", href: "/emeralds/shop" },
+	{ label: "Blog", href: "/guides" },
+	{ label: "Nosotros", href: "/about" },
+	{ label: "Contacto", href: "/contact" },
+	{
+		label: "Mi pedido",
+		href: "/emeralds/my-order",
+	},
+	{ label: "Joyería", href: jewelryUrl },
 ];
 
 function RootComponent() {
-  const routerState = useRouterState();
-  const pathname = routerState.location.pathname;
+	const routerState = useRouterState();
+	const pathname = routerState.location.pathname;
 
-  const isLandingPage = pathname === "/" || pathname === "/en";
+	const isLandingPage = pathname === "/" || pathname === "/en";
 
-  // SSR-safe Zustand hydration — runs once on client mount
-  useEffect(() => {
-    useCompareStore.persist.rehydrate();
-    useCartStore.persist.rehydrate();
-  }, []);
+	// SSR-safe Zustand hydration — runs once on client mount
+	useEffect(() => {
+		useCompareStore.persist.rehydrate();
+		useCartStore.persist.rehydrate();
+	}, []);
 
-  if (isLandingPage) {
-    return <Outlet />;
-  }
+	if (isLandingPage) {
+		return <Outlet />;
+	}
 
-  return (
-    <div className="flex min-h-screen flex-col">
-      <Header navItems={appNavItems} />
-      <main id="main-content" className="flex flex-1 flex-col pt-20">
-        <Outlet />
-      </main>
-      <Footer />
-      <WhatsAppFloatingButton />
-    </div>
-  );
+	return (
+		<div className="flex min-h-screen flex-col">
+			<Header navItems={appNavItems} />
+			{/* biome-ignore lint/correctness/useUniqueElementIds: skip-link target requires stable id */}
+			<main id="main-content" className="flex flex-1 flex-col pt-20">
+				<Outlet />
+			</main>
+			<Footer />
+			<WhatsAppFloatingButton />
+		</div>
+	);
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang={getLocale()}>
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        {import.meta.env.DEV && (
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              TanStackQueryDevtools,
-            ]}
-          />
-        )}
-        <Scripts />
-      </body>
-    </html>
-  );
+	return (
+		<html lang={getLocale()}>
+			<head>
+				<HeadContent />
+			</head>
+			<body>
+				<a
+					href="#main-content"
+					className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-brand-primary-dark focus:shadow-lg"
+				>
+					Ir al contenido principal
+				</a>
+				{children}
+				{import.meta.env.DEV && (
+					<TanStackDevtools
+						config={{
+							position: "bottom-right",
+						}}
+						plugins={[
+							{
+								name: "Tanstack Router",
+								render: <TanStackRouterDevtoolsPanel />,
+							},
+							TanStackQueryDevtools,
+						]}
+					/>
+				)}
+				<Scripts />
+			</body>
+		</html>
+	);
 }

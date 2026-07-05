@@ -15,7 +15,10 @@ export default function SubNav({ items }: SubNavProps) {
 		routerState.location.pathname + routerState.location.searchStr;
 
 	return (
-		<nav className="sticky top-20 z-40 bg-brand-primary-dark border-b border-brand-primary-lighter/10">
+		<nav
+			aria-label="Categorías"
+			className="sticky top-20 z-40 bg-brand-primary-dark border-b border-brand-primary-lighter/10"
+		>
 			<div className="max-w-7xl mx-auto px-6 md:px-8">
 				<ul className="flex items-center gap-1 overflow-x-auto scrollbar-hide -mb-px">
 					{items.map((item) => {

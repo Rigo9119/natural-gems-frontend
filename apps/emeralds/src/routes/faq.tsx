@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import {
 	Droplets,
 	Eye,
@@ -12,6 +11,7 @@ import {
 	Sparkles,
 	TrendingUp,
 } from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import {
 	Accordion,
 	AccordionContent,

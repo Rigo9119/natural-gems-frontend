@@ -4,10 +4,10 @@ import {
 	Gem,
 	Heart,
 	Lock,
+	type LucideIcon,
 	Shield,
 	Sparkles,
 	Truck,
-	type LucideIcon,
 } from "lucide-react";
 
 export const iconMap: Record<string, LucideIcon> = {

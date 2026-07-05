@@ -1,36 +1,36 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
-import type { EmeraldWithImage } from "@/lib/supabase-queries"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { EmeraldWithImage } from "@/lib/supabase-queries";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface CartItem {
-	product: EmeraldWithImage
-	quantity: number
+	product: EmeraldWithImage;
+	quantity: number;
 }
 
 export interface AppliedPromo {
-	id: string
-	code: string
-	type: "percentage" | "fixed"
-	value: number
-	discountAmount: number
+	id: string;
+	code: string;
+	type: "percentage" | "fixed";
+	value: number;
+	discountAmount: number;
 }
 
 // ── Store shape ───────────────────────────────────────────────────────────────
 
 interface CartState {
-	items: CartItem[]
-	appliedPromo: AppliedPromo | null
+	items: CartItem[];
+	appliedPromo: AppliedPromo | null;
 	// actions
-	addToCart: (product: EmeraldWithImage) => void
-	removeFromCart: (productId: string) => void
-	updateQuantity: (productId: string, quantity: number) => void
-	clearCart: () => void
-	applyPromo: (promo: AppliedPromo) => void
-	removePromo: () => void
+	addToCart: (product: EmeraldWithImage) => void;
+	removeFromCart: (productId: string) => void;
+	updateQuantity: (productId: string, quantity: number) => void;
+	clearCart: () => void;
+	applyPromo: (promo: AppliedPromo) => void;
+	removePromo: () => void;
 	// helpers
-	isInCart: (productId: string) => boolean
+	isInCart: (productId: string) => boolean;
 }
 
 // ── Store ─────────────────────────────────────────────────────────────────────
@@ -42,27 +42,27 @@ export const useCartStore = create<CartState>()(
 			appliedPromo: null,
 
 			addToCart: (product) => {
-				const { items } = get()
-				if (items.some((i) => i.product.id === product.id)) return
-				set({ items: [...items, { product, quantity: 1 }] })
+				const { items } = get();
+				if (items.some((i) => i.product.id === product.id)) return;
+				set({ items: [...items, { product, quantity: 1 }] });
 			},
 
 			removeFromCart: (productId) => {
 				set((s) => ({
 					items: s.items.filter((i) => i.product.id !== productId),
-				}))
+				}));
 			},
 
 			updateQuantity: (productId, quantity) => {
 				if (quantity <= 0) {
-					get().removeFromCart(productId)
-					return
+					get().removeFromCart(productId);
+					return;
 				}
 				set((s) => ({
 					items: s.items.map((i) =>
 						i.product.id === productId ? { ...i, quantity } : i,
 					),
-				}))
+				}));
 			},
 
 			clearCart: () => set({ items: [], appliedPromo: null }),
@@ -79,18 +79,18 @@ export const useCartStore = create<CartState>()(
 			skipHydration: true,
 		},
 	),
-)
+);
 
 // ── Selectors (always computed fresh from items) ───────────────────────────────
 
 export const selectTotalItems = (s: CartState) =>
-	s.items.reduce((sum, i) => sum + i.quantity, 0)
+	s.items.reduce((sum, i) => sum + i.quantity, 0);
 
 export const selectTotalPrice = (s: CartState) =>
-	s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+	s.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
 
 export const selectDiscountAmount = (s: CartState) =>
-	s.appliedPromo?.discountAmount ?? 0
+	s.appliedPromo?.discountAmount ?? 0;
 
 export const selectFinalPrice = (s: CartState) =>
-	Math.max(0, selectTotalPrice(s) - selectDiscountAmount(s))
+	Math.max(0, selectTotalPrice(s) - selectDiscountAmount(s));

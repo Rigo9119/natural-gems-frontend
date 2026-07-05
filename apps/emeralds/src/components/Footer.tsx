@@ -1,5 +1,5 @@
-import { Footer as SharedFooter } from "@natura-gems/ui";
 import { SiInstagram, SiWhatsapp } from "@icons-pack/react-simple-icons";
+import { Footer as SharedFooter } from "@natura-gems/ui";
 import {
 	COMPANY_LOCATION,
 	COMPANY_NAME,

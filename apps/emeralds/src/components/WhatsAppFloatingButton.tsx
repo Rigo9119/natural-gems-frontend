@@ -37,7 +37,7 @@ export default function WhatsAppFloatingButton({
 			{/* Pulse ring */}
 			<span
 				aria-hidden="true"
-				className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#25D366] opacity-50 duration-1000"
+				className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-[#25D366] opacity-50 duration-1000"
 			/>
 
 			{/* Button circle */}

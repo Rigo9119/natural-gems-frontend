@@ -1,44 +1,42 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { fetchSiteSettings } from "@/lib/sanity/sanity-queries"
+import { createFileRoute } from "@tanstack/react-router";
 import {
 	COMPANY_LOCATION,
 	COMPANY_NAME,
-	INSTAGRAM_URL,
 	WHATSAPP_NUMBER,
-} from "@/lib/constants"
+} from "@/lib/constants";
+import { fetchSiteSettings } from "@/lib/sanity/sanity-queries";
 
 export const Route = createFileRoute("/api/llms")({
 	server: {
 		handlers: {
 			GET: async () => {
-		const settings = await fetchSiteSettings()
+				const settings = await fetchSiteSettings();
 
-		const name = settings?.companyName ?? COMPANY_NAME
-		const tagline =
-			settings?.tagline ??
-			"Colombian emerald dealer and artisan jewelry brand based in Bogotá, Colombia."
-		const about =
-			settings?.about ??
-			`${name} is a family-owned business with 3+ generations of experience sourcing and selling Colombian emeralds. We operate directly from the emerald mines of Muzo, Chivor, and Coscuez in Boyacá, Colombia — the world's most prestigious emerald-producing region.`
-		const whatsapp = settings?.whatsapp ?? `+${WHATSAPP_NUMBER}`
-		const phone = settings?.phone ?? whatsapp
-		const email = settings?.email ?? "info@naturagems.co"
-		const location = settings?.address?.city
-			? `${settings.address.city}, ${settings.address.country ?? "Colombia"}`
-			: COMPANY_LOCATION
-		const instagram =
-			settings?.socialInstagram
-				? `@${settings.socialInstagram.replace(/^@/, "")}`
-				: `@naturagems`
+				const name = settings?.companyName ?? COMPANY_NAME;
+				const tagline =
+					settings?.tagline ??
+					"Colombian emerald dealer and artisan jewelry brand based in Bogotá, Colombia.";
+				const about =
+					settings?.about ??
+					`${name} is a family-owned business with 3+ generations of experience sourcing and selling Colombian emeralds. We operate directly from the emerald mines of Muzo, Chivor, and Coscuez in Boyacá, Colombia — the world's most prestigious emerald-producing region.`;
+				const whatsapp = settings?.whatsapp ?? `+${WHATSAPP_NUMBER}`;
+				const phone = settings?.phone ?? whatsapp;
+				const email = settings?.email ?? "info@naturagems.co";
+				const location = settings?.address?.city
+					? `${settings.address.city}, ${settings.address.country ?? "Colombia"}`
+					: COMPANY_LOCATION;
+				const instagram = settings?.socialInstagram
+					? `@${settings.socialInstagram.replace(/^@/, "")}`
+					: `@naturagems`;
 
-		const hours =
-			settings?.businessHours && settings.businessHours.length > 0
-				? settings.businessHours
-						.map((h) => `- ${h.days}: ${h.hours}`)
-						.join("\n")
-				: "- Monday to Friday: 9:00 AM - 6:00 PM (COT)\n- Saturday: 10:00 AM - 2:00 PM (COT)\n- Sunday: Closed"
+				const hours =
+					settings?.businessHours && settings.businessHours.length > 0
+						? settings.businessHours
+								.map((h) => `- ${h.days}: ${h.hours}`)
+								.join("\n")
+						: "- Monday to Friday: 9:00 AM - 6:00 PM (COT)\n- Saturday: 10:00 AM - 2:00 PM (COT)\n- Sunday: Closed";
 
-		const body = `# ${name}
+				const body = `# ${name}
 
 > ${tagline}
 
@@ -81,15 +79,16 @@ ${about}
 
 ## Business Hours
 ${hours}
-`
+`;
 
-		return new Response(body, {
-				headers: {
-					"Content-Type": "text/plain; charset=utf-8",
-					"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
-				},
-			})
-		},
+				return new Response(body, {
+					headers: {
+						"Content-Type": "text/plain; charset=utf-8",
+						"Cache-Control":
+							"public, max-age=3600, stale-while-revalidate=86400",
+					},
+				});
+			},
 		},
 	},
-})
+});

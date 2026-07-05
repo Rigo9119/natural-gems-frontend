@@ -194,7 +194,10 @@ function ContactPage() {
 							</p>
 
 							{mutation.isSuccess ? (
-								<div className="rounded-xl bg-brand-primary-lighter p-6 text-center">
+								<div
+									aria-live="polite"
+									className="rounded-xl bg-brand-primary-lighter p-6 text-center"
+								>
 									<p className="font-heading text-xl text-brand-primary-dark mb-2">
 										¡Mensaje enviado!
 									</p>
@@ -331,7 +334,7 @@ function ContactPage() {
 									</form.Field>
 
 									{mutation.isError && (
-										<p className="text-sm text-red-600">
+										<p role="alert" className="text-sm text-red-600">
 											{mutation.error?.message ?? "Error al enviar el mensaje"}
 										</p>
 									)}

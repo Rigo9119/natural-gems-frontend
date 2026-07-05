@@ -16,12 +16,13 @@ import { useEmeraldPageData } from "@/data/page-data";
 import { useLocalizedContent } from "@/hooks/sanity-helper";
 import { clarityGrades, miningRegions } from "@/lib/constants";
 import { emeraldPageQueryOptions } from "@/lib/sanity/sanity-queries";
-import type { BrandStorySection } from "@/lib/sanity/sanity-types";
+import type { BrandStorySection, SeoMetadata } from "@/lib/sanity/sanity-types";
 import { breadcrumbJsonLd, buildMeta, resolveSanityMeta } from "@/lib/seo";
 import { retailEmeraldsQueryOptions } from "@/lib/supabase-queries";
 
 export const Route = createFileRoute("/emeralds/")({
-	head: ({ loaderData }) => {
+	head: ({ loaderData: _ld }) => {
+		const loaderData = _ld as { seo: SeoMetadata | null } | undefined;
 		return buildMeta(
 			resolveSanityMeta(loaderData?.seo, {
 				title: "Esmeraldas Colombianas",
@@ -37,7 +38,8 @@ export const Route = createFileRoute("/emeralds/")({
 			}),
 		);
 	},
-	loader: async ({ context }) => {
+	// @ts-expect-error — TanStack Start v1 circular SSR type inference; loader is correct at runtime
+	loader: async ({ context }): Promise<{ seo: SeoMetadata | null }> => {
 		const page = await context.queryClient.ensureQueryData(
 			emeraldPageQueryOptions(),
 		);

@@ -149,7 +149,10 @@ function MiPedidoPage() {
 									</form.Field>
 
 									{mutation.isError && (
-										<p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+										<p
+											role="alert"
+											className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600"
+										>
 											{mutation.error?.message === "not_found"
 												? "No encontramos un pedido con esos datos."
 												: "Ocurrió un error. Por favor intenta de nuevo."}
