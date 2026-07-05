@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Calendar, Gem, Tag } from "lucide-react";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { prefetchGuidesList, useGuidesList } from "@/data/page-data";
+import { useGuidesList } from "@/data/page-data";
 import { urlFor } from "@/lib/sanity/sanity";
+import { guidesListQueryOptions } from "@/lib/sanity/sanity-queries";
 import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/")({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/guides/")({
 			],
 		}),
 	loader: async ({ context }) => {
-		await prefetchGuidesList(context.queryClient);
+		await context.queryClient.ensureQueryData(guidesListQueryOptions());
 	},
 	component: GuidesIndexPage,
 });
@@ -69,10 +70,7 @@ function GuidesIndexPage() {
 	return (
 		<div className="min-h-screen bg-brand-surface">
 			<AppBreadcrumb
-				items={[
-					{ label: "Inicio", href: "/" },
-					{ label: "Guías" },
-				]}
+				items={[{ label: "Inicio", href: "/" }, { label: "Guías" }]}
 			/>
 			{/* Header */}
 			<div className="border-b border-brand-primary-dark/10 bg-white py-12">

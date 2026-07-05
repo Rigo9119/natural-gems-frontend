@@ -1,11 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { XCircle, MessageCircle, RefreshCcw } from "lucide-react"
-import { z } from "zod"
-import { buildMeta } from "@/lib/seo"
-import { useCartStore, selectTotalPrice } from "@/store/cartStore"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { supabase } from "@/lib/supabase"
-import type { OrderWithItems } from "@/lib/supabase-queries"
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { MessageCircle, RefreshCcw, XCircle } from "lucide-react";
+import { z } from "zod";
+import { buildMeta } from "@/lib/seo";
+import { orderByIdQueryOptions } from "@/lib/supabase-queries";
+import { selectTotalPrice, useCartStore } from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/payment-cancel")({
 	validateSearch: z.object({ order_id: z.string() }),
@@ -17,7 +16,7 @@ export const Route = createFileRoute("/emeralds/payment-cancel")({
 			noIndex: true,
 		}),
 	component: CheckoutCancelPage,
-})
+});
 
 function buildWhatsAppUrl(
 	orderNumber: string,
@@ -26,7 +25,7 @@ function buildWhatsAppUrl(
 ) {
 	const lines = items
 		.map((i) => `• ${i.product_name} — $${i.unit_price.toLocaleString()} USD`)
-		.join("\n")
+		.join("\n");
 
 	const message = [
 		"Hola, Natura Gems! 🌿",
@@ -39,16 +38,16 @@ function buildWhatsAppUrl(
 		`💰 Total: $${total.toLocaleString()} USD`,
 		"",
 		"Quedo a la espera de su confirmación. ✅",
-	].join("\n")
+	].join("\n");
 
-	const number = import.meta.env.VITE_WHATSAPP_NUMBER ?? "573001234567"
-	return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
+	const number = import.meta.env.VITE_WHATSAPP_NUMBER ?? "573001234567";
+	return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
 function CheckoutCancelPage() {
-	const { order_id } = Route.useSearch()
-	const cartItems = useCartStore((s) => s.items)
-	const totalPrice = useCartStore(selectTotalPrice)
+	const { order_id } = Route.useSearch();
+	const cartItems = useCartStore((s) => s.items);
+	const totalPrice = useCartStore(selectTotalPrice);
 
 	const retryMutation = useMutation({
 		mutationFn: async () => {
@@ -56,32 +55,24 @@ function CheckoutCancelPage() {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ orderId: order_id }),
-			})
-			if (!res.ok) throw new Error("Failed to create payment session")
-			const { url } = await res.json()
-			window.location.href = url
+			});
+			if (!res.ok) throw new Error("Failed to create payment session");
+			const { url } = await res.json();
+			window.location.href = url;
 		},
-	})
+	});
 
-	const { data: order } = useQuery({
-		queryKey: ["order", order_id],
-		queryFn: async () => {
-			const { data, error } = await supabase
-				.from("orders")
-				.select("*, order_items(*)")
-				.eq("id", order_id)
-				.single()
-			if (error) throw error
-			return data as OrderWithItems
-		},
-	})
+	const { data: order } = useQuery(orderByIdQueryOptions(order_id));
 
 	const waUrl = order
 		? buildWhatsAppUrl(order.order_number, order.order_items, order.subtotal)
 		: (() => {
 				const lines = cartItems
-					.map((i) => `• ${i.product.name} — $${i.product.price.toLocaleString()} USD`)
-					.join("\n")
+					.map(
+						(i) =>
+							`• ${i.product.name} — $${i.product.price.toLocaleString()} USD`,
+					)
+					.join("\n");
 				const message = [
 					"Hola, Natura Gems! 🌿",
 					"",
@@ -91,10 +82,10 @@ function CheckoutCancelPage() {
 					lines,
 					"",
 					`💰 Total: $${totalPrice.toLocaleString()} USD`,
-				].join("\n")
-				const number = import.meta.env.VITE_WHATSAPP_NUMBER ?? "573001234567"
-				return `https://wa.me/${number}?text=${encodeURIComponent(message)}`
-			})()
+				].join("\n");
+				const number = import.meta.env.VITE_WHATSAPP_NUMBER ?? "573001234567";
+				return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+			})();
 
 	return (
 		<div className="min-h-screen bg-brand-surface flex items-center justify-center px-4 py-16">
@@ -139,5 +130,5 @@ function CheckoutCancelPage() {
 				</a>
 			</div>
 		</div>
-	)
+	);
 }

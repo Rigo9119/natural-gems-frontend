@@ -1,15 +1,24 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { AppBreadcrumb } from "@/components/AppBreadcrumb"
-import { useForm } from "@tanstack/react-form"
-import { useMutation } from "@tanstack/react-query"
-import { CreditCard, ShoppingBag } from "lucide-react"
-import { useEffect } from "react"
-import { z } from "zod"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { breadcrumbJsonLd, buildMeta } from "@/lib/seo"
-import { useCartStore, selectTotalPrice, selectFinalPrice, selectDiscountAmount } from "@/store/cartStore"
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { CreditCard, ShoppingBag } from "lucide-react";
+import { useEffect } from "react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
+import { FieldError } from "@/components/ui/field-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	type CheckoutFormValues,
+	checkoutSchema,
+} from "@/lib/schemas/checkout.schema";
+import { breadcrumbJsonLd, buildMeta } from "@/lib/seo";
+import {
+	selectDiscountAmount,
+	selectFinalPrice,
+	selectTotalPrice,
+	useCartStore,
+} from "@/store/cartStore";
 
 export const Route = createFileRoute("/emeralds/checkout")({
 	head: () =>
@@ -28,29 +37,20 @@ export const Route = createFileRoute("/emeralds/checkout")({
 			],
 		}),
 	component: CheckoutPage,
-})
-
-type CheckoutFormValues = {
-	nombre: string
-	whatsapp: string
-	email: string
-	shipping_address: string
-	shipping_country: string
-	notas: string
-}
+});
 
 function CheckoutPage() {
-	const navigate = useNavigate()
-	const { items, clearCart, appliedPromo } = useCartStore()
-	const totalPrice = useCartStore(selectTotalPrice)
-	const finalPrice = useCartStore(selectFinalPrice)
-	const discountAmount = useCartStore(selectDiscountAmount)
+	const navigate = useNavigate();
+	const { items, clearCart, appliedPromo } = useCartStore();
+	const totalPrice = useCartStore(selectTotalPrice);
+	const finalPrice = useCartStore(selectFinalPrice);
+	const discountAmount = useCartStore(selectDiscountAmount);
 
 	useEffect(() => {
 		if (items.length === 0) {
-			navigate({ to: "/emeralds/cart" })
+			navigate({ to: "/emeralds/cart" });
 		}
-	}, [items.length, navigate])
+	}, [items.length, navigate]);
 
 	const mutation = useMutation({
 		mutationFn: async (formValue: CheckoutFormValues) => {
@@ -82,24 +82,24 @@ function CheckoutPage() {
 						currency: i.product.currency,
 					})),
 				}),
-			})
+			});
 			if (!orderRes.ok) {
-				const err = await orderRes.json().catch(() => ({}))
-				throw new Error(err.error ?? "Failed to create order")
+				const err = await orderRes.json().catch(() => ({}));
+				throw new Error(err.error ?? "Failed to create order");
 			}
-			const { orderId } = await orderRes.json()
+			const { orderId } = await orderRes.json();
 
 			const stripeRes = await fetch("/api/stripe/checkout", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ orderId }),
-			})
-			if (!stripeRes.ok) throw new Error("Failed to create payment session")
-			const { url } = await stripeRes.json()
-			clearCart()
-			window.location.href = url
+			});
+			if (!stripeRes.ok) throw new Error("Failed to create payment session");
+			const { url } = await stripeRes.json();
+			clearCart();
+			window.location.href = url;
 		},
-	})
+	});
 
 	const form = useForm({
 		defaultValues: {
@@ -111,11 +111,11 @@ function CheckoutPage() {
 			notas: "",
 		} as CheckoutFormValues,
 		onSubmit: async ({ value }) => {
-			await mutation.mutateAsync(value)
+			await mutation.mutateAsync(value);
 		},
-	})
+	});
 
-	if (items.length === 0) return null
+	if (items.length === 0) return null;
 
 	return (
 		<div className="min-h-screen bg-brand-surface">
@@ -141,9 +141,9 @@ function CheckoutPage() {
 					<div className="lg:col-span-2">
 						<form
 							onSubmit={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-								form.handleSubmit()
+								e.preventDefault();
+								e.stopPropagation();
+								form.handleSubmit();
 							}}
 							className="space-y-6"
 						>
@@ -155,10 +155,8 @@ function CheckoutPage() {
 								<form.Field
 									name="nombre"
 									validators={{
-										onChange: ({ value }) =>
-											!value ? "El nombre es requerido" : undefined,
-										onSubmit: ({ value }) =>
-											!value ? "El nombre es requerido" : undefined,
+										onBlur: checkoutSchema.shape.nombre,
+										onSubmit: checkoutSchema.shape.nombre,
 									}}
 								>
 									{(field) => (
@@ -171,11 +169,7 @@ function CheckoutPage() {
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
 											/>
-											{field.state.meta.errors.length > 0 && (
-												<p className="text-xs text-red-600">
-													{field.state.meta.errors[0]}
-												</p>
-											)}
+											<FieldError errors={field.state.meta.errors} />
 										</div>
 									)}
 								</form.Field>
@@ -183,14 +177,8 @@ function CheckoutPage() {
 								<form.Field
 									name="whatsapp"
 									validators={{
-										onChange: ({ value }) =>
-											!value || value.length < 7
-												? "Ingresa un número de WhatsApp válido"
-												: undefined,
-										onSubmit: ({ value }) =>
-											!value || value.length < 7
-												? "Ingresa un número de WhatsApp válido"
-												: undefined,
+										onBlur: checkoutSchema.shape.whatsapp,
+										onSubmit: checkoutSchema.shape.whatsapp,
 									}}
 								>
 									{(field) => (
@@ -209,11 +197,7 @@ function CheckoutPage() {
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
 											/>
-											{field.state.meta.errors.length > 0 && (
-												<p className="text-xs text-red-600">
-													{field.state.meta.errors[0]}
-												</p>
-											)}
+											<FieldError errors={field.state.meta.errors} />
 										</div>
 									)}
 								</form.Field>
@@ -221,11 +205,7 @@ function CheckoutPage() {
 								<form.Field
 									name="email"
 									validators={{
-										onChange: ({ value }) => {
-											if (!value) return undefined
-											const result = z.string().email().safeParse(value)
-											return result.success ? undefined : "Email inválido"
-										},
+										onBlur: checkoutSchema.shape.email,
 									}}
 								>
 									{(field) => (
@@ -244,11 +224,7 @@ function CheckoutPage() {
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
 											/>
-											{field.state.meta.errors.length > 0 && (
-												<p className="text-xs text-red-600">
-													{field.state.meta.errors[0]}
-												</p>
-											)}
+											<FieldError errors={field.state.meta.errors} />
 										</div>
 									)}
 								</form.Field>
@@ -256,10 +232,8 @@ function CheckoutPage() {
 								<form.Field
 									name="shipping_address"
 									validators={{
-										onChange: ({ value }) =>
-											!value ? "La dirección de envío es requerida" : undefined,
-										onSubmit: ({ value }) =>
-											!value ? "La dirección de envío es requerida" : undefined,
+										onBlur: checkoutSchema.shape.shipping_address,
+										onSubmit: checkoutSchema.shape.shipping_address,
 									}}
 								>
 									{(field) => (
@@ -272,11 +246,7 @@ function CheckoutPage() {
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
 											/>
-											{field.state.meta.errors.length > 0 && (
-												<p className="text-xs text-red-600">
-													{field.state.meta.errors[0]}
-												</p>
-											)}
+											<FieldError errors={field.state.meta.errors} />
 										</div>
 									)}
 								</form.Field>
@@ -284,10 +254,8 @@ function CheckoutPage() {
 								<form.Field
 									name="shipping_country"
 									validators={{
-										onChange: ({ value }) =>
-											!value ? "El país de destino es requerido" : undefined,
-										onSubmit: ({ value }) =>
-											!value ? "El país de destino es requerido" : undefined,
+										onBlur: checkoutSchema.shape.shipping_country,
+										onSubmit: checkoutSchema.shape.shipping_country,
 									}}
 								>
 									{(field) => (
@@ -300,11 +268,7 @@ function CheckoutPage() {
 												onChange={(e) => field.handleChange(e.target.value)}
 												onBlur={field.handleBlur}
 											/>
-											{field.state.meta.errors.length > 0 && (
-												<p className="text-xs text-red-600">
-													{field.state.meta.errors[0]}
-												</p>
-											)}
+											<FieldError errors={field.state.meta.errors} />
 										</div>
 									)}
 								</form.Field>
@@ -332,7 +296,9 @@ function CheckoutPage() {
 
 							{mutation.isError && (
 								<p className="rounded-xl bg-red-50 p-4 text-sm text-red-600">
-									{(mutation.error as Error)?.message === "Este código ya fue usado con este correo"
+									{mutation.error instanceof Error &&
+									mutation.error.message ===
+										"Este código ya fue usado con este correo"
 										? "El código de descuento ya fue usado con este correo electrónico."
 										: "Ocurrió un error al guardar el pedido. Por favor intenta de nuevo."}
 								</p>
@@ -358,15 +324,13 @@ function CheckoutPage() {
 
 							<ul className="space-y-2">
 								{items.map(({ product, quantity }) => (
-									<li
-										key={product.id}
-										className="flex justify-between text-sm"
-									>
+									<li key={product.id} className="flex justify-between text-sm">
 										<span className="text-brand-primary-dark/70 truncate pr-4 max-w-[65%]">
 											{product.name}
 											{quantity > 1 && (
 												<span className="text-brand-primary-dark/40">
-													{" "}×{quantity}
+													{" "}
+													×{quantity}
 												</span>
 											)}
 										</span>
@@ -383,7 +347,9 @@ function CheckoutPage() {
 								<div className="space-y-2">
 									<div className="flex justify-between text-sm">
 										<span className="text-brand-primary-dark/60">Subtotal</span>
-										<span className="text-brand-primary-dark">${totalPrice.toLocaleString()}</span>
+										<span className="text-brand-primary-dark">
+											${totalPrice.toLocaleString()}
+										</span>
 									</div>
 									<div className="flex justify-between text-sm text-green-600">
 										<span>Descuento ({appliedPromo.code})</span>
@@ -414,7 +380,8 @@ function CheckoutPage() {
 							<div className="flex items-start gap-3 rounded-xl bg-brand-secondary-golden/10 p-4">
 								<ShoppingBag className="h-5 w-5 text-brand-secondary-terra mt-0.5 shrink-0" />
 								<p className="text-xs text-brand-primary-dark/70">
-									Al confirmar, te redirigiremos a nuestra pasarela de pago segura.
+									Al confirmar, te redirigiremos a nuestra pasarela de pago
+									segura.
 								</p>
 							</div>
 						</div>
@@ -422,5 +389,5 @@ function CheckoutPage() {
 				</div>
 			</div>
 		</div>
-	)
+	);
 }

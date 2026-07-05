@@ -1,33 +1,29 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { useSuspenseQuery } from "@tanstack/react-query"
-import { Gem } from "lucide-react"
-import { useMemo } from "react"
-import BrandStory from "@/components/BrandStory"
-import Hero from "@/components/Hero"
-import { prefetchEmeraldPageData, useEmeraldPageData } from "@/data/page-data"
-import { useLocalizedContent } from "@/hooks/sanity-helper"
-import type {
-	BrandStorySection,
-	EmeraldPage,
-	SeoMetadata,
-} from "@/lib/sanity/sanity-types"
-import { breadcrumbJsonLd, buildMeta, resolveSanityMeta } from "@/lib/seo"
-import FeaturedProductsCMP from "@/components/FeaturedProductsCMP"
-import FeatureCallout from "@/components/FeatureCallout"
-import FeatureGrid from "@/components/FeatureGrid"
-import LargeSpotlightCard from "@/components/Cards/LargeSpotlightCard"
-import SpotlightCard from "@/components/Cards/SpotlightCard"
-import MiningRegionCard from "@/components/Cards/MiningRegionCard"
-import AccessibleCollectionCard from "@/components/Cards/AccessibleCollectionCard"
-import ClarityItemCard from "@/components/Cards/ClarityItemCard"
-import { clarityGrades, miningRegions } from "@/data/demo-data-emeralds-page"
-import { retailEmeraldsQueryOptions } from "@/lib/supabase-queries"
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { Gem } from "lucide-react";
+import { useMemo } from "react";
+import BrandStory from "@/components/BrandStory";
+import AccessibleCollectionCard from "@/components/Cards/AccessibleCollectionCard";
+import ClarityItemCard from "@/components/Cards/ClarityItemCard";
+import LargeSpotlightCard from "@/components/Cards/LargeSpotlightCard";
+import MiningRegionCard from "@/components/Cards/MiningRegionCard";
+import SpotlightCard from "@/components/Cards/SpotlightCard";
+import FeatureCallout from "@/components/FeatureCallout";
+import FeaturedProductsCMP from "@/components/FeaturedProductsCMP";
+import FeatureGrid from "@/components/FeatureGrid";
+import Hero from "@/components/Hero";
+import { useEmeraldPageData } from "@/data/page-data";
+import { useLocalizedContent } from "@/hooks/sanity-helper";
+import { clarityGrades, miningRegions } from "@/lib/constants";
+import { emeraldPageQueryOptions } from "@/lib/sanity/sanity-queries";
+import type { BrandStorySection } from "@/lib/sanity/sanity-types";
+import { breadcrumbJsonLd, buildMeta, resolveSanityMeta } from "@/lib/seo";
+import { retailEmeraldsQueryOptions } from "@/lib/supabase-queries";
 
 export const Route = createFileRoute("/emeralds/")({
 	head: ({ loaderData }) => {
-		const seo = (loaderData as { seo?: SeoMetadata } | undefined)?.seo
 		return buildMeta(
-			resolveSanityMeta(seo, {
+			resolveSanityMeta(loaderData?.seo, {
 				title: "Esmeraldas Colombianas",
 				description:
 					"Descubre esmeraldas colombianas certificadas por claridad, peso y origen. Gemas sueltas desde las minas de Muzo, Chivor y Coscuez. Envío asegurado.",
@@ -39,54 +35,51 @@ export const Route = createFileRoute("/emeralds/")({
 					]),
 				],
 			}),
-		)
+		);
 	},
-	// @ts-expect-error — TanStack Router infers loaderData as `never` on child routes
 	loader: async ({ context }) => {
-		await prefetchEmeraldPageData(context.queryClient)
-		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions())
-		const page = context.queryClient.getQueryData<EmeraldPage | null>([
-			"sanity",
-			"emeraldPage",
-		])
-		return { seo: page?.seo ?? null }
+		const page = await context.queryClient.ensureQueryData(
+			emeraldPageQueryOptions(),
+		);
+		await context.queryClient.ensureQueryData(retailEmeraldsQueryOptions());
+		return { seo: page?.seo ?? null };
 	},
 	component: EmeraldsIndexPage,
-})
+});
 
 function EmeraldsIndexPage() {
-	const page = useEmeraldPageData()
-	const { data: emeralds } = useSuspenseQuery(retailEmeraldsQueryOptions())
+	const page = useEmeraldPageData();
+	const { data: emeralds } = useSuspenseQuery(retailEmeraldsQueryOptions());
 
 	const featuredProducts = useMemo(
 		() => [...emeralds].sort((a, b) => b.price - a.price).slice(0, 4),
 		[emeralds],
-	)
+	);
 
 	const accessibleProducts = useMemo(
 		() => [...emeralds].sort((a, b) => a.price - b.price).slice(0, 4),
 		[emeralds],
-	)
+	);
 
 	// ── Localized content from Sanity ──
 	const collectionSubtitle = useLocalizedContent(
 		page?.collection?.subtitle ?? {},
-	)
-	const collectionTitle = useLocalizedContent(page?.collection?.title ?? {})
+	);
+	const collectionTitle = useLocalizedContent(page?.collection?.title ?? {});
 	const wholesaleTitle = useLocalizedContent(
 		page?.wholeSaleSection?.title ?? {},
-	)
+	);
 	const wholesaleDesc = useLocalizedContent(
 		page?.wholeSaleSection?.description ?? {},
-	)
+	);
 	const wholesaleCtaLeft = useLocalizedContent(
 		page?.wholeSaleSection?.ctaLeft?.text ?? {},
-	)
+	);
 	const wholesaleCtaRight = useLocalizedContent(
 		page?.wholeSaleSection?.ctaRight?.text ?? {},
-	)
+	);
 
-	if (featuredProducts.length === 0) return null
+	if (featuredProducts.length === 0) return null;
 
 	return (
 		<div className="min-h-screen">
@@ -224,7 +217,8 @@ function EmeraldsIndexPage() {
 					{
 						ctaText: wholesaleCtaLeft || "Ver Lotes Mayoristas",
 						ctaLink:
-							page?.wholeSaleSection?.ctaLeft?.link || "/emeralds/shop?view=wholesale",
+							page?.wholeSaleSection?.ctaLeft?.link ||
+							"/emeralds/shop?view=wholesale",
 					},
 					{
 						ctaText: wholesaleCtaRight || "Contactar",
@@ -233,5 +227,5 @@ function EmeraldsIndexPage() {
 				]}
 			/>
 		</div>
-	)
+	);
 }

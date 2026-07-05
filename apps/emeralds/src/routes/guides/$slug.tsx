@@ -1,61 +1,49 @@
 import type { PortableTextComponents } from "@portabletext/react";
 import { PortableText } from "@portabletext/react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { Calendar, Tag, User } from "lucide-react";
+import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
 import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { prefetchGuideBySlug, useGuideBySlug } from "@/data/page-data";
+import { useGuideBySlug } from "@/data/page-data";
 import { urlFor } from "@/lib/sanity/sanity";
+import { guideBySlugQueryOptions } from "@/lib/sanity/sanity-queries";
 import { articleJsonLd, breadcrumbJsonLd, buildMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/guides/$slug")({
 	head: ({ loaderData }) => {
-		const guide = loaderData as
-			| {
-					title?: string;
-					metaDescription?: string;
-					publishedAt?: string;
-					author?: string;
-					coverImageUrl?: string;
-			  }
-			| undefined;
 		return buildMeta({
-			title: guide?.title,
-			description: guide?.metaDescription,
-			path: `/guides/${guide?.title ?? ""}`,
+			title: loaderData?.title,
+			description: loaderData?.metaDescription,
+			path: `/guides/${loaderData?.slug ?? ""}`,
 			ogType: "article",
-			ogImage: guide?.coverImageUrl,
-			jsonLd: guide?.title
+			ogImage: loaderData?.coverImageUrl,
+			jsonLd: loaderData?.title
 				? [
 						articleJsonLd({
-							title: guide.title,
-							description: guide.metaDescription,
-							publishedAt: guide.publishedAt ?? new Date().toISOString(),
-							author: guide.author,
-							coverImageUrl: guide.coverImageUrl,
-							path: `/guides/${guide.title}`,
+							title: loaderData.title,
+							description: loaderData.metaDescription,
+							publishedAt: loaderData.publishedAt ?? new Date().toISOString(),
+							author: loaderData.author,
+							coverImageUrl: loaderData.coverImageUrl,
+							path: `/guides/${loaderData.slug}`,
 						}),
 						breadcrumbJsonLd([
 							{ name: "Inicio", path: "/" },
 							{ name: "Guias", path: "/guides" },
-							{ name: guide.title, path: `/guides/${guide.title}` },
+							{ name: loaderData.title, path: `/guides/${loaderData.slug}` },
 						]),
 					]
 				: [],
 		});
 	},
 	loader: async ({ context, params }) => {
-		await prefetchGuideBySlug(context.queryClient, params.slug);
-		const guide = context.queryClient.getQueryData<{
-			title?: string;
-			metaDescription?: string;
-			publishedAt?: string;
-			author?: string;
-			coverImage?: { asset?: { url?: string } };
-		} | null>(["sanity", "guide", params.slug]);
+		const guide = await context.queryClient.ensureQueryData(
+			guideBySlugQueryOptions(params.slug),
+		);
 		if (!guide) throw notFound();
 		const coverImageUrl = guide.coverImage?.asset?.url ?? undefined;
 		return {
+			slug: guide.slug.current,
 			title: guide.title,
 			metaDescription: guide.metaDescription,
 			publishedAt: guide.publishedAt,
@@ -218,7 +206,6 @@ function GuideDetailPage() {
 
 			{/* Article header */}
 			<div className="mx-auto max-w-3xl px-4 py-10 md:px-6 lg:px-8">
-
 				{/* Meta row */}
 				<div className="mb-4 flex flex-wrap items-center gap-3">
 					{guide.category && (

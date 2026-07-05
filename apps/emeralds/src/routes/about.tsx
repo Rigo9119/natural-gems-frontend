@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import {
 	Award,
 	Gem,
@@ -9,16 +8,15 @@ import {
 	Shield,
 	Truck,
 } from "lucide-react";
+import { AppBreadcrumb } from "@/components/AppBreadcrumb";
 import { OptimizedImage } from "@/components/ui/optimized-image";
-import { prefetchAboutPageData } from "@/data/page-data";
-import type { AboutPage, SeoMetadata } from "@/lib/sanity/sanity-types";
+import { aboutPageQueryOptions } from "@/lib/sanity/sanity-queries";
 import { breadcrumbJsonLd, buildMeta, resolveSanityMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
 	head: ({ loaderData }) => {
-		const seo = (loaderData as { seo?: SeoMetadata } | undefined)?.seo;
 		return buildMeta(
-			resolveSanityMeta(seo, {
+			resolveSanityMeta(loaderData?.seo, {
 				title: "Quiénes Somos",
 				description:
 					"Tres generaciones dedicadas al arte de las esmeraldas colombianas. Desde las minas de Muzo al mundo, con certificación GIA y trazabilidad completa.",
@@ -33,17 +31,15 @@ export const Route = createFileRoute("/about")({
 		);
 	},
 	loader: async ({ context }) => {
-		await prefetchAboutPageData(context.queryClient);
-		const page = context.queryClient.getQueryData<AboutPage | null>([
-			"sanity",
-			"aboutPage",
-		]);
+		const page = await context.queryClient.ensureQueryData(
+			aboutPageQueryOptions(),
+		);
 		return { seo: page?.seo ?? null };
 	},
 	component: AboutPageComponent,
 });
 
-const milestones = [
+const _milestones = [
 	{
 		year: "1985",
 		title: "Los Inicios",
@@ -124,15 +120,11 @@ const values = [
 	},
 ];
 
-
 function AboutPageComponent() {
 	return (
 		<div>
 			<AppBreadcrumb
-				items={[
-					{ label: "Inicio", href: "/" },
-					{ label: "Quiénes Somos" },
-				]}
+				items={[{ label: "Inicio", href: "/" }, { label: "Quiénes Somos" }]}
 			/>
 			{/* Hero / Story Section */}
 			<section className="bg-brand-primary-lighter">

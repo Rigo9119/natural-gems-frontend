@@ -1,43 +1,44 @@
-import * as Sentry from "@sentry/tanstackstart-react"
-import { createRouter } from '@tanstack/react-router'
-import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
-import * as TanstackQuery from './integrations/tanstack-query/root-provider'
-
-import { deLocalizeUrl, localizeUrl } from './paraglide/runtime'
-
+import { ErrorFallback, LoadingFallback, NotFound } from "@natura-gems/ui";
+import * as Sentry from "@sentry/tanstackstart-react";
+import { createRouter } from "@tanstack/react-router";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
+import * as TanstackQuery from "./integrations/tanstack-query/root-provider";
+import { deLocalizeUrl, localizeUrl } from "./paraglide/runtime";
 // Import the generated route tree
-import { routeTree } from './routeTree.gen'
-import { ErrorFallback } from './components/ErrorFallback'
-import { LoadingFallback } from './components/LoadingFallback'
-import { NotFound } from './components/NotFound'
+import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
 export const getRouter = () => {
-  const rqContext = TanstackQuery.getContext()
+	const rqContext = TanstackQuery.getContext();
 
-  const router = createRouter({
-    routeTree,
-    context: {
-      ...rqContext,
-    },
+	const router = createRouter({
+		routeTree,
+		context: {
+			...rqContext,
+		},
 
-    // Paraglide URL rewrite docs: https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#rewrite-url
-    rewrite: {
-      input: ({ url }) => deLocalizeUrl(url),
-      output: ({ url }) => localizeUrl(url),
-    },
+		// Paraglide URL rewrite docs: https://github.com/TanStack/router/tree/main/examples/react/i18n-paraglide#rewrite-url
+		rewrite: {
+			input: ({ url }) => deLocalizeUrl(url),
+			output: ({ url }) => localizeUrl(url),
+		},
 
-    defaultPreload: 'intent',
-    defaultErrorComponent: ErrorFallback,
-    defaultPendingComponent: LoadingFallback,
-    defaultNotFoundComponent: NotFound,
-  })
+		defaultPreload: "intent",
+		defaultErrorComponent: ErrorFallback,
+		defaultPendingComponent: LoadingFallback,
+		defaultNotFoundComponent: () => <NotFound shopHref="/emeralds" />,
+	});
 
-  setupRouterSsrQueryIntegration({ router, queryClient: rqContext.queryClient })
+	setupRouterSsrQueryIntegration({
+		router,
+		queryClient: rqContext.queryClient,
+	});
 
-  if (!router.isServer) {
-    Sentry.addIntegration(Sentry.tanstackRouterBrowserTracingIntegration(router))
-  }
+	if (!router.isServer) {
+		Sentry.addIntegration(
+			Sentry.tanstackRouterBrowserTracingIntegration(router),
+		);
+	}
 
-  return router
-}
+	return router;
+};

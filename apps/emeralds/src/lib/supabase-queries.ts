@@ -1,40 +1,41 @@
-import { queryOptions } from "@tanstack/react-query"
-import type { Database } from "@/lib/database.types"
-import { supabase } from "@/lib/supabase"
+import { queryOptions } from "@tanstack/react-query";
+import type { Database } from "@/lib/database.types";
+import { supabase } from "@/lib/supabase";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type Emerald = Database["public"]["Tables"]["emeralds"]["Row"]
-export type EmeraldImage = Database["public"]["Tables"]["emerald_images"]["Row"]
-export type EmeraldWithImage = Emerald & { image_url: string | null }
+export type Emerald = Database["public"]["Tables"]["emeralds"]["Row"];
+export type EmeraldImage =
+	Database["public"]["Tables"]["emerald_images"]["Row"];
+export type EmeraldWithImage = Emerald & { image_url: string | null };
 
 // ── Filter constants (replaces demo-products.ts + demo-wholesale-lots.ts) ─────
 
-export const origins = ["Muzo", "Chivor", "Coscuez", "Gachala"] as const
-export type Origin = (typeof origins)[number]
+export const origins = ["Muzo", "Chivor", "Coscuez", "Gachala"] as const;
+export type Origin = (typeof origins)[number];
 
-export const clarities = ["AAA", "AA", "A", "B"] as const
-export type Clarity = (typeof clarities)[number]
+export const clarities = ["AAA", "AA", "A", "B"] as const;
+export type Clarity = (typeof clarities)[number];
 
-export const cuts = ["Emerald", "Oval", "Pear", "Round"] as const
-export type Cut = (typeof cuts)[number]
+export const cuts = ["Emerald", "Oval", "Pear", "Round"] as const;
+export type Cut = (typeof cuts)[number];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function resolveImageUrl(
 	images: { url: string; position: number }[] | null,
 ): string | null {
-	if (!images || images.length === 0) return null
-	return [...images].sort((a, b) => a.position - b.position)[0].url
+	if (!images || images.length === 0) return null;
+	return [...images].sort((a, b) => a.position - b.position)[0].url;
 }
 
 type RawRow = Emerald & {
-	emerald_images: { url: string; position: number }[] | null
-}
+	emerald_images: { url: string; position: number }[] | null;
+};
 
 function mapRow(row: RawRow): EmeraldWithImage {
-	const { emerald_images, ...emerald } = row
-	return { ...emerald, image_url: resolveImageUrl(emerald_images) }
+	const { emerald_images, ...emerald } = row;
+	return { ...emerald, image_url: resolveImageUrl(emerald_images) };
 }
 
 // ── Query options ─────────────────────────────────────────────────────────────
@@ -47,11 +48,11 @@ export function adminEmeraldsQueryOptions() {
 			const { data, error } = await supabase
 				.from("emeralds")
 				.select("*, emerald_images(url, position)")
-				.order("created_at", { ascending: false })
-			if (error) throw error
-			return (data as unknown as RawRow[]).map(mapRow)
+				.order("created_at", { ascending: false });
+			if (error) throw error;
+			return (data as unknown as RawRow[]).map(mapRow);
 		},
-	})
+	});
 }
 
 export async function updateEmeraldStatus(
@@ -61,118 +62,138 @@ export async function updateEmeraldStatus(
 	const { error } = await supabase
 		.from("emeralds")
 		.update({ status })
-		.eq("id", emeraldId)
-	if (error) throw error
+		.eq("id", emeraldId);
+	if (error) throw error;
 }
 
 export async function deleteEmerald(emeraldId: string): Promise<void> {
 	const { error } = await supabase
 		.from("emeralds")
 		.delete()
-		.eq("id", emeraldId)
-	if (error) throw error
+		.eq("id", emeraldId);
+	if (error) throw error;
 }
 
 /** Single retail stones: stone_count = 1 AND status = available */
 export function retailEmeraldsQueryOptions() {
 	return queryOptions({
 		queryKey: ["emeralds", "retail"],
+		staleTime: 5 * 60 * 1000,
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("emeralds")
 				.select("*, emerald_images(url, position)")
 				.eq("stone_count", 1)
-				.eq("status", "available")
-			if (error) throw error
-			return (data as unknown as RawRow[]).map(mapRow)
+				.eq("status", "available");
+			if (error) throw error;
+			return (data as unknown as RawRow[]).map(mapRow);
 		},
-	})
+	});
 }
 
 /** Wholesale lots: stone_count > 1 AND status = available */
 export function wholesaleEmeraldsQueryOptions() {
 	return queryOptions({
 		queryKey: ["emeralds", "wholesale"],
+		staleTime: 5 * 60 * 1000,
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("emeralds")
 				.select("*, emerald_images(url, position)")
 				.gt("stone_count", 1)
-				.eq("status", "available")
-			if (error) throw error
-			return (data as unknown as RawRow[]).map(mapRow)
+				.eq("status", "available");
+			if (error) throw error;
+			return (data as unknown as RawRow[]).map(mapRow);
 		},
-	})
+	});
 }
 
 /** Single emerald by slug (returns null if not found) */
 export function emeraldBySlugQueryOptions(slug: string) {
 	return queryOptions({
 		queryKey: ["emeralds", "slug", slug],
+		staleTime: 5 * 60 * 1000,
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("emeralds")
 				.select("*, emerald_images(url, position)")
 				.eq("slug", slug)
-				.maybeSingle()
-			if (error) throw error
-			if (!data) return null
-			return mapRow(data as unknown as RawRow)
+				.maybeSingle();
+			if (error) throw error;
+			if (!data) return null;
+			return mapRow(data as unknown as RawRow);
 		},
-	})
+	});
 }
 
 // ── Order types ───────────────────────────────────────────────────────────────
 
-export type Order = Database["public"]["Tables"]["orders"]["Row"]
-export type OrderItem = Database["public"]["Tables"]["order_items"]["Row"]
-export type OrderWithItems = Order & { order_items: OrderItem[] }
+export type Order = Database["public"]["Tables"]["orders"]["Row"];
+export type OrderItem = Database["public"]["Tables"]["order_items"]["Row"];
+export type OrderWithItems = Order & { order_items: OrderItem[] };
 
 export type CreateOrderInput = {
-	order_number: string
-	customer_name: string
-	customer_whatsapp: string
-	customer_email?: string
-	notes?: string
-	subtotal: number
-	currency: string
+	order_number: string;
+	customer_name: string;
+	customer_whatsapp: string;
+	customer_email?: string;
+	notes?: string;
+	subtotal: number;
+	currency: string;
 	items: {
-		emerald_id: string
-		product_name: string
-		product_slug: string
-		stone_count: number
-		unit_price: number
-		carats: number
-		clarity: string
-		origin: string
-		currency: string
-	}[]
-}
+		emerald_id: string;
+		product_name: string;
+		product_slug: string;
+		stone_count: number;
+		unit_price: number;
+		carats: number;
+		clarity: string;
+		origin: string;
+		currency: string;
+	}[];
+};
 
 // ── Order helpers ─────────────────────────────────────────────────────────────
 
 export function ordersQueryOptions() {
 	return queryOptions({
 		queryKey: ["orders"],
+		staleTime: 30 * 1000,
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("orders")
 				.select("*, order_items(*)")
-				.order("created_at", { ascending: false })
-			if (error) throw error
-			return data as OrderWithItems[]
+				.order("created_at", { ascending: false });
+			if (error) throw error;
+			return data as OrderWithItems[];
 		},
-	})
+	});
+}
+
+export function orderByIdQueryOptions(orderId: string) {
+	return queryOptions({
+		queryKey: ["order", orderId],
+		staleTime: 30 * 1000,
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from("orders")
+				.select("*, order_items(*)")
+				.eq("id", orderId)
+				.single();
+			if (error) throw error;
+			return data as OrderWithItems;
+		},
+	});
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
-	const { items, ...orderData } = input
+	const { items, ...orderData } = input;
 	const { data: order, error: orderError } = await supabase
 		.from("orders")
 		.insert({ ...orderData, status: "pending", payment_status: "unpaid" })
 		.select()
-		.single()
-	if (orderError) throw orderError
+		.single();
+	if (orderError) throw orderError;
 
 	const orderItems = items.map((item) => ({
 		order_id: order.id,
@@ -185,13 +206,13 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
 		clarity: item.clarity,
 		origin: item.origin,
 		currency: item.currency,
-	}))
+	}));
 	const { error: itemsError } = await supabase
 		.from("order_items")
-		.insert(orderItems)
-	if (itemsError) throw itemsError
+		.insert(orderItems);
+	if (itemsError) throw itemsError;
 
-	return order
+	return order;
 }
 
 export async function updateOrderStatus(
@@ -201,8 +222,8 @@ export async function updateOrderStatus(
 	const { error } = await supabase
 		.from("orders")
 		.update({ status })
-		.eq("id", orderId)
-	if (error) throw error
+		.eq("id", orderId);
+	if (error) throw error;
 }
 
 export async function updateOrderPayment(
@@ -213,12 +234,12 @@ export async function updateOrderPayment(
 	const { error } = await supabase
 		.from("orders")
 		.update({ payment_status: paymentStatus, payment_method: paymentMethod })
-		.eq("id", orderId)
-	if (error) throw error
+		.eq("id", orderId);
+	if (error) throw error;
 }
 
 export function generateOrderNumber(): string {
-	const date = new Date().toISOString().slice(0, 10).replace(/-/g, "")
-	const rand = String(Math.floor(Math.random() * 9000) + 1000)
-	return `NG-${date}-${rand}`
+	const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	const rand = String(Math.floor(Math.random() * 9000) + 1000);
+	return `NG-${date}-${rand}`;
 }
