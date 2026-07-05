@@ -5,3 +5,8 @@ export { Footer } from "./components/Footer";
 export type { FooterProps, FooterLink, FooterSocialLink } from "./components/Footer";
 export { MineCarousel } from "./components/MineCarousel";
 export type { CarouselSlide } from "./components/MineCarousel";
+export { LoadingFallback } from "./components/LoadingFallback";
+export { ErrorFallback } from "./components/ErrorFallback";
+export type { ErrorFallbackProps } from "./components/ErrorFallback";
+export { NotFound } from "./components/NotFound";
+export type { NotFoundProps } from "./components/NotFound";
