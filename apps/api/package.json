@@ -1,0 +1,24 @@
+{
+	"name": "@natura-gems/api",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "bun --env-file=.env.local --watch src/index.ts",
+		"build": "bun build src/index.ts --outdir dist --target bun",
+		"db:pull": "bun --env-file=.env.local drizzle-kit pull",
+		"db:push": "bun --env-file=.env.local drizzle-kit push",
+		"db:studio": "bun --env-file=.env.local drizzle-kit studio",
+		"db:migrate": "bun --env-file=.env.local drizzle-kit migrate"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.44.2",
+		"hono": "^4.7.11",
+		"postgres": "^3.4.5",
+		"zod": "^4.1.11"
+	},
+	"devDependencies": {
+		"@types/node": "^22.10.2",
+		"drizzle-kit": "^0.30.4",
+		"typescript": "^5.7.2"
+	}
+}

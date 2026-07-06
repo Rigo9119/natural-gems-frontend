@@ -6,7 +6,8 @@
 		"dev": "bun run dev:emeralds & bun run dev:jewelry",
 		"dev:emeralds": "bun --bun run --cwd apps/emeralds dev",
 		"dev:jewelry": "bun --bun run --cwd apps/jewelry dev",
-		"dev:admin": "bun --bun run --cwd apps/admin dev"
+		"dev:admin": "bun --bun run --cwd apps/admin dev",
+		"dev:api": "bun --bun run --cwd apps/api dev"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",

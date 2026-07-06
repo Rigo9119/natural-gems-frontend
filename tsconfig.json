@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "./apps/api" },
     { "path": "./apps/emeralds" },
     { "path": "./apps/jewelry" },
     { "path": "./packages/ui" },

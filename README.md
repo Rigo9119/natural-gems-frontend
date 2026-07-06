@@ -317,3 +317,18 @@ Files prefixed with `demo` can be safely deleted. They are there to provide a st
 # Learn More
 
 You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+
+  Before running anything, you need one env var. Go to Supabase dashboard → Settings → Database → Connection string → URI (use port 5432, not 6543). Copy it and create apps/api/.env.local:
+
+  DATABASE_URL="postgresql://postgres:[password]@db.xxjpbhifsujxcgkwuqxb.supabase.co:5432/postgres"
+
+  Then pull the schema:
+
+  bun run --cwd apps/api db:pull
+
+  That generates src/db/schema.ts and src/db/migrations/ from your existing Supabase tables. Once that's done we start moving logic over.
+
+  To start the dev server (after the pull):
+
+  bun run dev:api
+  # → http://localhost:3002/health
