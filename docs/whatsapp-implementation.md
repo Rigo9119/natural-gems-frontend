@@ -72,7 +72,7 @@ Before the WhatsApp deep-link fires from the cart, capture the minimum info need
 The component exists but isn't placed on the emeralds pages yet.
 
 ### Schema change
-**File:** `studio-natura-gems/schemaTypes/pages/emeraldPage.ts`
+**File:** `apps/emeralds/studio-natura-gems/schemaTypes/pages/emeraldPage.ts`
 
 Add a `whatsApp` reference field (same pattern as `homePage.ts`):
 ```ts
@@ -169,7 +169,7 @@ supabase
 | Edit | `src/routes/emeralds/index.tsx` |
 | Edit | `src/routes/emeralds/mayoristas.tsx` |
 | Edit | `src/lib/sanity/sanity-types.ts` |
-| Edit | `studio-natura-gems/schemaTypes/pages/emeraldPage.ts` |
+| Edit | `apps/emeralds/studio-natura-gems/schemaTypes/pages/emeraldPage.ts` |
 
 ---
 

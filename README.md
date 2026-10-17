@@ -1,334 +1,95 @@
-Welcome to your new TanStack app! 
+# Natura Gems
 
-# Getting Started
+Bun monorepo for Natura Gems: an emerald store, a jewelry site, an admin panel, and a small API.
+The web apps are TanStack Start (React 19, SSR) deployed to Netlify.
 
-To run this application:
+## Quick start
 
 ```bash
 bun install
-bun --bun run dev
+cp apps/emeralds/.env.example apps/emeralds/.env.local   # then fill in values
+bun run dev                                               # emeralds :3000 + jewelry :3001
 ```
 
-# Building For Production
-
-To build this application for production:
-
-```bash
-bun --bun run build
-```
-
-## Testing
-
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
-
-```bash
-bun --bun run test
-```
-
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-
-# Paraglide i18n
-
-This add-on wires up ParaglideJS for localized routing and message formatting.
-
-- Messages live in `project.inlang/messages`.
-- URLs are localized through the Paraglide Vite plugin and router `rewrite` hooks.
-- Run the dev server or build to regenerate the `src/paraglide` outputs.
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
-
-
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add another a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import { Link } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/people",
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json() as Promise<{
-      results: {
-        name: string;
-      }[];
-    }>;
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData();
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    );
-  },
-});
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-### React-Query
-
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-bun install @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// ...
-
-const queryClient = new QueryClient();
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  );
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query";
-
-import "./App.css";
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  });
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-bun install @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-function App() {
-  const count = useStore(countStore);
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store, Derived } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-});
-doubledStore.mount();
-
-function App() {
-  const count = useStore(countStore);
-  const doubledCount = useStore(doubledStore);
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-  Before running anything, you need one env var. Go to Supabase dashboard → Settings → Database → Connection string → URI (use port 5432, not 6543). Copy it and create apps/api/.env.local:
-
-  DATABASE_URL="postgresql://postgres:[password]@db.xxjpbhifsujxcgkwuqxb.supabase.co:5432/postgres"
-
-  Then pull the schema:
-
-  bun run --cwd apps/api db:pull
-
-  That generates src/db/schema.ts and src/db/migrations/ from your existing Supabase tables. Once that's done we start moving logic over.
-
-  To start the dev server (after the pull):
-
-  bun run dev:api
-  # → http://localhost:3002/health
+Run a single app with `bun run dev:emeralds`, `dev:jewelry`, `dev:admin`, or `dev:api`.
+
+> `admin` and `jewelry` both use port 3001, so run only one of them at a time.
+
+## Repository layout
+
+| Path | What it is | Port |
+|------|------------|------|
+| `apps/emeralds` | Main store: catalog, cart, compare, Stripe checkout, orders, guides, WhatsApp | 3000 |
+| `apps/emeralds/studio-natura-gems` | Sanity Studio (CMS schemas for page content) | - |
+| `apps/jewelry` | Jewelry site | 3001 |
+| `apps/admin` | Admin panel (Supabase auth) | 3001 |
+| `apps/api` | Hono + Drizzle API over Supabase Postgres | 3002 |
+| `packages/ui` | Shared UI (`@natura-gems/ui`): shadcn components, error/loading/404 fallbacks | - |
+| `packages/config` | Shared Biome and TypeScript base configs | - |
+| `project.inlang`, `messages` | Paraglide i18n messages (`es` default, `en`) | - |
+| `docs` | Design notes: DB schema, admin auth, SEO, WhatsApp integration | - |
+
+## Stack
+
+| Concern | Tool |
+|---------|------|
+| Framework / routing | TanStack Start + Router (file-based, `src/routes`) |
+| Server state / forms / tables | TanStack Query, Form (Zod), Table |
+| Client state | Zustand |
+| Database, auth, storage | Supabase |
+| API | Hono, Drizzle ORM |
+| CMS | Sanity |
+| Payments | Stripe |
+| Error monitoring | Sentry |
+| i18n | Paraglide (URL-based locales) |
+| UI | Tailwind CSS v4, shadcn/ui (Radix), lucide icons |
+| Lint / format | Biome |
+| Tests | Vitest + Testing Library |
+
+## Environment variables
+
+Each app reads its own `.env.local`.
+Copy the example file where one exists and fill it in.
+
+| App | Template | Main groups |
+|-----|----------|-------------|
+| `emeralds` | `.env.example` | Supabase, Sanity, Stripe, WhatsApp Cloud API, site URL, Sentry |
+| `admin` | `.env.example` | Supabase (anon), store URL |
+| `api` | `.env.local.example` | `DATABASE_URL` (Supabase Postgres) |
+| `jewelry` | none | Sentry only (`VITE_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) |
+
+Never expose `SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`, or WhatsApp secrets to the client (no `VITE_` prefix).
+
+## Commands
+
+Run app scripts from the app directory, or from the root with `bun --bun run --cwd apps/<app> <script>`.
+
+| Script | Apps | Does |
+|--------|------|------|
+| `dev` | all | Dev server |
+| `build` | all | Production build |
+| `preview` | web apps | Serve the production build locally |
+| `test` | emeralds, jewelry | Vitest |
+| `lint` / `format` | emeralds, jewelry | Biome lint / format |
+| `check` | web apps | Biome lint + format + imports |
+| `seed` | emeralds | Seed Supabase |
+| `stripe:setup` | emeralds | Create Stripe products/prices |
+| `db:pull` / `db:push` / `db:migrate` / `db:studio` | api | Drizzle schema and migrations |
+
+Sanity Studio: `cd apps/emeralds/studio-natura-gems && bun run dev` (`deploy` to publish).
+
+Add a shadcn component: `bunx --bun shadcn@latest add <component>`.
+
+## Conventions
+
+- Routes nest by folder or dot: `emeralds/checkout.tsx` and `emeralds.checkout.tsx` both map to `/emeralds/checkout`.
+- API endpoints in the web apps are routes named `api.*.ts` (e.g. `api.stripe.webhook.ts` → `/api/stripe/webhook`).
+- `@/*` aliases `./src/*`.
+- Biome: tabs, double quotes.
+- `routeTree.gen.ts` and `src/paraglide` are generated. Do not edit them.
+
+## Deployment
+
+`emeralds`, `jewelry`, and `admin` each have their own `netlify.toml` and deploy to Netlify with `vite build`.
+Sentry is loaded at server start via each app's `instrument.server.mjs`.
+Set each app's environment variables in its Netlify site settings.

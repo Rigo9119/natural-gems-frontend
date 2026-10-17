@@ -401,7 +401,7 @@ When you're ready to add it, import `howToJsonLd` from `@/lib/seo` and add it to
 
 Every page managed in Sanity Studio has a **"SEO / Metadatos"** section that lets content editors override the default SEO without touching code.
 
-### The schema (`studio-natura-gems/schemaTypes/objects/seoMetadata.ts`)
+### The schema (`apps/emeralds/studio-natura-gems/schemaTypes/objects/seoMetadata.ts`)
 
 ```ts
 defineType({

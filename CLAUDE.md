@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-All commands use Bun as the package manager:
+Bun monorepo: `apps/emeralds` (:3000), `apps/jewelry` (:3001), `apps/admin` (:3001), `apps/api` (Hono, :3002), shared code in `packages/`.
+Run these from inside an app directory (the root only has `dev` and `dev:<app>`), or from the root with `bun --bun run --cwd apps/<app> <script>`:
 
 ```bash
-bun --bun run dev          # Start dev server (port 3000)
+bun --bun run dev          # Start dev server
 bun --bun run build        # Production build
 bun --bun run test         # Run tests with Vitest
 bun --bun run lint         # Run Biome linter
@@ -30,6 +31,7 @@ This is a full-stack React application built on the TanStack ecosystem with SSR 
 - **Tailwind CSS v4** - Styling
 
 ### Key Directories
+Paths below are relative to each app (e.g. `apps/emeralds/`).
 - `src/routes/` - File-based routes (create `foo.tsx` → `/foo` route)
 - `src/routes/api.*.ts` - API endpoints (export handlers)
 - `src/components/ui/` - shadcn components
@@ -51,8 +53,8 @@ This is a full-stack React application built on the TanStack ecosystem with SSR 
 - **Path alias:** `@/*` maps to `./src/*`
 - **Biome:** Tabs, double quotes, recommended rules
 - **TypeScript:** Strict mode, ES2022 target
-- **Deployment:** Netlify (configured in `netlify.toml`)
-- **Environment:** Requires Supabase keys in `.env.local`
+- **Deployment:** Netlify (emeralds, jewelry and admin each have their own `netlify.toml`)
+- **Environment:** Each app reads its own `.env.local` (see its `.env.example`)
 
 ## shadcn Components
 
@@ -60,3 +62,7 @@ Install new components with:
 ```bash
 bunx --bun shadcn@latest add <component>
 ```
+
+## Project tracking
+
+Report progress to the vault with the `project-sync` skill (`pt log`, `pt state`; config in `.project-tracker.json`).
