@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Bun monorepo: `apps/emeralds` (:3000), `apps/jewelry` (:3001), `apps/admin` (:3001), `apps/api` (Hono, :3002), shared code in `packages/`.
+Bun monorepo: `apps/emeralds` (:3000), `apps/jewelry` (:3001), `apps/admin` (:3003), `apps/api` (Hono, :3002), shared code in `packages/`.
 Run these from inside an app directory (the root only has `dev` and `dev:<app>`), or from the root with `bun --bun run --cwd apps/<app> <script>`:
 
 ```bash

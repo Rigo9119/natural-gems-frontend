@@ -13,8 +13,6 @@ bun run dev                                               # emeralds :3000 + jew
 
 Run a single app with `bun run dev:emeralds`, `dev:jewelry`, `dev:admin`, or `dev:api`.
 
-> `admin` and `jewelry` both use port 3001, so run only one of them at a time.
-
 ## Repository layout
 
 | Path | What it is | Port |
@@ -22,7 +20,7 @@ Run a single app with `bun run dev:emeralds`, `dev:jewelry`, `dev:admin`, or `de
 | `apps/emeralds` | Main store: catalog, cart, compare, Stripe checkout, orders, guides, WhatsApp | 3000 |
 | `apps/emeralds/studio-natura-gems` | Sanity Studio (CMS schemas for page content) | - |
 | `apps/jewelry` | Jewelry site | 3001 |
-| `apps/admin` | Admin panel (Supabase auth) | 3001 |
+| `apps/admin` | Admin panel (Supabase auth) | 3003 |
 | `apps/api` | Hono + Drizzle API over Supabase Postgres | 3002 |
 | `packages/ui` | Shared UI (`@natura-gems/ui`): shadcn components, error/loading/404 fallbacks | - |
 | `packages/config` | Shared Biome and TypeScript base configs | - |

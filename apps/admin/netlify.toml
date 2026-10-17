@@ -4,7 +4,7 @@
 
 [dev]
   command = "bun --bun run dev"
-  targetPort = 3001
+  targetPort = 3003
   port = 8890
 
 [[headers]]
